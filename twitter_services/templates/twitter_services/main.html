@@ -1,0 +1,9 @@
+{% if tweets_list %}
+    <ul>
+    {% for tweet in tweets_list %}
+        {{ tweet.tweet_id}} {{tweet.reputation_category}}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No tweets are available.</p>
+{% endif %}
