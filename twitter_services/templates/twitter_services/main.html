@@ -1,7 +1,7 @@
 {% if tweets_json %}
         {% for tweet in tweets_json %}
             <div>
-                <img id="avatar_{{ forloop.counter }}" src="">
+                <img id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
                 <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
                 <h5 id="created_at_{{ forloop.counter }}"></h5>
                 <div id="text_{{ forloop.counter }}"></div>
@@ -12,9 +12,12 @@
                 document.getElementById("avatar_{{ forloop.counter }}")
                         .setAttribute('src', tweet['user']['profile_image_url']);
                 document.getElementById("text_{{ forloop.counter }}").innerHTML = tweet['text'];
-                document.getElementById("created_at_{{ forloop.counter }}").innerHTML = tweet['created_at'];
+
+                var created_at = tweet['created_at'];
+                document.getElementById("created_at_{{ forloop.counter }}").innerHTML
+                        = created_at.substring(0, created_at.indexOf('+'));
+
                 document.getElementById("user_screen_name_{{ forloop.counter }}").innerHTML = tweet['user']['screen_name'];
-                console.log(tweet['text']);
             </script>
         {% endfor %}
 {% else %}
