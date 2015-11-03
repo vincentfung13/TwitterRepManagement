@@ -1,0 +1,75 @@
+Skip to content
+This repository  
+Pull requests
+Issues
+Gist
+ @vincentfung13
+ Watch 1,319
+  Star 29,155
+  Fork 10,834 github/gitignore
+ Branch: master  gitignore/Python.gitignore
+456199c  on May 11
+@hugovk hugovk Ignore temp Hypothesis test things
+33 contributors @arcresu @Metallicow @EvandroLG @tzicatl @hugovk @Lucretiel @matheussl @jspahrsummers @relekang @reinout @borntyping @llonchj @kdeldycke @rayshan @honzajavorek @sigo @gsnedders @xiaogaozi @adamv @skuschel @nvie @ecarreras @thedaniel @cjerdonek @Visgean @arjun024 and others
+RawBlameHistory     60 lines (50 sloc)  726 Bytes
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+polls/
