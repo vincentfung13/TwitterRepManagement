@@ -1,3 +1,22 @@
+<head>
+    <title>Main</title>
+</head>
+
+<header>
+    <!--<div id='logo'>-->
+        <!--<img src="/TwitterRepManagement/twitter_services/resources/img/GreyRedMackintosh2.png"-->
+				<!--style="width: 30%;">-->
+    <!--</div>-->
+    <div>
+        <ul id='naviMenu'>
+            <li class='active'><a href='#'><span>Home</span></a></li>
+            <li><a href='#'><span>Tweets</span></a></li>
+            <li><a href='#'><span>Map</span></a></li>
+            <li class='last'><a href='#'><span>Graphs</span></a></li>
+        </ul>
+    </div>
+</header>
+
 {% if tweets_json %}
         {% for tweet in tweets_json %}
             <div>
@@ -5,6 +24,7 @@
                 <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
                 <h5 id="created_at_{{ forloop.counter }}"></h5>
                 <div id="text_{{ forloop.counter }}"></div>
+                <div id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</div>
             </div>
 
             <script>
