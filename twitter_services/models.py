@@ -28,4 +28,4 @@ class Tweet_Reputation_Dimension(models.Model):
     dimension = models.CharField(max_length=20)
 
     def __unicode__(self):
-        return '{ entity: %s; tweet_id: %s; dimension: %s;}' % (self.entity, self.tweet, self.dimension)
+        return '{ entity: %s; %s; dimension: %s;}' % (self.entity, self.tweet, self.dimension)

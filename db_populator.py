@@ -28,6 +28,7 @@ with open(os.getcwd() + '/Tweets/pre.3ent.json', 'r') as all_tweets:
             tweets_json.append(tweet)
             ids.add(tweet['id'])
 
+# This function is hard-coded to retrieve information for pre.3en.gold file
 pre3en_golden = []
 with open(os.getcwd() + '/Tweets/pre.3ent.gold', 'r') as classification_results:
     for line in classification_results:
