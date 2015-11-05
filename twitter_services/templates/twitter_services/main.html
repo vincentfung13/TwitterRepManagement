@@ -1,45 +1,56 @@
-<head>
-    <title>Main</title>
-</head>
+<!DOCTYPE html>
 
-<header>
-    <!--<div id='logo'>-->
-        <!--<img src="/TwitterRepManagement/twitter_services/resources/img/GreyRedMackintosh2.png"-->
-				<!--style="width: 30%;">-->
-    <!--</div>-->
-    <div>
-        <ul id='naviMenu'>
-            <li class='active'><a href='#'><span>Home</span></a></li>
-            <li><a href='#'><span>Tweets</span></a></li>
-            <li><a href='#'><span>Map</span></a></li>
-            <li class='last'><a href='#'><span>Graphs</span></a></li>
-        </ul>
-    </div>
-</header>
+<html>
+    <head>
+        <title>Main</title>
+    </head>
 
-{% if tweets_json %}
-        {% for tweet in tweets_json %}
-            <div>
-                <img id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
-                <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
-                <h5 id="created_at_{{ forloop.counter }}"></h5>
-                <div id="text_{{ forloop.counter }}"></div>
-                <div id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</div>
-            </div>
+    <body>
+        <header>
+            <h1>Twitter Reputation Management System</h1>
+            <!--<div id='logo'>-->
+                <!--<img src="/TwitterRepManagement/twitter_services/resources/img/GreyRedMackintosh2.png"-->
+				        <!--style="width: 30%;">-->
+            <!--</div>-->
+            <ul id='naviMenu'>
+                <li class='active'><a href='#'><span>Home</span></a></li>
+                {% if entities_list %}
+                    {% for entity in entities_list %}
+                        <div>
+                            <li><a href='#'><span>{{ entity }}</span></a></li>
+                        </div>
+                    {% endfor %}
+            {% endif %}
+         </ul>
+        </header>
 
-            <script>
-                var tweet = JSON.parse({{tweet|safe}});
-                document.getElementById("avatar_{{ forloop.counter }}")
-                        .setAttribute('src', tweet['user']['profile_image_url']);
-                document.getElementById("text_{{ forloop.counter }}").innerHTML = tweet['text'];
+        {% if tweets_json %}
+                {% for tweet in tweets_json %}
+                    <div>
+                        <img id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
+                        <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
+                        <h5 id="created_at_{{ forloop.counter }}"></h5>
+                        <div id="text_{{ forloop.counter }}"></div>
+                        <div id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</div>
+                    </div>
 
-                var created_at = tweet['created_at'];
-                document.getElementById("created_at_{{ forloop.counter }}").innerHTML
-                        = created_at.substring(0, created_at.indexOf('+'));
+                    <script>
+                        var tweet = JSON.parse({{tweet|safe}});
+                        document.getElementById("avatar_{{ forloop.counter }}")
+                                .setAttribute('src', tweet['user']['profile_image_url']);
+                        document.getElementById("text_{{ forloop.counter }}")
+                                .innerHTML = tweet['text'];
 
-                document.getElementById("user_screen_name_{{ forloop.counter }}").innerHTML = tweet['user']['screen_name'];
-            </script>
-        {% endfor %}
-{% else %}
-    <p>No tweets are available</p>
-{% endif %}
+                        var created_at = tweet['created_at'];
+                        document.getElementById("created_at_{{ forloop.counter }}")
+                                .innerHTML = created_at.substring(0, created_at.indexOf('+'));
+
+                        document.getElementById("user_screen_name_{{ forloop.counter }}")
+                                .innerHTML = tweet['user']['screen_name'];
+                    </script>
+                {% endfor %}
+        {% else %}
+            <p>No tweets are available</p>
+        {% endif %}
+    </body>
+</html>
