@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block Title %}
+    <title>TwitterRep: {{ entity }}</title>
+{% endblock %}
+
+{% block Header %}
+    <h1>TwitterRep: {{ entity }}</h1>
+{% endblock %}
+
+{% block Sub-header %}
+    {% if dimension_list %}
+        {% for dimension in dimension_list %}
+            <div>
+                <li><a href='#'><span>{{ dimension }}</span></a></li>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
