@@ -30,7 +30,7 @@ def main(request):
     return render(request, 'twitter_services/main.html', context)
 
 
-def tweets_filter_entity(request, entity):
+def tweets_filter(request, entity, dimension=None):
     tweets_filtered = []
 
     for tweet in Tweet.objects.all():
@@ -42,9 +42,23 @@ def tweets_filter_entity(request, entity):
                                 for rep in tweet.tweet_reputation_dimension_set.all())
                 tweets_filtered.append(json.dumps(tweet_json))
                 continue
+
+    if dimension is not None:
+        tweets_filtered = [tweet for tweet in tweets_filtered if entity_dimension_match(tweet, entity, dimension)]
+
     context = {'tweets': tweets_filtered,
                'entity': entity,
                'entities_list': entities_list,
-               'dimension_list': dimension_list
+               'dimension_list': dimension_list,
+               'Dimension': dimension
                }
-    return render(request, 'twitter_services/filter_entity.html', context)
+    return render(request, 'twitter_services/tweets_filter.html', context)
+
+
+# Helper function for filtering with entity and dimension
+def entity_dimension_match(tweet, entity, dimension):
+    tweet_id = json.loads(tweet).get('id_str')
+    for obj in Tweet_Reputation_Dimension.objects.filter(tweet__tweet_id=tweet_id):
+        if obj.entity == entity and obj.dimension == dimension:
+            return True
+    return False
