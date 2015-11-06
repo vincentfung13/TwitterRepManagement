@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/style_base.css' %}" />
 
 {% block Title %}
     <title>TwitterRep: {{ entity }}</title>
@@ -9,11 +12,13 @@
 {% endblock %}
 
 {% block Sub-header %}
-    {% if dimension_list %}
-        {% for dimension in dimension_list %}
-            <div>
-                <li><a href='#'><span>{{ dimension }}</span></a></li>
-            </div>
-        {% endfor %}
-    {% endif %}
+    <div>
+        {% if dimension_list %}
+        <ul>
+            {% for dimension in dimension_list %}
+                    <li><a href='#'><span>{{ dimension }}</span></a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
 {% endblock %}

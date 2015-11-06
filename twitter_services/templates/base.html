@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/style_base.css' %}" />
 
 <head>
     <meta charset="UTF-8">
@@ -9,19 +12,14 @@
 <body>
     <header>
         {% block Header %}{% endblock %}
-        <!--<div id='logo'>-->
-        <!--<img src="/TwitterRepManagement/twitter_services/resources/img/GreyRedMackintosh2.png"-->
-				        <!--style="width: 30%;">-->
-        <!--</div>-->
+        <div id="logo"></div>
         <ul id='naviMenu'>
-            <li class='active'><a href='/twitter_services/main'><span>Home</span></a></li>
-                {% if entities_list %}
-                    {% for entity in entities_list %}
-                        <div>
-                            <li><a href='/twitter_services/entity/{{ entity }}'><span>{{ entity }}</span></a></li>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+            <li class='active'><a href='{% url 'twitter_services:main' %}'><span>Home</span></a></li>
+            {% if entities_list %}
+                {% for entity in entities_list %}
+                    <li><a href='{% url 'twitter_services:tweets_filtered_entity' entity %}'>{{ entity }}</a></li>
+                {% endfor %}
+            {% endif %}
          </ul>
     </header>
 
@@ -29,11 +27,11 @@
 
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
-        <div style="height: 1000px">
+        <div class="tweet-container">
             {% if tweets %}
                     {% for tweet in tweets %}
-                        <div>
-                            <img id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
+                        <div class="tweet">
+                            <img class="avatar" id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
                             <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
                             <h5 id="created_at_{{ forloop.counter }}"></h5>
                             <h5 id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</h5>
@@ -55,7 +53,7 @@
                                     .innerHTML = tweet['user']['screen_name'];
 
                             document.getElementById("dimension_{{ forloop.counter }}")
-                                    .innerHTML = 'Reputation dimension: ' + tweet['reputation_dimension'];
+                                    .innerHTML = tweet['reputation_dimension'];
                         </script>
                     {% endfor %}
             {% else %}
