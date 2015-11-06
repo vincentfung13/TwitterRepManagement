@@ -14,7 +14,7 @@
 				        <!--style="width: 30%;">-->
         <!--</div>-->
         <ul id='naviMenu'>
-            <li class='active'><a href='/twitter_services'><span>Home</span></a></li>
+            <li class='active'><a href='/twitter_services/main'><span>Home</span></a></li>
                 {% if entities_list %}
                     {% for entity in entities_list %}
                         <div>
@@ -29,19 +29,19 @@
 
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
-        <div>
+        <div style="height: 1000px">
             {% if tweets %}
                     {% for tweet in tweets %}
                         <div>
                             <img id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
                             <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
                             <h5 id="created_at_{{ forloop.counter }}"></h5>
+                            <h5 id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</h5>
                             <div id="text_{{ forloop.counter }}"></div>
-                            <div id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</div>
                         </div>
 
                         <script>
-                            var tweet = JSON.parse({{tweet|safe}});
+                            var tweet = {{tweet|safe}};
                             document.getElementById("avatar_{{ forloop.counter }}")
                                     .setAttribute('src', tweet['user']['profile_image_url']);
                             document.getElementById("text_{{ forloop.counter }}")
@@ -53,6 +53,9 @@
 
                             document.getElementById("user_screen_name_{{ forloop.counter }}")
                                     .innerHTML = tweet['user']['screen_name'];
+
+                            document.getElementById("dimension_{{ forloop.counter }}")
+                                    .innerHTML = 'Reputation dimension: ' + tweet['reputation_dimension'];
                         </script>
                     {% endfor %}
             {% else %}
