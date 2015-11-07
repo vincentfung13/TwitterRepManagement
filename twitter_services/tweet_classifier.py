@@ -46,7 +46,7 @@ def get_dimension(tweet, classification_result):
 
 
 # Construct a dictionary at initialization
-with open(os.getcwd() + '/Tweets/pre.3ent.json', 'r') as json_file:
+with open(os.getcwd() + 'resources/Tweets/pre.3ent.json', 'r') as json_file:
     all_tweets = [line for line in json_file]
 
 dictionary = []
@@ -54,7 +54,7 @@ for tweet in all_tweets:
     dictionary.extend(__process_text(tweet))
 dictionary = list(nltk.FreqDist(dictionary))[200:]
 
-with open(sys.path[0] + '/Tweets/pre.3ent.gold', 'r') as classification_results:
+with open(sys.path[0] + 'resources/Tweets/pre.3ent.gold', 'r') as classification_results:
     feature_sets = [(extract_feature(tweet), get_dimension(tweet, classification_results)) for tweet in all_tweets]
 
 training_set, test_set = feature_sets[1024:], feature_sets[:1024]

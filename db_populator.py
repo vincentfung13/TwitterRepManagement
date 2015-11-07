@@ -57,7 +57,6 @@ for tweet_json in tweets_json:
                     (tweet_json['id'], tweet_json['tweet_json']))
     cur.execute("INSERT INTO twitter_services_tweet VALUES (%s, %s);",
                 (tweet_json['id'], tweet_json['tweet_json']))
-conn.commit()
 
 # Insert to dimension table
 for item in pre3en_golden:
