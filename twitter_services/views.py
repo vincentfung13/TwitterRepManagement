@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from .models import Tweet, Tweet_Reputation_Dimension, Tweet_Training
-import tweet_classifier
+from .models import Tweet, Tweet_Reputation_Dimension
 import json
 
 
