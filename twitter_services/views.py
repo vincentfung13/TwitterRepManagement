@@ -1,17 +1,12 @@
 from django.shortcuts import render
-from .models import Tweet, Tweet_Reputation_Dimension
+from .models import Tweet, Tweet_Reputation_Dimension, Tweet_Training
+import tweet_classifier
 import json
 
-# TODO: find a clever approach for the block below
-entities_set = Tweet_Reputation_Dimension.objects.all().values('entity').distinct()
-entities_list = []
-for item in entities_set:
-    entities_list.append(item['entity'])
 
-dimension_set = Tweet_Reputation_Dimension.objects.all().values('dimension').distinct()
-dimension_list = []
-for item in dimension_set:
-    dimension_list.append(item['dimension'])
+entities_list = [item['entity'] for item in Tweet_Reputation_Dimension.objects.values('entity').distinct()]
+dimension_list = [dimension['dimension']
+                  for dimension in Tweet_Reputation_Dimension.objects.values('dimension').distinct()]
 
 
 # Create your views here.

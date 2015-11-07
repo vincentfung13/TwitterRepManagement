@@ -12,6 +12,7 @@ class Tweet(models.Model):
     def __unicode__(self):
         return 'tweet_id: ' + self.tweet_id
 
+
 # Table to store training set of tweets
 class Tweet_Training(models.Model):
     tweet_id = models.CharField(max_length=50, primary_key=True, default='Undefined: ' + str(timezone.now()))
@@ -20,6 +21,7 @@ class Tweet_Training(models.Model):
 
     def __unicode__(self):
         return 'tweet_id: ' + self.tweet_id
+
 
 class Tweet_Reputation_Dimension(models.Model):
     id = models.TextField(primary_key=True, default='Undefined: ' + str(timezone.now()))

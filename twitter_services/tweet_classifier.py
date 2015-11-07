@@ -1,77 +1,67 @@
+import os
 import json
 import nltk
+import sys
 import string
 from nltk.corpus import stopwords
 from nltk import word_tokenize
 from nltk.stem import *
-import unicodedata
 
-# Read the traning set and intellectually classified results
-all_tweets = open("/Users/vincentfung13/Development/Level 4/Project/Tweets/pre.3ent.json", 'r')
-classification_results = open("/Users/vincentfung13/Development/Level 4/Project/Tweets/pre.3ent.gold", 'r')
 
-# Hard-coded method to retrive tweet category and entity related from the given traning set
-def getAtrribute(tweet, key):
-    tweet_json = json.loads(tweet)
-    id = tweet_json.get('id')
-    if key == 'category':
-        for line in classification_results:
-            if str(id) in line:
-                return line[38:len(line) - 2]
-    elif key == 'entity':
-        for line in classification_results:
-            if str(id) in line:
-                return line[1:14]
+# Returns the feature set of the given tweet, tweet should be a json string
+def extract_feature(tweet):
+    tweet_words = __process_text(tweet)
+    features = {}
+    for word in dictionary:
+        features['contains({})'.format(word)] = (word in tweet_words)
+    return features
 
-# Construct a list of dictionary to hold text and catagory of tweets
-def containsPunctuation(word):
+
+# The argument tweet should be a json string
+def __process_text(tweet):
+    stopset = list(set(stopwords.words('english')))
+    stemmer = SnowballStemmer("english")
+    tweet_tokens = word_tokenize(json.loads(tweet)['text'].encode('ascii', 'ignore').lower())
+    tweet_words = [word for word in tweet_tokens
+                   if not __contains_punctuation(word) and word not in stopset and word != '\n']
+    # Appliy stemming and remove duplicates words
+    tweet_words = list(set([stemmer.stem(word) for word in tweet_words]))
+    return tweet_words
+
+
+def __contains_punctuation(word):
     for symbol in string.punctuation:
         if symbol in word: return True
     return False
 
-def processTweetText(tweet):
-    stopset = list(set(stopwords.words('english')))
-    stemmer = SnowballStemmer("english")
-    tweet_text = json.loads(tweet)['text'].encode('ascii', 'ignore').lower()
-    tweet_text = word_tokenize(tweet_text)
-#    tweet_text = [stemmer.stem(word) for word in tweet_text]
-    tweet_text = [word for word in tweet_text if not containsPunctuation(word) and word not in stopset and word != '\n']
-    return tweet_text
 
-def construct_dict(tweets):
-    all_words = []
-    for line in tweets:
-        all_words.extend(processTweetText(line))
-    return nltk.FreqDist(all_words)
+# Hard-coded
+def get_dimension(tweet, classification_result):
+    tweet_id = json.loads(tweet)['id_str']
+    for line in classification_result:
+        if line[17:35] == tweet_id and line[38:len(line) - 2] is not None:
+            return line[38:len(line) - 2]
+        else:
+            return 'Undefined'
 
-# Feature extractor for a single tweet - tweet is expected to be in json string
-def tweet_feats(tweet):
-    tweet_words = processTweetText(tweet)
-    set_words = set(tweet_words)
-    features = {}
-    for word in word_features:
-        features['contains({})'.format(word)] = (word in set_words)
-    return features
 
-all_words = construct_dict(all_tweets)
-word_features = list(all_words)[10:]
+# Construct a dictionary at initialization
+with open(os.getcwd() + '/Tweets/pre.3ent.json', 'r') as json_file:
+    all_tweets = [line for line in json_file]
 
-all_tweets.close()
-
-featureSets = []
-all_tweets = open("/Users/vincentfung13/Development/Level 4/Project/Tweets/pre.3ent.json", 'r')
+dictionary = []
 for tweet in all_tweets:
-    category = getAtrribute(tweet, 'category')
-    if category is None: continue
-    featureSets.append((tweet_feats(tweet), category))
-all_tweets.close()
+    dictionary.extend(__process_text(tweet))
+dictionary = list(nltk.FreqDist(dictionary))[200:]
 
-training_set, test_set = featureSets[1024:], featureSets[:1024]
+with open(sys.path[0] + '/Tweets/pre.3ent.gold', 'r') as classification_results:
+    feature_sets = [(extract_feature(tweet), get_dimension(tweet, classification_results)) for tweet in all_tweets]
 
-print('Training the classifier')
+training_set, test_set = feature_sets[1024:], feature_sets[:1024]
+
+print 'Training the classifier'
 classifier = nltk.NaiveBayesClassifier.train(training_set)
-#classifier = nltk.classify.DecisionTreeClassifier.train(training_set, entropy_cutoff=0, support_cutoff=0)
+# classifier = nltk.classify.DecisionTreeClassifier.train(training_set, entropy_cutoff=0, support_cutoff=0)
 
-print('Classifying the testing set')
-print('The accuracy of this experiment is: ' + str(nltk.classify.accuracy(classifier, test_set)))
-
+print 'Classifying the testing set'
+print 'The accuracy of this experiment is: ' + str(nltk.classify.accuracy(classifier, test_set))
