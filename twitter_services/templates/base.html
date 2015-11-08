@@ -47,7 +47,8 @@
 
                             var created_at = tweet['created_at'];
                             document.getElementById("created_at_{{ forloop.counter }}")
-                                    .innerHTML = created_at.substring(0, created_at.indexOf('+'));
+                                    .innerHTML = created_at.substring(0, created_at.indexOf('+'))
+                                    + created_at.substring(created_at.indexOf('+') + 6, created_at.length);
 
                             document.getElementById("user_screen_name_{{ forloop.counter }}")
                                     .innerHTML = tweet['user']['screen_name'];
