@@ -3,7 +3,7 @@ import psycopg2
 import sys
 import os
 
-# This script is used to pupulate the database to start with.
+# This script is used to populate the database to start with.
 
 duplicates = set()
 
