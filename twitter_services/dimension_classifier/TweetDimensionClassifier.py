@@ -10,6 +10,7 @@ from nltk.tokenize import TweetTokenizer
 from nltk.stem import *
 import nltk.classify
 from sklearn.svm import LinearSVC
+from sklearn import cross_validation
 from twitter_services.models import TweetTrainingSet, Tweet, TweetEntityDimension
 
 
@@ -62,15 +63,19 @@ for entry in TweetEntityDimension.objects.values('tweet_id', 'dimension'):
 feature_sets = [(extract_feature(tweet), dimension_dict[json.loads(tweet).get('id_str')]) for tweet in all_tweets
                 if dimension_dict[json.loads(tweet).get('id_str')] is not None]
 
-training_set, test_set = feature_sets[200:], feature_sets[:1024]
+
+
+training_set, test_set = feature_sets[202:], feature_sets[:1809]
 
 # Training and testing the classifier
 # classifier = nltk.NaiveBayesClassifier.train(training_set)
 # classifier = nltk.classify.DecisionTreeClassifier.train(training_set, entropy_cutoff=0, support_cutoff=0)
-classifier = nltk.classify.SklearnClassifier(LinearSVC())
-print 'Training the classifier'
-classifier.train(training_set)
+# classifier = nltk.classify.SklearnClassifier(LinearSVC())
+# print 'Training the classifier'
+# classifier.train(training_set)
 
+# hit_count = 0
+# miss_count = 0
 # for item in all_tweets[1025: len(all_tweets) - 1]:
 #     dimension = dimension_dict[json.loads(item).get('id_str')]
 #     classified = classifier.classify(extract_feature(item))
@@ -78,4 +83,11 @@ classifier.train(training_set)
 #     print dimension, classified
 
 # print 'Classifying the testing set'
-# print 'The accuracy of this experiment is: ' + str(nltk.classify.accuracy(classifier, test_set))
+# print 'The accuracy of the experiment is: ' + str(nltk.classify.accuracy(classifier, test_set))
+
+# Trying to apply cross validation
+cv = cross_validation.KFold(len(feature_sets), n_folds=10, shuffle=False, random_state=None)
+
+for traincv, testcv in cv:
+    classifier_cv = nltk.classify.SklearnClassifier(LinearSVC()).train(feature_sets[traincv[0]:traincv[len(traincv)-1]])
+    print 'accuracy:', nltk.classify.util.accuracy(classifier_cv, training_set[testcv[0]:testcv[len(testcv)-1]])
