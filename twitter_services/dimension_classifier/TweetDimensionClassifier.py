@@ -1,14 +1,17 @@
-import os
+import os,django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
+django.setup()
+
 import json
 import nltk
-import sys
 import string
 from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
 from nltk.stem import *
-
 import nltk.classify
 from sklearn.svm import LinearSVC
+from twitter_services.models import TweetTrainingSet, Tweet, TweetEntityDimension
+
 
 # Returns the feature set of the given tweet, tweet should be a json string
 def extract_feature(tweet):
@@ -41,10 +44,8 @@ def __contains_punctuation(word):
         if symbol in word: return True
     return False
 
-
-# Construct a dictionary at initialization
-with open(os.getcwd() + '/resources/Tweets/pre.3ent.json', 'r') as json_file:
-    all_tweets = [line for line in json_file]
+# Construct a dictionary at the beginning
+all_tweets = [obj['tweet_json'] for obj in Tweet.objects.values('tweet_json')]
 
 dictionary = []
 for tweet in all_tweets:
@@ -52,33 +53,29 @@ for tweet in all_tweets:
 dictionary = list(nltk.FreqDist(dictionary).most_common(2000))
 word_feature = [entry[0] for entry in dictionary]
 
-with open(sys.path[0] + '/resources/Tweets/pre.3ent.gold', 'r+') as classification_results:
-    dimension_dict = {}
-    for entry in classification_results:
-        dimension_dict[entry[17:35]] = entry[38:len(line) - 2]
+# Fetched the intellectual classification results
+dimension_dict = {}
+for entry in TweetEntityDimension.objects.values('tweet_id', 'dimension'):
+    dimension_dict[entry['tweet_id']] = entry['dimension']
 
+# Build feature sets for training and testing
 feature_sets = [(extract_feature(tweet), dimension_dict[json.loads(tweet).get('id_str')]) for tweet in all_tweets
                 if dimension_dict[json.loads(tweet).get('id_str')] is not None]
 
-training_set, test_set = feature_sets[1024:], feature_sets[:1024]
+training_set, test_set = feature_sets[200:], feature_sets[:1024]
 
-print 'Training the classifier'
+# Training and testing the classifier
 # classifier = nltk.NaiveBayesClassifier.train(training_set)
 # classifier = nltk.classify.DecisionTreeClassifier.train(training_set, entropy_cutoff=0, support_cutoff=0)
 classifier = nltk.classify.SklearnClassifier(LinearSVC())
+print 'Training the classifier'
 classifier.train(training_set)
 
-# with open(sys.path[0] + '/resources/Tweets/pre.3ent.gold', 'r') as classification_results:
-#     for item in all_tweets[1024:]:
-#         dimension = dimension_dict[json.loads(item).get('id_str')]
-#         # if dimension is not None:
-#         print dimension
-#
-#     for item in all_tweets[1025: len(all_tweets) - 1]:
-#         dimension = dimension_dict[json.loads(item).get('id_str')]
-#         classified = classifier.classify(extract_feature(item))
-#         if dimension is not None:
-#             print dimension, classified
+# for item in all_tweets[1025: len(all_tweets) - 1]:
+#     dimension = dimension_dict[json.loads(item).get('id_str')]
+#     classified = classifier.classify(extract_feature(item))
+#     # if dimension is not None:
+#     print dimension, classified
 
-print 'Classifying the testing set'
-print 'The accuracy of this experiment is: ' + str(nltk.classify.accuracy(classifier, test_set))
+# print 'Classifying the testing set'
+# print 'The accuracy of this experiment is: ' + str(nltk.classify.accuracy(classifier, test_set))

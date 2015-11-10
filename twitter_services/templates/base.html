@@ -35,6 +35,7 @@
                             <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
                             <h5 id="created_at_{{ forloop.counter }}"></h5>
                             <h5 id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</h5>
+                            <h5 id="sentiment_score_{{ forloop.counter }}"></h5>
                             <div id="text_{{ forloop.counter }}"></div>
                         </div>
 
@@ -55,6 +56,10 @@
 
                             document.getElementById("dimension_{{ forloop.counter }}")
                                     .innerHTML = tweet['reputation_dimension'];
+
+                            document.getElementById("sentiment_score_{{ forloop.counter }}")
+                                    .innerHTML = tweet['sentiment_score'];
+
                         </script>
                     {% endfor %}
             {% else %}

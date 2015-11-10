@@ -1,7 +1,9 @@
 import json
 import psycopg2
 import sys
-import os
+import io
+from TwitterRepManagement import settings
+from twitter_services.sentiment_evaluator import TweetSentimentEvaluator
 
 # This script is used to populate the database to start with.
 
@@ -18,7 +20,8 @@ def check_for_existence(tweet_id, tweet_list):
 tweets_json = []
 ids = set()
 
-with open(os.getcwd() + '/Tweets/pre.3ent.json', 'r') as all_tweets:
+with io.open(settings.BASE_DIR + '/twitter_services/resources/Tweets/pre.3ent.json', 'r',
+             encoding='utf-8') as all_tweets:
     for tweet_str in all_tweets:
         tweet = {}
         tweet_json = json.loads(tweet_str)
@@ -30,7 +33,8 @@ with open(os.getcwd() + '/Tweets/pre.3ent.json', 'r') as all_tweets:
 
 # This function is hard-coded to retrieve information for pre.3en.gold file
 pre3en_golden = []
-with open(os.getcwd() + '/Tweets/pre.3ent.gold', 'r') as classification_results:
+with io.open(settings.BASE_DIR + '/twitter_services/resources/Tweets/pre.3ent.gold', 'r',
+             encoding='utf-8') as classification_results:
     for line in classification_results:
         tweet = {}
         tweet['entity_id'] = line[1:14]
@@ -53,14 +57,14 @@ i = 0
 for tweet_json in tweets_json:
     i += 1
     if i <= 1000:
-        cur.execute("INSERT INTO twitter_services_tweet_training VALUES (%s, %s);",
+        cur.execute("INSERT INTO twitter_services_tweettrainingset VALUES (%s, %s);",
                     (tweet_json['id'], tweet_json['tweet_json']))
-    cur.execute("INSERT INTO twitter_services_tweet VALUES (%s, %s);",
-                (tweet_json['id'], tweet_json['tweet_json']))
+    cur.execute("INSERT INTO twitter_services_tweet VALUES (%s, %s, %s);",
+                (tweet_json['id'], tweet_json['tweet_json'], TweetSentimentEvaluator.rate_sentiment(tweet_json['tweet_json'])))
 
 # Insert to dimension table
 for item in pre3en_golden:
-    cur.execute("INSERT INTO twitter_services_tweet_reputation_dimension VALUES (%s, %s, %s, %s);",
+    cur.execute("INSERT INTO twitter_services_tweetentitydimension VALUES (%s, %s, %s, %s);",
                 ("%s: %s" % (item['id'], item['entity_id']), item['entity_id'], item['dimension'], item['id']))
 
 print 'Committing changes and closing connection'
