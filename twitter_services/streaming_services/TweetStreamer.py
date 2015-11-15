@@ -34,7 +34,7 @@ if __name__ == '__main__':
     track_list = apple_dic + amazon_dic + tesco_dic + bmw_dic + heineken_dic + hsbc_dic
 
     tweet_queue = multiprocessing.JoinableQueue()
-    num_consumers = multiprocessing.cpu_count() * 2
+    num_consumers = multiprocessing.cpu_count()
     tweet_processors = [TweetProcessWorker.TweetProcessor(tweet_queue) for i in xrange(num_consumers)]
 
     for processor in tweet_processors:

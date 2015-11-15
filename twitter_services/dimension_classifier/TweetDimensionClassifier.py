@@ -11,7 +11,7 @@ from nltk.stem import *
 import nltk.classify
 from sklearn.svm import LinearSVC
 from sklearn import cross_validation
-from twitter_services.models import Tweet, TweetEntityDimension
+from twitter_services.models import TweetTrainingSet
 
 
 # Returns the feature set of the given tweet, tweet should be a json string
@@ -47,7 +47,7 @@ def __contains_punctuation(word):
 
 
 # Construct a dictionary at the beginning
-all_tweets = [obj['tweet_json'] for obj in Tweet.objects.values('tweet_json')]
+all_tweets = [obj['tweet_json'] for obj in TweetTrainingSet.objects.values('tweet_json')]
 dictionary = []
 for tweet in all_tweets:
     dictionary.extend(__process_text(tweet))
@@ -56,11 +56,8 @@ word_feature = [entry[0] for entry in dictionary]
 
 
 # Fetched the intellectual classification results and build the feature sets
-dimension_dict = {}
-for entry in TweetEntityDimension.objects.values('tweet_id', 'dimension'):
-    dimension_dict[entry['tweet_id']] = entry['dimension']
-feature_sets = [(extract_feature(tweet), dimension_dict[json.loads(tweet).get('id_str')]) for tweet in all_tweets
-                if dimension_dict[json.loads(tweet).get('id_str')] is not None]
+feature_sets = [(extract_feature(tweet), json.loads(tweet).get('reputation_dimension')) for tweet in all_tweets
+                if json.loads(tweet).get('reputation_dimension') is not None]
 training_set, test_set = feature_sets[202:], feature_sets[:1809]
 
 
@@ -76,6 +73,6 @@ if __name__ == '__main__':
     cv = cross_validation.KFold(len(feature_sets), n_folds=10, shuffle=False, random_state=None)
 
     for traincv, testcv in cv:
-        classifier_cv = nltk.classify.NaiveBayesClassifier\
+        classifier_cv = nltk.classify.SklearnClassifier(LinearSVC())\
             .train(feature_sets[traincv[0]:traincv[len(traincv)-1]])
         print 'accuracy:', nltk.classify.util.accuracy(classifier_cv, feature_sets[testcv[0]:testcv[len(testcv)-1]])

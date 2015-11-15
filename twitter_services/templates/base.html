@@ -30,7 +30,7 @@
         <div class="tweet-container">
             {% if tweets %}
                     {% for tweet in tweets %}
-                        <div class="tweet">
+                        <div class="tweet" id="tweet_{{ forloop.counter }}">
                             <img class="avatar" id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
                             <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
                             <h5 id="created_at_{{ forloop.counter }}"></h5>
@@ -57,8 +57,20 @@
                             document.getElementById("dimension_{{ forloop.counter }}")
                                     .innerHTML = tweet['reputation_dimension'];
 
+                            sentiment_score = tweet['sentiment_score']
                             document.getElementById("sentiment_score_{{ forloop.counter }}")
-                                    .innerHTML = tweet['sentiment_score'];
+                                    .innerHTML = sentiment_score;
+
+                            positive_weight = parseInt(sentiment_score.split("-")[0])
+                            negative_weight = parseInt(sentiment_score.split("-")[1])
+
+                            if (positive_weight > 2){
+                                document.getElementById("tweet_{{ forloop.counter }}").style.color = "Green"
+                            }
+
+                            if (negative_weight > 2){
+                                document.getElementById("tweet_{{ forloop.counter }}").style.color = "Red"
+                            }
 
                         </script>
                     {% endfor %}

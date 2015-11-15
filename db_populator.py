@@ -1,76 +1,58 @@
+# Configure django
+import os, django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
+django.setup()
+
 import json
-import psycopg2
-import sys
 import io
 from TwitterRepManagement import settings
 from twitter_services.sentiment_evaluator import TweetSentimentEvaluator
+from twitter_services.models import TweetTrainingSet
 
 # This script is used to populate the database to start with.
 
 duplicates = set()
 
 
-def check_for_existence(tweet_id, tweet_list):
-    for tweet in tweet_list:
-        if tweet['id'] == tweet_id:
+def check_for_existence(tweet_id, tweet_dict):
+    if tweet_id in tweet_dict:
             duplicates.add(tweet_id)
             return True
-    return False
+    else:
+        return False
 
-tweets_json = []
+tweets_json = {}
 ids = set()
 
 with io.open(settings.BASE_DIR + '/twitter_services/resources/Tweets/pre.3ent.json', 'r',
              encoding='utf-8') as all_tweets:
     for tweet_str in all_tweets:
-        tweet = {}
         tweet_json = json.loads(tweet_str)
-        tweet['id'] = tweet_json.get('id_str')
-        tweet['tweet_json'] = tweet_str
-        if not check_for_existence(tweet['id'], tweets_json):
-            tweets_json.append(tweet)
-            ids.add(tweet['id'])
+        tweet_id = tweet_json.get('id_str')
+        sentiment_score = TweetSentimentEvaluator.rate_sentiment(tweet_str)
+        tweet_json['sentiment_score'] = sentiment_score
+
+        if not check_for_existence(tweet_id, tweets_json):
+            tweets_json[tweet_id] = json.dumps(tweet_json)
+            ids.add(tweet_id)
 
 # This function is hard-coded to retrieve information for pre.3en.gold file
-pre3en_golden = []
 with io.open(settings.BASE_DIR + '/twitter_services/resources/Tweets/pre.3ent.gold', 'r',
              encoding='utf-8') as classification_results:
     for line in classification_results:
-        tweet = {}
-        tweet['entity_id'] = line[1:14]
-        tweet['id'] = line[17:35]
-        tweet['dimension'] = line[38:len(line) - 2]
-        if tweet['id'] in ids:
-            pre3en_golden.append(tweet)
+        tweet_id = line[17:35]
+        reputation_dimension = line[38:len(line) - 2]
 
-if len(sys.argv) != 4:
-    print len(sys.argv)
-    print 'Usage: python db_populator.py db_name user password'
-    exit()
-
-# Connect to the database
-conn = psycopg2.connect('dbname=%s user=%s password=%s' % (sys.argv[1], sys.argv[2], sys.argv[3]))
-cur = conn.cursor()
+        if tweet_id in ids:
+            tweet = json.loads(tweets_json.get(tweet_id))
+            tweet['reputation_dimension'] = reputation_dimension
+            tweets_json[tweet_id] = json.dumps(tweet)
 
 # # Insert to tweet and training set table
-i = 0
-for tweet_json in tweets_json:
-    i += 1
-    if i <= 1000:
-        cur.execute("INSERT INTO twitter_services_tweettrainingset VALUES (%s, %s);",
-                    (tweet_json['id'], tweet_json['tweet_json']))
-    cur.execute("INSERT INTO twitter_services_tweet VALUES (%s, %s, %s);",
-                (tweet_json['id'], tweet_json['tweet_json'], TweetSentimentEvaluator.rate_sentiment(tweet_json['tweet_json'])))
+for id_str, tweet_json in tweets_json.iteritems():
+    TweetTrainingSet.objects.create(tweet_id=id_str, tweet_json=tweet_json).save()
 
-# Insert to dimension table
-for item in pre3en_golden:
-    cur.execute("INSERT INTO twitter_services_tweetentitydimension VALUES (%s, %s, %s, %s);",
-                ("%s: %s" % (item['id'], item['entity_id']), item['entity_id'], item['dimension'], item['id']))
-
-print 'Committing changes and closing connection'
-conn.commit()
-cur.close()
-conn.close()
+print 'Completed populating the training set database'
 
 
 

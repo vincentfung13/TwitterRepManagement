@@ -4,9 +4,9 @@
 # django.setup()
 
 import re, json, multiprocessing
-from twitter_services.models import Tweet, TweetEntityDimension
 from twitter_services.sentiment_evaluator import TweetSentimentEvaluator
 from twitter_services.dimension_classifier import TweetDimensionClassifier
+from twitter_services.models import Tweet
 
 
 dict_keyword_entity = dict()
@@ -32,21 +32,16 @@ class TweetProcessor(multiprocessing.Process):
 # Process a single tweet and insert it into the db if it fits the requirements
 def process_tweet(status):
     tweet_json = json.loads(status)
-    text = tweet_json['text']
-    rep_dimension = TweetDimensionClassifier.classifier.classify(TweetDimensionClassifier.extract_feature(status))
-    senti_score = TweetSentimentEvaluator.rate_sentiment(status)
-    entity_related = fetch_entity(status)
+    tweet_json['reputation_dimension'] = \
+        TweetDimensionClassifier.classifier.classify(TweetDimensionClassifier.extract_feature(status))
+    tweet_json['sentiment_score'] = TweetSentimentEvaluator.rate_sentiment(status)
+    tweet_json['entity'] = fetch_entity(status)
     id_str = tweet_json['id_str']
-    affecting = is_reputation_affecting(status)
+
     # Insert the tweet into the databse if it is reputation-affecting
     if is_reputation_affecting(status):
-        tweet_db = Tweet.objects.create(tweet_id=id_str, tweet_json=status, sentiment_score=senti_score)
-        tweet_db.tweetentitydimension_set.create(id='%s : %s' % (id_str, entity_related), entity=entity_related,
-                                                dimension=rep_dimension)
-        tweet_db.save()
-
-    print 'Tweet text: %s, Dimension: %s, Sentiment: %s, Entity: %s, Affecting: %s' % \
-        (text, rep_dimension, senti_score, entity_related, affecting)
+        Tweet.objects.create(tweet_id=id_str, tweet_json=json.dumps(tweet_json)).save()
+        print 'Inserted tweet id: %s' % id_str
 
 
 # Retrieve entity from a tweet
@@ -64,7 +59,8 @@ def fetch_entity(tweet):
 def is_reputation_affecting(tweet):
     senti_score = TweetSentimentEvaluator.rate_sentiment(tweet)
     negative = senti_score[len(senti_score) - 1]
-    if int(negative) > 2:
+    positive = senti_score[0]
+    if int(negative) >= 2 or int(positive) >= 2:
         return True
     else:
         return False
