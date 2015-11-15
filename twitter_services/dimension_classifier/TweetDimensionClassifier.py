@@ -11,7 +11,7 @@ from nltk.stem import *
 import nltk.classify
 from sklearn.svm import LinearSVC
 from sklearn import cross_validation
-from twitter_services.models import TweetTrainingSet, Tweet, TweetEntityDimension
+from twitter_services.models import Tweet, TweetEntityDimension
 
 
 # Returns the feature set of the given tweet, tweet should be a json string
@@ -45,49 +45,37 @@ def __contains_punctuation(word):
         if symbol in word: return True
     return False
 
+
 # Construct a dictionary at the beginning
 all_tweets = [obj['tweet_json'] for obj in Tweet.objects.values('tweet_json')]
-
 dictionary = []
 for tweet in all_tweets:
     dictionary.extend(__process_text(tweet))
 dictionary = list(nltk.FreqDist(dictionary).most_common(2000))
 word_feature = [entry[0] for entry in dictionary]
 
-# Fetched the intellectual classification results
+
+# Fetched the intellectual classification results and build the feature sets
 dimension_dict = {}
 for entry in TweetEntityDimension.objects.values('tweet_id', 'dimension'):
     dimension_dict[entry['tweet_id']] = entry['dimension']
-
-# Build feature sets for training and testing
 feature_sets = [(extract_feature(tweet), dimension_dict[json.loads(tweet).get('id_str')]) for tweet in all_tweets
                 if dimension_dict[json.loads(tweet).get('id_str')] is not None]
-
-
-
 training_set, test_set = feature_sets[202:], feature_sets[:1809]
+
 
 # Training and testing the classifier
 # classifier = nltk.NaiveBayesClassifier.train(training_set)
 # classifier = nltk.classify.DecisionTreeClassifier.train(training_set, entropy_cutoff=0, support_cutoff=0)
-# classifier = nltk.classify.SklearnClassifier(LinearSVC())
-# print 'Training the classifier'
-# classifier.train(training_set)
+classifier = nltk.classify.SklearnClassifier(LinearSVC())
+print 'Training the classifier'
+classifier.train(training_set)
 
-# hit_count = 0
-# miss_count = 0
-# for item in all_tweets[1025: len(all_tweets) - 1]:
-#     dimension = dimension_dict[json.loads(item).get('id_str')]
-#     classified = classifier.classify(extract_feature(item))
-#     # if dimension is not None:
-#     print dimension, classified
+if __name__ == '__main__':
+    # Trying to apply cross validation
+    cv = cross_validation.KFold(len(feature_sets), n_folds=10, shuffle=False, random_state=None)
 
-# print 'Classifying the testing set'
-# print 'The accuracy of the experiment is: ' + str(nltk.classify.accuracy(classifier, test_set))
-
-# Trying to apply cross validation
-cv = cross_validation.KFold(len(feature_sets), n_folds=10, shuffle=False, random_state=None)
-
-for traincv, testcv in cv:
-    classifier_cv = nltk.classify.SklearnClassifier(LinearSVC()).train(feature_sets[traincv[0]:traincv[len(traincv)-1]])
-    print 'accuracy:', nltk.classify.util.accuracy(classifier_cv, training_set[testcv[0]:testcv[len(testcv)-1]])
+    for traincv, testcv in cv:
+        classifier_cv = nltk.classify.NaiveBayesClassifier\
+            .train(feature_sets[traincv[0]:traincv[len(traincv)-1]])
+        print 'accuracy:', nltk.classify.util.accuracy(classifier_cv, feature_sets[testcv[0]:testcv[len(testcv)-1]])

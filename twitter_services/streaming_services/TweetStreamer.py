@@ -1,13 +1,7 @@
-# Configure django
 import os, django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
 django.setup()
-
-import tweepy
-import json
-# from twitter_services.models import Tweet, TweetEntityDimension
-from twitter_services.sentiment_evaluator import TweetSentimentEvaluator
-from twitter_services.dimension_classifier import TweetDimensionClassifier
+import tweepy, multiprocessing, TweetProcessWorker
 
 # Auth for using twitter API
 consumer_key = 'xBUcDmrEVJPxNgQ2UHCak9WuX'
@@ -21,34 +15,32 @@ auth.set_access_token(access_token, access_token_secret)
 
 # Create a stream listener
 class MyListener(tweepy.StreamListener):
+    def __init__(self, tweet_queue):
+        super(tweepy.StreamListener, self).__init__()
+        self.tweet_queue = tweet_queue
+
     def on_data(self, status):
-        tweet_json = json.loads(status)
-        text = tweet_json['text']
-        rep_dimension = TweetDimensionClassifier.classifier.classify(TweetDimensionClassifier.extract_feature(status))
-        senti_score = TweetSentimentEvaluator.rate_sentiment(status)
-        entity_related = fetch_entity(status)
-        id_str = tweet_json['id_str']
-
-        # Insert the tweet into the databse if it is reputation-affecting
-        # if is_reputation_affecting(status):
-        #     tweet_db = Tweet.objects.create(tweet_id=id_str, tweet_json=status, sentiment_score=senti_score)
-        #     tweet_db.tweetentitydimension_set.create(id='%s : %s' % (id_str, entity_related), entity=entity_related,
-        #                                             dimension=rep_dimension)
-
-        print 'Tweet text: %s, Dimension: %s, Sentiment: %s' % (text, rep_dimension, senti_score)
+        # print status
+        self.tweet_queue.put(status)
 
 
-myStreamListener = MyListener()
-myStream = tweepy.Stream(auth, myStreamListener)
-myStream.filter(languages = ['en'], track=['Amazon', 'Apple', 'Tesco', 'BMW', 'Heineken', 'RBS'], async=True)
+if __name__ == '__main__':
+    apple_dic = ['iPhone', 'iPad', 'MacBook', 'Mac', 'iPod', ]
+    amazon_dic = ['Amazon', ]
+    tesco_dic = ['Tesco', ]
+    bmw_dic = ['BMW', ]
+    heineken_dic = ['Heineken', ]
+    hsbc_dic = ['HSBC', ]
+    track_list = apple_dic + amazon_dic + tesco_dic + bmw_dic + heineken_dic + hsbc_dic
 
+    tweet_queue = multiprocessing.JoinableQueue()
+    num_consumers = multiprocessing.cpu_count() * 2
+    tweet_processors = [TweetProcessWorker.TweetProcessor(tweet_queue) for i in xrange(num_consumers)]
 
-# Retrieve entity from a tweet
-def fetch_entity(tweet):
-    pass
+    for processor in tweet_processors:
+        processor.start()
 
+    myStreamListener = MyListener(tweet_queue)
+    myStream = tweepy.Stream(auth, myStreamListener)
+    myStream.filter(languages=['en'], track=track_list, async=True)
 
-# Function to determine if a tweet is reputation-affecting
-# @return True if it is and False otherwise
-def is_reputation_affecting(tweet):
-    pass
