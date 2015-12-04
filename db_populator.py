@@ -1,13 +1,9 @@
-# Configure django
-import os, django
-os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
-django.setup()
-
-import json
 import io
+import json
+import DjangoSetup
 from TwitterRepManagement import settings
-from twitter_services.sentiment_evaluator import TweetSentimentEvaluator
 from twitter_services.models import TweetTrainingSet
+from twitter_services.tweet_processing.sentiment_evaluating import TweetSentimentEvaluator
 
 # This script is used to populate the database to start with.
 

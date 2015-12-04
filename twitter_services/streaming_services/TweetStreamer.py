@@ -1,7 +1,6 @@
-import os, django
-os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
-django.setup()
-import tweepy, multiprocessing, TweetProcessWorker
+import TweetProcessWorker
+import multiprocessing
+import tweepy
 
 # Auth for using twitter API
 consumer_key = 'xBUcDmrEVJPxNgQ2UHCak9WuX'

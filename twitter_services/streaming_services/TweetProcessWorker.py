@@ -1,13 +1,9 @@
-# Configure django
-# import os, django
-# os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
-# django.setup()
+import json
+import multiprocessing
 
-import re, json, multiprocessing
-from twitter_services.sentiment_evaluator import TweetSentimentEvaluator
-from twitter_services.dimension_classifier import TweetDimensionClassifier
 from twitter_services.models import Tweet
-
+from twitter_services.tweet_processing.dimension_classifying import TweetDimensionClassifier
+from twitter_services.tweet_processing.sentiment_evaluating import TweetSentimentEvaluator
 
 dict_keyword_entity = dict()
 dict_keyword_entity['Apple'] = ['iPhone', 'iPad', 'MacBook', 'Mac', 'iPod', ]
@@ -40,8 +36,11 @@ def process_tweet(status):
 
     # Insert the tweet into the databse if it is reputation-affecting
     if is_reputation_affecting(status):
-        Tweet.objects.create(tweet_id=id_str, tweet_json=json.dumps(tweet_json)).save()
-        print 'Inserted tweet id: %s' % id_str
+        try:
+            Tweet.objects.create(tweet_id=id_str, tweet_json=json.dumps(tweet_json)).save()
+            print 'Inserted tweet id: %s' % id_str
+        except:
+            print 'Tweet %s already exists' % id_str
 
 
 # Retrieve entity from a tweet

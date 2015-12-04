@@ -8,7 +8,7 @@ def rate_sentiment(tweet):
     # open a subprocess using shlex to get the command line string into the correct args list format
     sentiString = json.loads(tweet)['text'].encode('utf-8').replace('\n', '')
 
-    jar_location = settings.BASE_DIR + '/twitter_services/sentiment_evaluator'
+    jar_location = settings.BASE_DIR + '/twitter_services/tweet_processing/sentiment_evaluating'
     args = shlex.split("java -jar %s/SentiStrengthCom.jar stdin sentidata %s/SentStrength_Data/"
                           % (jar_location, jar_location))
 
