@@ -9,7 +9,7 @@ from twitter_services.tweet_processing.normalizing import TweetNormalizer
 
 
 # Returns the feature set of the given tweet, tweet should be a json string
-def extract_feature(tweet):
+def __extract_feature(tweet):
     tweet_words = TweetNormalizer.normalize_tweet(tweet)
     features = {}
     for word in word_feature:
@@ -17,25 +17,28 @@ def extract_feature(tweet):
     return features
 
 
+def classify(tweet):
+    return classifier.classify(__extract_feature(tweet))
+
 # Construct a dictionary at the beginning
+# TODO: Data model needs to be modified for different approach to obtain tweet list
 all_tweets = [obj['tweet_json'] for obj in TweetTrainingSet.objects.values('tweet_json')]
 dictionary = []
 for tweet in all_tweets:
     dictionary.extend(TweetNormalizer.normalize_tweet(tweet))
-print len(dictionary)
 dictionary = list(nltk.FreqDist(dictionary).most_common(2000))
 word_feature = [entry[0] for entry in dictionary]
 
 
 # Fetched the intellectual classification results and build the feature sets
-feature_sets = [(extract_feature(tweet), json.loads(tweet).get('reputation_dimension'))
+feature_sets = [(__extract_feature(tweet), json.loads(tweet).get('reputation_dimension'))
                 for tweet in all_tweets if json.loads(tweet).get('reputation_dimension') is not None]
-training_set, test_set = feature_sets[202:], feature_sets[:1809]
+training_set = feature_sets
 
 
 # Training and testing the classifier
 classifier = nltk.classify.SklearnClassifier(LinearSVC())
-print 'Training the classifier'
+print 'DIMENSION CLASSIFIER: Training the classifier'
 classifier.train(training_set)
 
 if __name__ == '__main__':

@@ -8,11 +8,19 @@ dimension_list = ['Innovation', 'Governance', 'Leadership', 'Performance',
                   'Citizenship', 'Products & Services', 'Workplace', 'Undefined']
 
 
+def __build_dict(tweet_orm):
+    tweet_json = json.loads(tweet_orm.json_str)
+    tweet_json['reputation_dimension'] = tweet_orm.reputation_dimension
+    tweet_json['entity'] = tweet_orm.related_entity
+    tweet_json['sentiment_score'] = tweet_orm.sentiment_score
+    return tweet_json
+
+
 # Create your views here.
 def main(request):
     tweets_json = []
-    for tweet in Tweet.objects.all():
-        tweets_json.append(json.dumps(json.loads(tweet.tweet_json)))
+    for tweet in Tweet.objects.all().order_by('created_at'):
+        tweets_json.append(json.dumps(__build_dict(tweet)))
     context = {'tweets': tweets_json,
                'entities_list': entities_list,
                }
@@ -22,14 +30,13 @@ def main(request):
 def tweets_filter(request, entity, dimension=None):
     tweets_filtered = []
 
-    for tweet in Tweet.objects.all():
-        tweet_json = json.loads(tweet.tweet_json)
-        if tweet_json['entity'] == entity:
-            tweets_filtered.append(json.dumps(tweet_json))
-
     if dimension is not None:
-        tweets_filtered = [tweet for tweet in tweets_filtered
-                           if json.loads(tweet)['reputation_dimension'] == dimension]
+        tweets = Tweet.objects.filter(related_entity=entity, reputation_dimension=dimension).order_by('created_at')
+    else:
+        tweets = Tweet.objects.filter(related_entity=entity).order_by('created_at')
+
+    for tweet in tweets:
+        tweets_filtered.append(json.dumps(__build_dict(tweet)))
 
     context = {'tweets': tweets_filtered,
                'entity': entity,

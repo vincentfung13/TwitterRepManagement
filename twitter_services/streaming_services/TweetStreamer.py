@@ -1,6 +1,8 @@
+import DjangoSetup
 import TweetProcessWorker
 import multiprocessing
 import tweepy
+from twitter_services.tweet_processing import utility
 
 # Auth for using twitter API
 consumer_key = 'xBUcDmrEVJPxNgQ2UHCak9WuX'
@@ -22,14 +24,17 @@ class MyListener(tweepy.StreamListener):
         # print status
         self.tweet_queue.put(status)
 
+    def on_error(self, status_code):
+        print 'ERROR: the amount of tweets buffered has reached the buffer limit.'
+
 
 if __name__ == '__main__':
-    apple_dic = ['iPhone', 'iPad', 'MacBook', 'Mac', 'iPod', ]
-    amazon_dic = ['Amazon', ]
-    tesco_dic = ['Tesco', ]
-    bmw_dic = ['BMW', ]
-    heineken_dic = ['Heineken', ]
-    hsbc_dic = ['HSBC', ]
+    apple_dic = utility.dict_keyword_entity['Apple']
+    amazon_dic = utility.dict_keyword_entity['Amazon']
+    tesco_dic = utility.dict_keyword_entity['Tesco']
+    bmw_dic = utility.dict_keyword_entity['BMW']
+    heineken_dic = utility.dict_keyword_entity['Heineken']
+    hsbc_dic = utility.dict_keyword_entity['HSBC']
     track_list = apple_dic + amazon_dic + tesco_dic + bmw_dic + heineken_dic + hsbc_dic
 
     tweet_queue = multiprocessing.JoinableQueue()
