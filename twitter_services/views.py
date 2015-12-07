@@ -19,7 +19,7 @@ def __build_dict(tweet_orm):
 # Create your views here.
 def main(request):
     tweets_json = []
-    for tweet in Tweet.objects.all().order_by('created_at'):
+    for tweet in Tweet.objects.all().order_by('-created_at'):
         tweets_json.append(json.dumps(__build_dict(tweet)))
     context = {'tweets': tweets_json,
                'entities_list': entities_list,
@@ -33,7 +33,7 @@ def tweets_filter(request, entity, dimension=None):
     if dimension is not None:
         tweets = Tweet.objects.filter(related_entity=entity, reputation_dimension=dimension).order_by('created_at')
     else:
-        tweets = Tweet.objects.filter(related_entity=entity).order_by('created_at')
+        tweets = Tweet.objects.filter(related_entity=entity).order_by('-created_at')
 
     for tweet in tweets:
         tweets_filtered.append(json.dumps(__build_dict(tweet)))

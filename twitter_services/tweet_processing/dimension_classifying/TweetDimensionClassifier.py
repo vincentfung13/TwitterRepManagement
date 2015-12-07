@@ -4,6 +4,8 @@ import nltk.classify
 from sklearn import cross_validation
 from sklearn.svm import LinearSVC
 
+if __name__ == '__main__':
+    import DjangoSetup
 from twitter_services.models import TweetTrainingSet
 from twitter_services.tweet_processing.normalizing import TweetNormalizer
 
@@ -22,7 +24,7 @@ def classify(tweet):
 
 # Construct a dictionary at the beginning
 # TODO: Data model needs to be modified for different approach to obtain tweet list
-all_tweets = [obj['tweet_json'] for obj in TweetTrainingSet.objects.values('tweet_json')]
+all_tweets = [json.loads(obj['json_str']) for obj in TweetTrainingSet.objects.values('json_str')]
 dictionary = []
 for tweet in all_tweets:
     dictionary.extend(TweetNormalizer.normalize_tweet(tweet))
@@ -31,8 +33,8 @@ word_feature = [entry[0] for entry in dictionary]
 
 
 # Fetched the intellectual classification results and build the feature sets
-feature_sets = [(__extract_feature(tweet), json.loads(tweet).get('reputation_dimension'))
-                for tweet in all_tweets if json.loads(tweet).get('reputation_dimension') is not None]
+feature_sets = [(__extract_feature(tweet), tweet.get('reputation_dimension'))
+                for tweet in all_tweets if tweet.get('reputation_dimension') is not None]
 training_set = feature_sets
 
 

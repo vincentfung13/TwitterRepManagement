@@ -22,7 +22,7 @@ class Tweet(models.Model):
 # Table to store training set of tweets
 class TweetTrainingSet(models.Model):
     tweet_id = models.CharField(max_length=50, primary_key=True, default='Undefined: ' + str(timezone.now()))
-    tweet_json = models.TextField()
+    json_str = models.TextField()
 
     def __unicode__(self):
         return 'tweet_id: ' + self.tweet_id

@@ -18,7 +18,7 @@ dict_keyword_entity['HSBC'] = ['HSBC', ]
 
 def fetch_entity(tweet_json):
    # TODO: better to do some topic modelling to fetch entity
-    text_lower = json.loads(tweet_json)['text'].lower()
+    text_lower = tweet_json['text'].lower()
     for entity, dictionary in dict_keyword_entity.iteritems():
         for word in dictionary:
             if word.lower() in text_lower:

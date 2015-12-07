@@ -11,7 +11,7 @@ def normalize_tweet(tweet, **kwargs):
 
     # Get rid of username handles, replace repeated sequence then tokenize the tweet
     tweet_tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
-    tweet_tokens = tweet_tokenizer.tokenize(json.loads(tweet)['text'].encode('ascii', 'ignore').lower())
+    tweet_tokens = tweet_tokenizer.tokenize(tweet['text'].encode('ascii', 'ignore').lower())
     tweet_words = [word for word in tweet_tokens
                    if not __contains_punctuation(word) and word not in stop_words and word != '\n']
 

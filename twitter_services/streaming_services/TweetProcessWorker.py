@@ -21,33 +21,35 @@ class TweetProcessor(multiprocessing.Process):
 # Process a single tweet and insert it into the db if it fits the requirements
 def process_tweet(status):
     tweet_dict = {}
-    id_str = json.loads(status)['id_str']
+    tweet_json = json.loads(status)
+    id_str = tweet_json['id_str']
 
-    reputation_dimension = TweetDimensionClassifier.classify(status)
-    cluster = None
-    related_entity = utility.fetch_entity(status)
-    sentiment_score = TweetSentimentEvaluator.rate_sentiment(status)
-    created_at = utility.convert_to_datetime(json.loads(status)['timestamp_ms'])
+    if is_reputation_affecting(tweet_json):
+        reputation_dimension = TweetDimensionClassifier.classify(tweet_json)
+        cluster = None
+        related_entity = utility.fetch_entity(tweet_json)
+        sentiment_score = TweetSentimentEvaluator.rate_sentiment(tweet_json)
+        created_at = utility.convert_to_datetime(tweet_json['timestamp_ms'])
 
-    tweet_dict['tweet_json'] = status
-    tweet_dict['reputation_dimension'] = reputation_dimension
-    tweet_dict['sentiment_score'] = sentiment_score
-    tweet_dict['cluster'] = cluster
-    tweet_dict['entity'] = related_entity
-    tweet_dict['created_at'] = created_at
+        tweet_dict['tweet_json'] = status
+        tweet_dict['reputation_dimension'] = reputation_dimension
+        tweet_dict['sentiment_score'] = sentiment_score
+        tweet_dict['cluster'] = cluster
+        tweet_dict['entity'] = related_entity
+        tweet_dict['created_at'] = created_at
 
-    # Insert the tweet into the databse if it is reputation-affecting
-    if is_reputation_affecting(status):
+        # Insert the tweet into the databse if it is reputation-affecting
+
         try:
-            Tweet.objects.create(tweet_id=id_str, tweet_json=tweet_dict['tweet_json'],
+            Tweet.objects.create(tweet_id=id_str, json_str=tweet_dict['tweet_json'],
                                 reputation_dimension=tweet_dict['reputation_dimension'],
                                 related_entity=tweet_dict['entity'], sentiment_score=tweet_dict['sentiment_score'],
                                 created_at=tweet_dict['created_at']).save()
             print 'Inserted tweet id: %s' % id_str
-        except Exception:
-            print 'STREAMING ERROR: IntegrityError for tweet with text: %s' \
-                  % json.loads(tweet_dict['tweet_json'])['text']
 
+        except Exception:
+            print 'STREAMING ERROR: IntegrityError %s for tweet: %s' \
+                  % (Exception.message, tweet_json['text'])
 
 
 # Function to determine if a tweet is reputation-affecting
