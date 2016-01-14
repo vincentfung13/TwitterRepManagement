@@ -2,7 +2,6 @@ from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
 from nltk.stem import *
 import string
-import json
 
 
 # Given a individual tweet, the function returns a list of tokens

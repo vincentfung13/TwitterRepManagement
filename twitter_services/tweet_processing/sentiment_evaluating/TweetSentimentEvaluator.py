@@ -12,7 +12,7 @@ def rate_sentiment(tweet):
     args = shlex.split("java -jar %s/SentiStrengthCom.jar stdin sentidata %s/SentStrength_Data/"
                           % (jar_location, jar_location))
 
-    p = subprocess.Popen(args, stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    p = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # communicate via stdin the string to be rated. Note that all spaces are replaced with +
     stdout_text, stderr_text = p.communicate(sentiString.replace(" ","+"))
