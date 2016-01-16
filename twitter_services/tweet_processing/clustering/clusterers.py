@@ -1,5 +1,6 @@
 import json
 import pandas
+import numpy as np
 
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -11,21 +12,24 @@ from twitter_services.tweet_processing.normalizing import TweetNormalizer
 class KMeansClusterer():
     def __init__(self, **kwargs):
         if kwargs['cluster_count'] is None:
-            self.cluster_count = 4
+            self.cluster_count = 8
         else:
             self.cluster_count = kwargs['cluster_count']
         self.km = KMeans(n_clusters=self.cluster_count)
+        self.tweets_objects = None
         self.tweets_texts = None
         self.tfidf_matrix = None
         self.terms = None
+        self.clusters = None
 
     def cluster_tweets(self, **kwargs):
         related_entity = kwargs['related_entity']
         # dimension = kwargs['reputation_dimension']
 
         # Fetch tweets from the corpus
-        self.tweets_texts = [json.loads(obj['json_str'])['text']
-                             for obj in Tweet.objects.filter(related_entity=related_entity, ).values('json_str')]
+        self.tweets_objects = [tweet for tweet
+                               in Tweet.objects.all().filter(related_entity=related_entity, )]
+        self.tweets_texts = [json.loads(obj.json_str)['text'] for obj in self.tweets_objects]
 
         # Build vectorizer and matrix
         tfidf_vectorizer = TfidfVectorizer(max_features=200000, min_df=0.1, stop_words='english',
@@ -37,7 +41,13 @@ class KMeansClusterer():
         # print tfidf_matrix.shape
 
         # Try out K-Means clustering
-        return self.km.fit(self.tfidf_matrix)
+        self.clusters = self.km.fit_predict(self.tfidf_matrix)
+
+    def get_tweets_cluster(self, cluster):
+        clusters_n = np.where(self.clusters == cluster)[0]
+        print clusters_n, len(self.tweets_objects)
+        tweets = [self.tweets_objects[i] for i in clusters_n]
+        return tweets
 
     def print_results(self):
         print self.tfidf_matrix.shape
@@ -55,6 +65,6 @@ class KMeansClusterer():
             print
 
 if __name__ == '__main__':
-    clusterer = KMeansClusterer(cluster_count=4)
+    clusterer = KMeansClusterer(cluster_count=8)
     clusterer.cluster_tweets(related_entity='Apple')
     clusterer.print_results()

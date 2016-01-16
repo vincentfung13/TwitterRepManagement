@@ -1,7 +1,6 @@
 import datetime
 import json
 
-
 entities_list = ['Apple', 'Amazon', 'Tesco', 'BMW', 'Heineken', 'HSBC']
 
 dimension_list = ['Innovation', 'Governance', 'Leadership', 'Performance',
@@ -30,9 +29,11 @@ def convert_to_datetime(timestamp_ms):
     return datetime.datetime.fromtimestamp(int(timestamp))
 
 
+# Build a dictionary of tweets to put into views from an ORM object
 def build_dict(tweet_orm):
     tweet_json = json.loads(tweet_orm.json_str)
     tweet_json['reputation_dimension'] = tweet_orm.reputation_dimension
     tweet_json['entity'] = tweet_orm.related_entity
     tweet_json['sentiment_score'] = tweet_orm.sentiment_score
     return tweet_json
+

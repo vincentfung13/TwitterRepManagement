@@ -14,7 +14,7 @@ def normalize_tweet(tweet, **kwargs):
     tweet_words = [word for word in tweet_tokens
                    if not __contains_punctuation(word) and word not in stop_words and word != '\n']
 
-    # Appliy stemming and remove duplicates words
+    # Apply stemming and remove duplicates words
     if kwargs.get('stemming', False):
         stemmer = SnowballStemmer('english')
         tweet_words = list(set([stemmer.stem(word) for word in tweet_words]))
