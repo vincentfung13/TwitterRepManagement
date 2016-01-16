@@ -55,8 +55,6 @@ if __name__ == '__main__':
     for traincv, testcv in cv:
         classifier_cv = DimensionClassifier()
         classifier_cv.train(training_set=feature_sets[traincv[0]:traincv[len(traincv)-1]])
-        # classifier_cv = nltk.classify.SklearnClassifier(LinearSVC())\
-        #     .train(feature_sets[traincv[0]:traincv[len(traincv)-1]])
 
         print 'SVM accuracy:', nltk.classify.util.accuracy(classifier_cv.classifier,
                                                            feature_sets[testcv[0]:testcv[len(testcv)-1]])
