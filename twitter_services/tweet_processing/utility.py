@@ -1,5 +1,6 @@
 import datetime
 import json
+from twitter_services.tweet_processing.sentiment_evaluating import TweetSentimentEvaluator
 
 entities_list = ['Apple', 'Amazon', 'Tesco', 'BMW', 'Heineken', 'HSBC']
 
@@ -36,4 +37,25 @@ def build_dict(tweet_orm):
     tweet_json['entity'] = tweet_orm.related_entity
     tweet_json['sentiment_score'] = tweet_orm.sentiment_score
     return tweet_json
+
+
+# Function to determine if a tweet is reputation-affecting
+# @return True if it is and False otherwise
+def is_reputation_affecting(tweet):
+    senti_score = TweetSentimentEvaluator.rate_sentiment(tweet)
+    negative = senti_score[len(senti_score) - 1]
+    positive = senti_score[0]
+    if int(negative) >= 2 or int(positive) >= 2:
+        return True
+    else:
+        return False
+
+
+# Function to determine if a score represents negative sentiment
+def is_negative(senti_score):
+    negative = senti_score[len(senti_score) - 1]
+    if negative >= 2:
+        return True
+    else:
+        return False
 

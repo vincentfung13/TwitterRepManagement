@@ -48,15 +48,3 @@ def process_tweet(status, classifier):
     except Exception, IntegrityError:
         print 'STREAMING ERROR: IntegrityError %s for tweet: %s' \
                 % (IntegrityError.message, tweet_json['text'])
-
-
-# Function to determine if a tweet is reputation-affecting
-# @return True if it is and False otherwise
-def is_reputation_affecting(tweet):
-    senti_score = TweetSentimentEvaluator.rate_sentiment(tweet)
-    negative = senti_score[len(senti_score) - 1]
-    positive = senti_score[0]
-    if int(negative) >= 2 or int(positive) >= 2:
-        return True
-    else:
-        return False

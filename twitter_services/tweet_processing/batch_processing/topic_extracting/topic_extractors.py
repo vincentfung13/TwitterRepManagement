@@ -1,8 +1,6 @@
 from gensim import corpora, models
 from collections import defaultdict
 import json
-import DjangoSetup
-from twitter_services.models import Tweet
 from twitter_services.tweet_processing.normalizing import TweetNormalizer
 from pprint import pprint
 
@@ -34,6 +32,8 @@ class LDATopicExtractor(object):
 
 
 if __name__ == '__main__':
+    import DjangoSetup
+    from twitter_services.models import Tweet
     topic_extractor = LDATopicExtractor(Tweet.objects.filter(related_entity='Apple'))
     pprint(topic_extractor.extract_topic())
 
