@@ -9,6 +9,8 @@ from twitter_services.models import Tweet
 from twitter_services.tweet_processing.normalizing import TweetNormalizer
 
 
+# The class that handles tweets clustering.
+# It takes related entity, dimension and cluster count as input, and returns tweets for each clusters
 class KMeansClusterer():
     def __init__(self, **kwargs):
         if kwargs['cluster_count'] is None:
@@ -43,11 +45,13 @@ class KMeansClusterer():
         # Try out K-Means clustering
         self.clusters = self.km.fit_predict(self.tfidf_matrix)
 
-    def get_tweets_cluster(self, cluster):
-        clusters_n = np.where(self.clusters == cluster)[0]
-        print clusters_n, len(self.tweets_objects)
-        tweets = [self.tweets_objects[i] for i in clusters_n]
-        return tweets
+    def get_tweets_clustered(self):
+        tweets_clustered = []
+        for i in range(self.cluster_count):
+            clusters_n = np.where(self.clusters == i)[0]
+            tweets = [self.tweets_objects[i] for i in clusters_n]
+            tweets_clustered.append(tweets)
+        return tweets_clustered
 
     def print_results(self):
         print self.tfidf_matrix.shape
@@ -65,6 +69,7 @@ class KMeansClusterer():
             print
 
 if __name__ == '__main__':
-    clusterer = KMeansClusterer(cluster_count=8)
+    clusterer = KMeansClusterer(cluster_count=3)
     clusterer.cluster_tweets(related_entity='Apple')
     clusterer.print_results()
+
