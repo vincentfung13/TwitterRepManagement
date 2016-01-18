@@ -12,8 +12,8 @@ class Tweet(models.Model):
     reputation_dimension = models.CharField(max_length=30, blank=True)
     sentiment_score = models.CharField(max_length=10, blank=True)
     related_entity = models.CharField(max_length=30, blank=True)
-    cluster = models.CharField(max_length=30, blank=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    # cluster = models.CharField(max_length=30, blank=True)
+    created_at = models.DateTimeField(default=timezone.now, blank=True)
 
     def __unicode__(self):
         return 'tweet_id: ' + self.tweet_id
