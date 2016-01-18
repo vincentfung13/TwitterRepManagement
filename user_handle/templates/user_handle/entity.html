@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+
+    <body>
+        {# Make it prettier #}
+        <form action="/user_handle/{{ request.user.username }}/interest/add/" method="post">
+            {% csrf_token %}
+            {{ form_add }}
+            <input type="submit" value="Add" />
+        </form>
+
+        <form action="/user_handle/{{ request.user.username }}/interest/remove/" method="post">
+            {% csrf_token %}
+            {{ form_delete }}
+            <input type="submit" value="Remove" />
+        </form>
+
+</body>
+</html>
+
+<script>
+    document.getElementById('id_username').value = '{{ request.user.username }}'
+</script>

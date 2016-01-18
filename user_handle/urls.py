@@ -6,4 +6,6 @@ urlpatterns = [
     url(r'^login/$', views.Login.as_view(), name='Login'),
     url(r'^logout/$', views.Logout.as_view(), name='Logout'),
     url(r'^(?P<username>\w+)/$', views.Index.as_view(), name='Index'),
+    url(r'^(?P<username>\w+)/interest/$', views.ManageInterested.as_view(), name='Interests'),
+    url(r'^(?P<username>\w+)/interest/(?P<action>\w+)/$', views.ManageInterested.as_view(), name='ManageInterests'),
 ]

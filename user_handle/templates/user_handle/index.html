@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{{ username }}</title>
 </head>
 <body>
-
+    {% for entity in entity_list %}
+        <a>{{ entity }}</a>
+    {% endfor %}
 </body>
 </html>

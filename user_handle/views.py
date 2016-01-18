@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from user_handle.models import UserEntity
 import forms
 import utility
 
@@ -47,7 +48,7 @@ class Login(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponse('Login successfully')
+                    return redirect('/user_handle/%s/' % username)
                 else:
                     return utility.json_response(-1, msg=u'The account is not activated, please contact administrator')
             else:
@@ -63,23 +64,34 @@ class Logout(View):
         return HttpResponse('Logout successfully')
 
 
-class AddInterested(View):
-    def get(self, request):
-        form = forms.AddEntityForm()
-        return render(request, 'user_handle/add_entity.html', {'form': form})
+# Login required
+class ManageInterested(View):
+    def get(self, request, username):
+        form_add = forms.EntityForm()
+        form_delete = forms.EntityForm()
+        # TODO: Display user's list of interest
+        return render(request, 'user_handle/entity.html', {'form_add': form_add, 'form_delete': form_delete})
 
     # Adds the entity in to the database and sends a message to the front end
-    def post(self, request):
-        form = forms.AddEntityForm(request.POST)
+    def post(self, request, username, action):
+        form = forms.EntityForm(request.POST)
         if form.is_valid():
             # Create a row in the database
-            utility.add_interested(request.user, form.cleaned_data['entity'])
+            if action == 'add':
+                utility.add_interested(request.user, form.cleaned_data['entity'])
+            elif action == 'remove':
+                utility.remove_entity(request.user, form.cleaned_data['entity'])
+            else:
+                return utility.json_response(-1, msg=u'invalid action')
+            return HttpResponse('Action successful')
         else:
             return utility.json_response(-1, msg=form.errors)
 
 
+# Login required
 # Index page for each user (showing the clickable entity list they are interested in)
 class Index(View):
     def get(self, request, username):
-        context = {}
+        entity_list = [pair.entity for pair in UserEntity.objects.filter(user=request.user)]
+        context = {'username': username, 'entity_list': entity_list}
         return render(request, 'user_handle/index.html', context)
