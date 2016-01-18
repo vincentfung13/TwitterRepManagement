@@ -12,6 +12,6 @@ class LoginForm(forms.Form):
     password = forms.CharField(label='password', max_length=20, widget=forms.PasswordInput)
 
 
-class AddEntity(forms.Form):
+class AddEntityForm(forms.Form):
     username = forms.CharField(label='username', max_length=30)
     entity_list = forms.CharField(label='entity_list', max_length=100)

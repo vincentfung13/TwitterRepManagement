@@ -6,3 +6,6 @@ from django.contrib.auth.models import User
 class UserEntity(models.Model):
     user = models.ForeignKey(User)
     entity = models.CharField(max_length=30, blank=True)
+
+    class Meta:
+        unique_together = ['user', 'entity']

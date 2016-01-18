@@ -74,8 +74,8 @@ docs/_build/
 target/
 
 polls/
-twitter_services/migrations/
-twitter_services/.DS_Store
+*/migrations
+*/.DS_Store
 .idea/
 *.DS_Store
 *.pyc
