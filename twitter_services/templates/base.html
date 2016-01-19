@@ -11,15 +11,28 @@
 </head>
 
 <body>
-    <div id="test"></div>
+    <div id="user"></div>
 
     <script>
-    $.ajax({
-        url: '/user_handle/login/',
-        success: function(data){
-            $('#test').html(data)
-        }
-    });
+        {% if user.is_authenticated %}
+            document.getElementById('user').innerHTML = '{{ request.user.username }}'
+            {#   Create a logout button and append it  #}
+            var button = document.createElement('input')
+            button.type = 'button'
+            button.value = 'logout'
+            button.onclick = function(){
+                window.location.href = '/user_handle/logout';
+            };
+            document.getElementById('user').appendChild(button)
+        {% else %}
+            $.ajax({
+                url: '/user_handle/login/',
+                success: function(data){
+                    $('#user').html(data)
+                }
+            });
+        {% endif %}
+
     </script>
 
     <header>

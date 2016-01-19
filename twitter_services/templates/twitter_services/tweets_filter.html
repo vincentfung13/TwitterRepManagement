@@ -5,7 +5,6 @@
 
 {% block Title %}
     <title>TwitterRep: {{ entity }} {% if Dimension %}Dimension: {{ Dimension }} {% endif %}</title>
-    <div id="test"></div>
 {% endblock %}
 
 {% block Header %}
@@ -24,14 +23,3 @@
         {% endif %}
     </div>
 {% endblock %}
-
-<script src="{% static 'js/jquery-1.12.0.min.js' %}">
-    $.ajax({
-        url: 'user_handle/login/',
-        success: function(data){
-            $('#test').html(data)
-        }
-    });
-        window.alert('Hello?')
-    document.getElementById("test").innerHTML = 'Hello'
-</script>
