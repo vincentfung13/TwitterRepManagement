@@ -28,5 +28,6 @@ def get_tokens(tweet, json=False, **kwargs):
 
 def __contains_punctuation__(word):
     for symbol in string.punctuation:
-        if symbol in word: return True
+        if symbol in word:
+            return True
     return False

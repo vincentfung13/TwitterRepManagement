@@ -1,5 +1,6 @@
 import datetime
 import json
+import pytz
 from twitter_services.tweet_processing.sentiment_evaluating import TweetSentimentEvaluator
 
 entities_list = ['Apple', 'Amazon', 'Tesco', 'BMW', 'Heineken', 'HSBC']

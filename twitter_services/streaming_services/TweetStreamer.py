@@ -3,7 +3,7 @@ import TweetProcessWorker
 import multiprocessing
 import tweepy
 from twitter_services.tweet_processing import utility
-from twitter_services.tweet_processing.classifying.classifiers import DimensionClassifier
+from twitter_services.tweet_processing.classifying.classifiers import DimensionClassifier, SpamDetector
 
 
 # Create a stream listener
@@ -32,8 +32,10 @@ if __name__ == '__main__':
     tweet_queue = multiprocessing.JoinableQueue()
     num_consumers = multiprocessing.cpu_count()
 
-    classifier = DimensionClassifier()
-    tweet_processors = [TweetProcessWorker.TweetProcessor(tweet_queue, classifier) for i in xrange(num_consumers)]
+    dimension_classifier = DimensionClassifier()
+    spam_detector = SpamDetector()
+    tweet_processors = [TweetProcessWorker.TweetProcessor(tweet_queue, dimension_classifier, spam_detector)
+                        for i in xrange(num_consumers)]
 
     for processor in tweet_processors:
         processor.start()
