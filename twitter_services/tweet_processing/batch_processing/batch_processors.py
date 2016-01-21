@@ -1,7 +1,8 @@
 from clustering.clusterers import KMeansClusterer
 from topic_extracting.topic_extractors import LDATopicExtractor
 from twitter_services.tweet_processing import utility
-from user_handle.models import UserMessage
+from user_handle.models import Message, UserMessage, UserEntity
+from django.db import transaction
 
 
 class ReputationMonitor(object):
@@ -35,18 +36,32 @@ class ReputationMonitor(object):
                         if notify:
                             try:
                                 topic_extractor = LDATopicExtractor(cluster)
-                                print '\t\t cluster_topic: %s' % topic_extractor.extract_topic()
-                                self.__notify__()
+                                topic_str = str(topic_extractor.extract_topic())
+                                print '\t\t cluster_topic: %s' % topic_str
+                                self.__notify__(entity, reputation_dimension, cluster, topic_str)
                             except ValueError:
                                 print '\t\t No tweet in the cluster'
                 except ValueError:
                     print '\t No tweet for the entity %s' % entity
 
     @staticmethod
-    def __notify__():
-        # TODO: Dispatch message to the front end (or sending other kinds of alerts)
-        print '\t\t Reputation issue'
-        pass
+    @transaction.atomic
+    def __notify__(entity, reputation_dimension, tweets_in_cluster, topic_str):
+        # Construct a message
+        message = Message(entity=entity, reputation_dimension=reputation_dimension, topic_str=topic_str)
+        # Message must be saved before associating tweets to it
+        message.save()
+        for tweet in tweets_in_cluster:
+            message.tweet.add(tweet)
+
+        # For each user that is interested in the entity, add the message to their message set
+        ue_pairs = UserEntity.objects.filter(entity=entity)
+        for ue_pair in ue_pairs:
+            um_pair = UserMessage.objects.create(user=ue_pair.user)
+            um_pair.save()
+            um_pair.message.add(message)
+
+        print '\t\t Reputation issue, messages sent to interested users'
 
 if __name__ == '__main__':
     monitor = ReputationMonitor()

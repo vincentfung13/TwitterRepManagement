@@ -7,8 +7,10 @@ from twitter_services.models import Tweet
 class Message(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     entity = models.CharField(max_length=30)
-    message = models.TextField()
-    tweets = models.ManyToManyField(Tweet)
+    reputation_dimension = models.CharField(max_length=30, blank=True)
+    topic_str = models.TextField(blank=True)
+    tweet = models.ManyToManyField(Tweet)
+    read = models.BooleanField(default=False)
 
 
 # This model represents the relation between users and the certain entities they are interested in
@@ -24,6 +26,3 @@ class UserEntity(models.Model):
 class UserMessage(models.Model):
     user = models.ForeignKey(User)
     message = models.ManyToManyField(Message)
-
-    def add_message(self, entity, tweets):
-        print 'I am called! %s' % entity
