@@ -9,7 +9,7 @@ from pprint import pprint
 class LDATopicExtractor(object):
     # Take in the list of tweets and build a LDA model
     def __init__(self, tweets):
-        texts_tokens = [TweetNormalizer.normalize_tweet(json.loads(tweet.json_str)) for tweet in tweets]
+        texts_tokens = [TweetNormalizer.get_tokens(json.loads(tweet.json_str), json=True) for tweet in tweets]
 
         # Calculate each word's frequency and use a dictionary to store them
         frequency = defaultdict(int)

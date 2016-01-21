@@ -24,3 +24,6 @@ class UserEntity(models.Model):
 class UserMessage(models.Model):
     user = models.ForeignKey(User)
     message = models.ManyToManyField(Message)
+
+    def add_message(self, entity, tweets):
+        print 'I am called! %s' % entity

@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from datetime import datetime
 
 # Create your models here.
 # Extra fields to be added in the json file: entity, reputation_dimension, sentiment_score
