@@ -34,6 +34,7 @@ class LDATopicExtractor(object):
 if __name__ == '__main__':
     import DjangoSetup
     from twitter_services.models import Tweet
-    topic_extractor = LDATopicExtractor(Tweet.objects.filter(related_entity='Apple'))
+    topic_extractor = LDATopicExtractor(Tweet.objects.filter(related_entity='Apple',
+                                                             reputation_dimension='Products & Services'))
     pprint(topic_extractor.extract_topic())
 

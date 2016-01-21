@@ -26,11 +26,12 @@ class KMeansClusterer():
 
     def cluster_tweets(self, **kwargs):
         related_entity = kwargs['related_entity']
-        # dimension = kwargs['reputation_dimension']
+        dimension = kwargs['reputation_dimension']
 
         # Fetch tweets from the corpus
         self.tweets_objects = [tweet for tweet
-                               in Tweet.objects.all().filter(related_entity=related_entity, )]
+                               in Tweet.objects.all().filter(related_entity=related_entity,
+                                                             reputation_dimension=dimension)]
         self.tweets_texts = [json.loads(obj.json_str)['text'] for obj in self.tweets_objects]
 
         # Build vectorizer and matrix
@@ -71,7 +72,7 @@ class KMeansClusterer():
             print
 
 if __name__ == '__main__':
-    clusterer = KMeansClusterer(cluster_count=3)
-    clusterer.cluster_tweets(related_entity='Apple')
+    clusterer = KMeansClusterer(cluster_count=5)
+    clusterer.cluster_tweets(related_entity='Apple', reputation_dimension='Products & Services')
     clusterer.print_results()
 
