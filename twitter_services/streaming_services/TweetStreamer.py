@@ -3,7 +3,7 @@ import TweetProcessWorker
 import multiprocessing
 import tweepy
 from twitter_services.tweet_processing import utility
-from twitter_services.tweet_processing.dimension_classifying.classifiers import DimensionClassifier
+from twitter_services.tweet_processing.classifying.classifiers import DimensionClassifier
 
 
 # Create a stream listener

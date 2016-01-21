@@ -35,7 +35,9 @@ class KMeansClusterer():
 
         # Build vectorizer and matrix
         tfidf_vectorizer = TfidfVectorizer(max_features=200000, min_df=0.1, stop_words='english',
-                                   use_idf=True, tokenizer=TweetNormalizer.normalize_texts, ngram_range=(1,3))
+                                           use_idf=True,
+                                           tokenizer=TweetNormalizer.get_tokens,
+                                           ngram_range=(1,3))
         self.tfidf_matrix = tfidf_vectorizer.fit_transform(self.tweets_texts)
 
         # # Feature names are just words that build up the vector
