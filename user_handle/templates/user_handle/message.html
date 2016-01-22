@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/style_base.css' %}" />
+
+{% block Title %}
+    <title>{{ message.created_at }}: Reputation Issue Alert</title>
+{% endblock %}
+
+{% block Header %}
+    <h1>{{ message.entity }} {{ message.reputation_dimension }}</h1>
+    <div>{{ message.topic_str }}</div>
+{% endblock %}

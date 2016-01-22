@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }} message inbox</title>
+</head>
+
+<body>
+    <div id="inbox"></div>
+        <ul>
+        {% for message in messages %}
+            <li>
+                <a href="/user_handle/{{ username }}/message/{{ message.id }}/">
+                    {{ message.created_at }} {{ message.entity }}: {{ message.reputation_dimension }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

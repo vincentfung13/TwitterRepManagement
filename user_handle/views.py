@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
-from user_handle.models import UserEntity
+from django.contrib.auth import authenticate, login, logout, get_user
+from django.db import transaction
+from user_handle.models import UserEntity, UserMessage, Message
 import forms
-import utility
+from twitter_services.tweet_processing import utility
+import json
 
 
 # Create your views here.
@@ -26,8 +28,8 @@ class Register(View):
                 return HttpResponse('username or email already exists')
             else:
                 utility.save_user(username, password, email)
-                # TODO: redirect to index page
-                return HttpResponse('successfully registered')
+                # Direct to index page on success
+                return HttpResponse('/user_handle/%s/' % username)
         else:
             return utility.json_response(-1, msg=form.errors)
 
@@ -95,3 +97,24 @@ class Index(View):
         entity_list = [pair.entity for pair in UserEntity.objects.filter(user=request.user)]
         context = {'username': username, 'entity_list': entity_list}
         return render(request, 'user_handle/index.html', context)
+
+
+class MessageView(View):
+    @transaction.atomic
+    def get(self, request, username, message_id):
+        message = Message.objects.get(pk=message_id)
+        tweets = [json.dumps(utility.build_dict(tweet)) for tweet in message.tweet.all().order_by('-created_at')]
+        message.read = True
+        message.save()
+        return render(request, 'user_handle/message.html', {'tweets': tweets, 'message': message})
+
+
+# The view to manage server-to-user messages
+class MessageInbox(View):
+    def get(self, request, username):
+        messages = []
+        for um_pair in UserMessage.objects.filter(user=get_user(request)):
+            messages.extend(um_pair.message.filter(read=False))
+        return render(request, 'user_handle/inbox.html', {'messages': messages})
+
+

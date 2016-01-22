@@ -25,7 +25,7 @@ class ReputationMonitor(object):
 
                         # Count negative tweets in each cluster
                         for tweet in cluster:
-                            if negative_count > tweets_count * 0.3:
+                            if negative_count > tweets_count * 0.5:
                                 print negative_count, tweets_count
                                 notify = True
                                 break
@@ -60,8 +60,6 @@ class ReputationMonitor(object):
             um_pair = UserMessage.objects.create(user=ue_pair.user)
             um_pair.save()
             um_pair.message.add(message)
-
-        print '\t\t Reputation issue, messages sent to interested users'
 
 if __name__ == '__main__':
     monitor = ReputationMonitor()

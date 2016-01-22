@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load staticfiles %}
+<script src="{% static 'js/jquery-1.12.0.min.js' %}"></script>
+
 <head>
     <meta charset="UTF-8">
     <title>{{ username }}</title>
 </head>
+
 <body>
     {% for entity in entity_list %}
         <a href="/twitter_services/entity/{{ entity }}">{{ entity }}</a>
     {% endfor %}
+
+    <div id="inbox"></div>
+
+    <script>
+        $.ajax({
+            url: '/user_handle/{{ username }}/inbox/',
+            success: function(data){
+                    $('#inbox').html(data)
+            },
+        })
+    </script>
+
 </body>
 </html>
+
+<script></script>
