@@ -3,11 +3,13 @@ from topic_extracting.topic_extractors import LDATopicExtractor
 from twitter_services.tweet_processing import utility
 from user_handle.models import Message, UserMessage, UserEntity
 from django.db import transaction
+from datetime import datetime, timedelta
 
 
 class ReputationMonitor(object):
     def __init__(self):
         self.clusterer = KMeansClusterer(cluster_count=5)
+        self.period_hours = 3
 
     # Nasty three-nested loop
     def scan(self):
@@ -16,7 +18,10 @@ class ReputationMonitor(object):
             for reputation_dimension in utility.dimension_list:
                 print '\t Dimension %s' % reputation_dimension
                 try:
-                    self.clusterer.cluster_tweets(related_entity=entity, reputation_dimension=reputation_dimension)
+                    time_threshold = datetime.now() - timedelta(hours=self.period_hours)
+                    self.clusterer.cluster_tweets(related_entity=entity,
+                                                  reputation_dimension=reputation_dimension,
+                                                  time_threshold=time_threshold)
                     tweets_clusters = self.clusterer.get_tweets_clustered()
                     for cluster in tweets_clusters:
                         negative_count = 0

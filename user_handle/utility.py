@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 import json
 
+
 # Return true if a username has been registered before and false otherwise
 def check_exist(username, email):
     try:

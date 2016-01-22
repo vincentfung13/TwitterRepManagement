@@ -14,7 +14,7 @@ from twitter_services.tweet_processing.normalizing import TweetNormalizer
 class KMeansClusterer():
     def __init__(self, **kwargs):
         if kwargs['cluster_count'] is None:
-            self.cluster_count = 8
+            self.cluster_count = 1
         else:
             self.cluster_count = kwargs['cluster_count']
         self.km = KMeans(n_clusters=self.cluster_count)
@@ -27,11 +27,13 @@ class KMeansClusterer():
     def cluster_tweets(self, **kwargs):
         related_entity = kwargs['related_entity']
         dimension = kwargs['reputation_dimension']
+        time_threshold = kwargs['time_threshold']
 
         # Fetch tweets from the corpus
         self.tweets_objects = [tweet for tweet
                                in Tweet.objects.all().filter(related_entity=related_entity,
-                                                             reputation_dimension=dimension)]
+                                                             reputation_dimension=dimension,
+                                                             created_at__gt=time_threshold)]
         self.tweets_texts = [json.loads(obj.json_str)['text'] for obj in self.tweets_objects]
 
         # Build vectorizer and matrix

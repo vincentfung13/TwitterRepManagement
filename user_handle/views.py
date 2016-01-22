@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout, get_user
 from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
 import forms
-from twitter_services.tweet_processing import utility
+from user_handle import utility
 import json
 
 
