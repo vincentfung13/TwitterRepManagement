@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login, logout, get_user
 from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
 import forms
-from user_handle import utility
+from user_handle import utility as user_util
+from twitter_services.tweet_processing import utility as tweet_util
 import json
 
 
@@ -24,14 +25,14 @@ class Register(View):
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
 
-            if utility.check_exist(username, email):
+            if user_util.check_exist(username, email):
                 return HttpResponse('username or email already exists')
             else:
-                utility.save_user(username, password, email)
+                user_util.save_user(username, password, email)
                 # Direct to index page on success
                 return HttpResponse('/user_handle/%s/' % username)
         else:
-            return utility.json_response(-1, msg=form.errors)
+            return user_util.json_response(-1, msg=form.errors)
 
 
 class Login(View):
@@ -52,11 +53,11 @@ class Login(View):
                     login(request, user)
                     return redirect('/user_handle/%s/' % username)
                 else:
-                    return utility.json_response(-1, msg=u'The account is not activated, please contact administrator')
+                    return user_util.json_response(-1, msg=u'The account is not activated, please contact administrator')
             else:
-                return utility.json_response(-1, msg=u'Username or password is incorrect')
+                return user_util.json_response(-1, msg=u'Username or password is incorrect')
         else:
-            return utility.json_response(-1, msg=form.errors)
+            return user_util.json_response(-1, msg=form.errors)
 
 
 class Logout(View):
@@ -80,14 +81,14 @@ class ManageInterested(View):
         if form.is_valid():
             # Create a row in the database
             if action == 'add':
-                utility.add_interested(request.user, form.cleaned_data['entity'])
+                user_util.add_interested(request.user, form.cleaned_data['entity'])
             elif action == 'remove':
-                utility.remove_entity(request.user, form.cleaned_data['entity'])
+                user_util.remove_entity(request.user, form.cleaned_data['entity'])
             else:
-                return utility.json_response(-1, msg=u'invalid action')
+                return user_util.json_response(-1, msg=u'invalid action')
             return HttpResponse('Action successful')
         else:
-            return utility.json_response(-1, msg=form.errors)
+            return user_util.json_response(-1, msg=form.errors)
 
 
 # Login required
@@ -103,7 +104,7 @@ class MessageView(View):
     @transaction.atomic
     def get(self, request, username, message_id):
         message = Message.objects.get(pk=message_id)
-        tweets = [json.dumps(utility.build_dict(tweet)) for tweet in message.tweet.all().order_by('-created_at')]
+        tweets = [json.dumps(tweet_util.build_dict(tweet)) for tweet in message.tweet.all().order_by('-created_at')]
         message.read = True
         message.save()
         return render(request, 'user_handle/message.html', {'tweets': tweets, 'message': message})

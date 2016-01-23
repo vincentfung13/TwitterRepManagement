@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{ username }} message inbox</title>
+    <title>{{ request.user.username }} message inbox</title>
 </head>
 
 <body>
@@ -12,7 +12,7 @@
         <ul>
         {% for message in messages %}
             <li>
-                <a href="/user_handle/{{ username }}/message/{{ message.id }}/">
+                <a href="/user_handle/{{ request.user.username }}/message/{{ message.id }}/">
                     {{ message.created_at }} {{ message.entity }}: {{ message.reputation_dimension }}</a>
             </li>
         {% endfor %}
