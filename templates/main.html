@@ -21,7 +21,7 @@
 
 <script type="text/javascript">
     $.ajax({
-        url: '/user_handle/login',
+        url: '{% url 'user_handle:Login' %}',
         success: function(data){
             $('#homepage_login_box').html(data);
         },

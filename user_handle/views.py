@@ -64,7 +64,7 @@ class Logout(View):
     def get(self, request):
         logout(request)
         # TODO: redirect to site main page
-        return HttpResponse('Logout successfully')
+        return HttpResponseRedirect('/main/')
 
 
 # Login required

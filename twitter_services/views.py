@@ -5,18 +5,6 @@ from tweet_processing import utility
 import json
 
 
-# Create your views here.
-class Main(View):
-    def get(self, request):
-        tweets_json = [json.dumps(utility.build_dict(tweet)) for tweet in Tweet.objects.all().order_by('-created_at')]
-
-        context = {
-            'tweets': tweets_json,
-            'entities_list': utility.entities_list
-        }
-        return render(request, 'twitter_services/main.html', context)
-
-
 class TweetsFilter(View):
     def get(self, request, entity, dimension=None):
         if dimension is not None:

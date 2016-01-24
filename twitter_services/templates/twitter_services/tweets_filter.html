@@ -10,16 +10,3 @@
 {% block Header %}
     <h1>TwitterRep: {{ entity }} {% if Dimension %}Dimension: {{ Dimension }} {% endif %}</h1>
 {% endblock %}
-
-{% block Sub-header %}
-    <div>
-        {% if dimension_list %}
-        <ul>
-            {% for dimension in dimension_list %}
-                    <li><a href='{% url 'twitter_services:tweets_filtered_entity_dimension' entity dimension %}'>
-                        <span>{{ dimension }}</span></a></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
-{% endblock %}

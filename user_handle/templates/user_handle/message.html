@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block Header %}
-    <h1>{{ message.entity }} {{ message.reputation_dimension }}</h1>
-    <div>{{ message.topic_str }}</div>
+    <div id="user_message_header">
+        <h1>{{ message.entity }} {{ message.reputation_dimension }}</h1>
+        <div>{{ message.topic_str }}</div>
+    </div>
 {% endblock %}

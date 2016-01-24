@@ -21,7 +21,7 @@
             button.type = 'button'
             button.value = 'logout'
             button.onclick = function(){
-                window.location.href = '/user_handle/logout';
+                window.location.href = '{% url 'user_handle:Logout' %}';
             };
             document.getElementById('user').appendChild(button)
         {% else %}
@@ -38,14 +38,14 @@
     <header>
         {% block Header %}{% endblock %}
         <div id="logo"></div>
-        <ul id='naviMenu'>
-            <li class='active'><a href='{% url 'twitter_services:main' %}'><span>Home</span></a></li>
-            {% if entities_list %}
-                {% for entity in entities_list %}
-                    <li><a href='{% url 'twitter_services:tweets_filtered_entity' entity %}'>{{ entity }}</a></li>
-                {% endfor %}
-            {% endif %}
-         </ul>
+
+        <ul>
+            <li class='active'><a href='{% url 'user_handle:Index' request.user.username %}'><span>Home</span></a></li>
+            {% for dimension in dimension_list %}
+                    <li><a href='{% url 'twitter_services:tweets_filtered_entity_dimension' entity dimension %}'>
+                        <span>{{ dimension }}</span></a></li>
+            {% endfor %}
+        </ul>
     </header>
 
     {% block Sub-header %}{% endblock %}

@@ -8,11 +8,11 @@
 </head>
 
 <body>
-    <div id="inbox"></div>
+    <div id="user_inbox"></div>
         <ul>
         {% for message in messages %}
             <li>
-                <a href="/user_handle/{{ request.user.username }}/message/{{ message.id }}/">
+                <a href="{% url 'user_handle:Message' request.user.username message.id %}">
                     {{ message.created_at }} {{ message.entity }}: {{ message.reputation_dimension }}</a>
             </li>
         {% endfor %}

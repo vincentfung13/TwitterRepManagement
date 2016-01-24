@@ -7,12 +7,12 @@
 <body>
 
     <div id="user_login">
-        <form action="/user_handle/login/" method="post">
+        <form action={% url 'user_handle:Login' %} method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" value="Login" />
         </form>
-        <a href="/user_handle/register"><button>Register</button></a>
+        <a href= {% url 'user_handle:register' %}><button>Register</button></a>
     </div>
 
 </body>

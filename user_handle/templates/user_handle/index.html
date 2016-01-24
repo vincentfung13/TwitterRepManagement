@@ -11,8 +11,12 @@
 <body>
 
     <div id="user_index">
+        <div id="user_index_header">
+            <a href="{% url 'user_handle:Logout' %}">Logout</a>
+        </div>
+
         {% for entity in entity_list %}
-            <a href="/twitter_services/entity/{{ entity }}">{{ entity }}</a>
+            <a href="{% url 'twitter_services:tweets_filtered_entity' entity %}">{{ entity }}</a>
         {% endfor %}
 
         <div id="entitiy_manager"></div>
@@ -24,14 +28,14 @@
 
 <script>
     $.ajax({
-        url: '/user_handle/{{ username }}/inbox/',
+        url: '{% url 'user_handle:MessageInbox' username %}',
         success: function(data){
             $('#inbox').html(data);
         },
     });
 
     $.ajax({
-        url: '/user_handle/{{ username }}/interest',
+        url: '{% url 'user_handle:Interests' username %}',
         success: function(data){
             $('#entitiy_manager').html(data)
         },
