@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout, get_user
-from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
 import forms
@@ -31,7 +31,9 @@ class Register(View):
             else:
                 user_util.save_user(username, password, email)
                 # Direct to index page on success
-                return HttpResponse('/user_handle/%s/' % username)
+                user = authenticate(username=username, password=password)
+                login(request, user)
+                return HttpResponseRedirect(reverse('user_handle:Index'))
         else:
             return user_util.json_response(-1, msg=form.errors)
 
@@ -52,7 +54,7 @@ class Login(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('/user_handle/%s/' % username)
+                    return HttpResponseRedirect(reverse('user_handle:Index'))
                 else:
                     return user_util.json_response(-1, msg=u'The account is not activated, please contact administrator')
             else:
@@ -65,18 +67,18 @@ class Logout(View):
     def get(self, request):
         logout(request)
         # redirect to site main page
-        return HttpResponseRedirect('/main/')
+        return HttpResponseRedirect(reverse('MainPage'))
 
 
 class ManageInterested(View):
-    def get(self, request, username):
+    def get(self, request):
         form_add = forms.EntityForm()
         form_delete = forms.EntityForm()
         # Display user's list of interest
         return render(request, 'user_handle/entity.html', {'form_add': form_add, 'form_delete': form_delete})
 
     # Adds the entity in to the database and sends a message to the front end
-    def post(self, request, username, action):
+    def post(self, request, action):
         form = forms.EntityForm(request.POST)
         if form.is_valid():
             # Create a row in the database
@@ -87,22 +89,22 @@ class ManageInterested(View):
             else:
                 return user_util.json_response(-1, msg=u'invalid action')
             # Redirect to user index page on success
-            return HttpResponseRedirect('/user_handle/%s/' % username)
+            return HttpResponseRedirect(reverse('user_handle:Index'))
         else:
             return user_util.json_response(-1, msg=form.errors)
 
 
 # Index page for each user (showing the clickable entity list they are interested in)
 class Index(View):
-    def get(self, request, username):
+    def get(self, request):
         entity_list = [pair.entity for pair in UserEntity.objects.filter(user=request.user)]
-        context = {'username': username, 'entity_list': entity_list}
+        context = {'username': request.user.username, 'entity_list': entity_list}
         return render(request, 'user_handle/index.html', context)
 
 
 class MessageView(View):
     @transaction.atomic
-    def get(self, request, username, message_id):
+    def get(self, request, message_id):
         message = Message.objects.get(pk=message_id)
         tweets = [json.dumps(tweet_util.build_dict(tweet)) for tweet in message.tweet.all().order_by('-created_at')]
         message.read = True
@@ -112,7 +114,7 @@ class MessageView(View):
 
 # The view to manage server-to-user messages
 class MessageInbox(View):
-    def get(self, request, username):
+    def get(self, request):
         messages = []
         for um_pair in UserMessage.objects.filter(user=get_user(request)):
             messages.extend(um_pair.message.filter(read=False))

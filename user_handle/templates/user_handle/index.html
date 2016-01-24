@@ -19,7 +19,7 @@
             <a href="{% url 'twitter_services:tweets_filtered_entity' entity %}">{{ entity }}</a>
         {% endfor %}
 
-        <div id="entitiy_manager"></div>
+        <div id="entity_manager"></div>
         <div id="inbox"></div>
     </div>
 
@@ -28,16 +28,16 @@
 
 <script>
     $.ajax({
-        url: '{% url 'user_handle:MessageInbox' username %}',
+        url: '{% url 'user_handle:MessageInbox' %}',
         success: function(data){
             $('#inbox').html(data);
         },
     });
 
     $.ajax({
-        url: '{% url 'user_handle:Interests' username %}',
+        url: '{% url 'user_handle:Interests' %}',
         success: function(data){
-            $('#entitiy_manager').html(data)
+            $('#entity_manager').html(data)
         },
     });
 </script>

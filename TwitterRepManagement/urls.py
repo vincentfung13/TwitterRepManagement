@@ -21,5 +21,5 @@ urlpatterns = [
     url(r'^twitter_services/', include('twitter_services.urls', namespace='twitter_services')),
     url(r'^user_handle/', include('user_handle.urls', namespace='user_handle')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^main/$', MainPage.as_view()),
+    url(r'^main/$', MainPage.as_view(), name='MainPage'),
 ]

@@ -40,7 +40,7 @@
         <div id="logo"></div>
 
         <ul>
-            <li class='active'><a href='{% url 'user_handle:Index' request.user.username %}'><span>Home</span></a></li>
+            <li class='active'><a href='{% url 'user_handle:Index' %}'><span>Home</span></a></li>
             {% for dimension in dimension_list %}
                     <li><a href='{% url 'twitter_services:tweets_filtered_entity_dimension' entity dimension %}'>
                         <span>{{ dimension }}</span></a></li>

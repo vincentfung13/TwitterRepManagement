@@ -7,7 +7,7 @@
 <body>
 
     <div id="user_register">
-        <form id="user_register" action="{% url 'user_handle:register' %}" method="post">
+        <form id="user_register" action="{% url 'user_handle:Register' %}" method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" value="Submit" />
