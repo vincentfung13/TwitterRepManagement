@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
@@ -86,7 +86,8 @@ class ManageInterested(View):
                 user_util.remove_entity(request.user, form.cleaned_data['entity'])
             else:
                 return user_util.json_response(-1, msg=u'invalid action')
-            return HttpResponse('Action successful')
+            # Redirect to user index page on success
+            return HttpResponseRedirect('/user_handle/%s/' % username)
         else:
             return user_util.json_response(-1, msg=form.errors)
 

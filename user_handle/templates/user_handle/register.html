@@ -6,11 +6,16 @@
 </head>
 <body>
 
-    <form action="/user_handle/register/" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit" />
-    </form>
+    <div id="user_register">
+        <form id="user_register" action="/user_handle/register/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit" />
+        </form>
+        <a href="/main"><button>Cancel</button></a>
+    </div>
+
+
 
 </body>
 </html>

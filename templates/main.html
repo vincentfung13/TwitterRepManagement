@@ -1,0 +1,29 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<script src="{% static 'js/jquery-1.12.0.min.js' %}"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Twitter Reputation Monitor</title>
+</head>
+<body>
+    <div id="homepage_content">
+        <div id="homepage_heading">
+            <h1>Twitter Reputation Monitor</h1>
+            <h3>A online reputation monitoring system for twitter</h3>
+        </div>
+
+        <div id="homepage_login_box"></div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $.ajax({
+        url: '/user_handle/login',
+        success: function(data){
+            $('#homepage_login_box').html(data);
+        },
+    })
+</script>

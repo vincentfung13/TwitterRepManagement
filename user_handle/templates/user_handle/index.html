@@ -9,22 +9,31 @@
 </head>
 
 <body>
-    {% for entity in entity_list %}
-        <a href="/twitter_services/entity/{{ entity }}">{{ entity }}</a>
-    {% endfor %}
 
-    <div id="inbox"></div>
+    <div id="user_index">
+        {% for entity in entity_list %}
+            <a href="/twitter_services/entity/{{ entity }}">{{ entity }}</a>
+        {% endfor %}
 
-    <script>
-        $.ajax({
-            url: '/user_handle/{{ username }}/inbox/',
-            success: function(data){
-                    $('#inbox').html(data)
-            },
-        })
-    </script>
+        <div id="entitiy_manager"></div>
+        <div id="inbox"></div>
+    </div>
 
 </body>
 </html>
 
-<script></script>
+<script>
+    $.ajax({
+        url: '/user_handle/{{ username }}/inbox/',
+        success: function(data){
+            $('#inbox').html(data);
+        },
+    });
+
+    $.ajax({
+        url: '/user_handle/{{ username }}/interest',
+        success: function(data){
+            $('#entitiy_manager').html(data)
+        },
+    });
+</script>
