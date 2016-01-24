@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout, get_user
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
 import forms
@@ -63,16 +64,15 @@ class Login(View):
 class Logout(View):
     def get(self, request):
         logout(request)
-        # TODO: redirect to site main page
+        # redirect to site main page
         return HttpResponseRedirect('/main/')
 
 
-# Login required
 class ManageInterested(View):
     def get(self, request, username):
         form_add = forms.EntityForm()
         form_delete = forms.EntityForm()
-        # TODO: Display user's list of interest
+        # Display user's list of interest
         return render(request, 'user_handle/entity.html', {'form_add': form_add, 'form_delete': form_delete})
 
     # Adds the entity in to the database and sends a message to the front end
@@ -92,7 +92,6 @@ class ManageInterested(View):
             return user_util.json_response(-1, msg=form.errors)
 
 
-# Login required
 # Index page for each user (showing the clickable entity list they are interested in)
 class Index(View):
     def get(self, request, username):

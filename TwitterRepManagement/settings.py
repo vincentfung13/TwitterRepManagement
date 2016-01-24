@@ -39,8 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'twitter_services',
     'user_handle',
-    # 'stored_messages',
-    # 'rest_framework',
     'debug_toolbar',
 )
 
@@ -112,5 +110,4 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# Using persistent message storage
-# MESSAGE_STORAGE = 'stored_messages.storage.PersistentStorage'
+LOGIN_URL = '/main/'
