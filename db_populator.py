@@ -5,7 +5,7 @@ from TwitterRepManagement import settings
 from twitter_services.models import TweetTrainingSet
 from twitter_services.tweet_processing.sentiment_evaluating import TweetSentimentEvaluator
 
-# This script is used to populate the database to start with.
+# This script is used to populate the training set database.
 duplicates = set()
 
 

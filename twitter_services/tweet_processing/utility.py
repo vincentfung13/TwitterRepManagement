@@ -10,7 +10,7 @@ dimension_list = ['Innovation', 'Governance', 'Leadership', 'Performance',
 
 dict_keyword_entity = dict()
 dict_keyword_entity['Apple'] = ['iPhone', 'iPad', 'MacBook', 'Mac', 'iPod', ]
-dict_keyword_entity['Amazon'] = ['Amazon', ]
+dict_keyword_entity['Amazon'] = ['Amazon', 'Kindle', ]
 dict_keyword_entity['Tesco'] = ['Tesco', ]
 dict_keyword_entity['BMW'] = ['BMW', ]
 dict_keyword_entity['Heineken'] = ['Heineken', ]

@@ -52,56 +52,57 @@
 
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
-        <div class="tweet-container">
-            {% if tweets %}
-                    {% for tweet in tweets %}
-                        <div class="tweet" id="tweet_{{ forloop.counter }}">
-                            <img class="avatar" id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
-                            <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
-                            <h5 id="created_at_{{ forloop.counter }}"></h5>
-                            <h5 id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</h5>
-                            <h5 id="sentiment_score_{{ forloop.counter }}"></h5>
-                            <div id="text_{{ forloop.counter }}"></div>
-                        </div>
+        <div id="main-content">
+            <div class="tweet-container">
+                {% if tweets %}
+                        {% for tweet in tweets %}
+                            <div class="tweet" id="tweet_{{ forloop.counter }}">
+                                <img class="avatar" id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
+                                <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
+                                <h5 id="created_at_{{ forloop.counter }}"></h5>
+                                <h5 id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</h5>
+                                <h5 id="sentiment_score_{{ forloop.counter }}"></h5>
+                                <div id="text_{{ forloop.counter }}"></div>
+                            </div>
 
-                        <script>
-                            var tweet = {{tweet|safe}};
-                            document.getElementById("avatar_{{ forloop.counter }}")
-                                    .setAttribute('src', tweet['user']['profile_image_url']);
-                            document.getElementById("text_{{ forloop.counter }}")
-                                    .innerHTML = tweet['text'];
+                            <script>
+                                var tweet = {{tweet|safe}};
+                                document.getElementById("avatar_{{ forloop.counter }}")
+                                        .setAttribute('src', tweet['user']['profile_image_url']);
+                                document.getElementById("text_{{ forloop.counter }}")
+                                        .innerHTML = tweet['text'];
 
-                            var created_at = tweet['created_at'];
-                            document.getElementById("created_at_{{ forloop.counter }}")
-                                    .innerHTML = created_at.substring(0, created_at.indexOf('+'))
-                                    + created_at.substring(created_at.indexOf('+') + 6, created_at.length);
+                                var created_at = tweet['created_at'];
+                                document.getElementById("created_at_{{ forloop.counter }}")
+                                        .innerHTML = created_at.substring(0, created_at.indexOf('+'))
+                                        + created_at.substring(created_at.indexOf('+') + 6, created_at.length);
 
-                            document.getElementById("user_screen_name_{{ forloop.counter }}")
-                                    .innerHTML = tweet['user']['screen_name'];
+                                document.getElementById("user_screen_name_{{ forloop.counter }}")
+                                        .innerHTML = tweet['user']['screen_name'];
 
-                            document.getElementById("dimension_{{ forloop.counter }}")
-                                    .innerHTML = tweet['reputation_dimension'];
+                                document.getElementById("dimension_{{ forloop.counter }}")
+                                        .innerHTML = tweet['reputation_dimension'];
 
-                            sentiment_score = tweet['sentiment_score']
-                            document.getElementById("sentiment_score_{{ forloop.counter }}")
-                                    .innerHTML = sentiment_score;
+                                sentiment_score = tweet['sentiment_score']
+                                document.getElementById("sentiment_score_{{ forloop.counter }}")
+                                        .innerHTML = sentiment_score;
 
-                            positive_weight = parseInt(sentiment_score.split("-")[0])
-                            negative_weight = parseInt(sentiment_score.split("-")[1])
+                                positive_weight = parseInt(sentiment_score.split("-")[0])
+                                negative_weight = parseInt(sentiment_score.split("-")[1])
 
-                            if (positive_weight > 2){
-                                document.getElementById("tweet_{{ forloop.counter }}").style.color = "Green"
-                            }
+                                if (positive_weight > 2){
+                                    document.getElementById("tweet_{{ forloop.counter }}").style.color = "Green"
+                                }
 
-                            if (negative_weight > 2){
-                                document.getElementById("tweet_{{ forloop.counter }}").style.color = "Red"
-                            }
-
-                        </script>
+                                if (negative_weight > 2){
+                                    document.getElementById("tweet_{{ forloop.counter }}").style.color = "Red"
+                                }
+                            </script>
                     {% endfor %}
             {% else %}
                 <p>No tweets are available</p>
             {% endif %}
+        </div>
         </div>
     {% endblock %}
 </body>
