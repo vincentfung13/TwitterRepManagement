@@ -81,6 +81,7 @@
                                                      created_at.substring(created_at.indexOf('+') + 6, created_at.length);
 
                                 sentiment_score = '{{ tweet.sentiment_score }}'
+
                                 positive_weight = parseInt(sentiment_score.split("-")[0])
                                 negative_weight = parseInt(sentiment_score.split("-")[1])
 

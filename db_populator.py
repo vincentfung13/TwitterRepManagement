@@ -4,7 +4,7 @@ import DjangoSetup
 from TwitterRepManagement import settings
 from twitter_services.models import TweetTrainingSet
 
-# This script is used to populate the database to start with.
+# This script is used to populate the training set database.
 duplicates = set()
 
 

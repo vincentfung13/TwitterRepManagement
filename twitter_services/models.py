@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.contrib.postgres.fields import JSONField
 
 # Create your models here.
-# Extra fields to be added in the json file: entity, reputation_dimension, sentiment_score
+# Extra fields to be added in the json file: related_entity, reputation_dimension, sentiment_score
 
 
 class Tweet(models.Model):
@@ -12,7 +12,7 @@ class Tweet(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
-        return 'tweet_id: ' + self.tweet_id
+        return 'tweet_id: ' + self.tweet['id_str']
 
 
 # Table to store training set of tweets
