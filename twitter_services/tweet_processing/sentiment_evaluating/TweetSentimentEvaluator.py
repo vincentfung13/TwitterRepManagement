@@ -3,6 +3,7 @@ import subprocess
 from TwitterRepManagement import settings
 
 
+# Returns a sentiment score given a json object representing the tweet
 def rate_sentiment(tweet):
     # open a subprocess using shlex to get the command line string into the correct args list format
     sentiString = tweet['text'].encode('utf-8').replace('\n', '')

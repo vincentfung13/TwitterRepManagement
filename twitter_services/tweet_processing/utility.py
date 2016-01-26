@@ -9,12 +9,12 @@ dimension_list = ['Innovation', 'Governance', 'Leadership', 'Performance',
                   'Citizenship', 'Products & Services', 'Workplace', 'Undefined']
 
 dict_keyword_entity = dict()
-dict_keyword_entity['Apple'] = ['iPhone', 'iPad', 'MacBook', 'Mac', 'iPod', ]
-dict_keyword_entity['Amazon'] = ['Amazon', ]
-dict_keyword_entity['Tesco'] = ['Tesco', ]
-dict_keyword_entity['BMW'] = ['BMW', ]
-dict_keyword_entity['Heineken'] = ['Heineken', ]
-dict_keyword_entity['HSBC'] = ['HSBC', ]
+dict_keyword_entity['Apple'] = ['iphone', 'ipad', 'macbook', 'mac', 'ipod', ]
+dict_keyword_entity['Amazon'] = ['amazon', ]
+dict_keyword_entity['Tesco'] = ['tesco', ]
+dict_keyword_entity['BMW'] = ['bmw', ]
+dict_keyword_entity['Heineken'] = ['heineken', ]
+dict_keyword_entity['HSBC'] = ['hsbc', ]
 
 
 def fetch_entity(tweet_json):

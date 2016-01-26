@@ -73,8 +73,7 @@ docs/_build/
 # PyBuilder
 target/
 
-polls/
-*/migrations
+*migrations*
 */.DS_Store
 .idea/
 *.DS_Store

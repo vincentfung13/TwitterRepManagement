@@ -2,6 +2,7 @@ import DjangoSetup
 import TweetProcessWorker
 import multiprocessing
 import tweepy
+import json
 from twitter_services.tweet_processing import utility
 from twitter_services.tweet_processing.classifying.classifiers import DimensionClassifier, SpamDetector
 
@@ -13,8 +14,7 @@ class MyListener(tweepy.StreamListener):
         self.tweet_queue = tweet_queue
 
     def on_data(self, status):
-        # print status
-        self.tweet_queue.put(status)
+        self.tweet_queue.put(json.loads(status))
 
     def on_error(self, status_code):
         print 'ERROR: the amount of tweets buffered has reached the buffer limit.'

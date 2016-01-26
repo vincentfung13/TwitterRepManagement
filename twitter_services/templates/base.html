@@ -3,6 +3,9 @@
 {% load staticfiles %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'twitter_services/style_base.css' %}" />
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAeJXCDj23rq4d2JVi7xHkVt7Wtgr-dh0M"></script>
+<script src="{% static 'js/maps/markerclusterer.js' %}"></script>
+<script src="{% static 'js/maps/maps.js' %}"></script>
 <script src="{% static 'js/jquery-1.12.0.min.js' %}"></script>
 
 <head>
@@ -32,13 +35,15 @@
                 }
             });
         {% endif %}
+    </script>
 
+    <script type="text/javascript">
+        init_map();
     </script>
 
     <header>
         {% block Header %}{% endblock %}
-        <div id="logo"></div>
-
+{#        <div id="logo"></div>#}
         <ul>
             <li class='active'><a href='{% url 'user_handle:Index' %}'><span>Home</span></a></li>
             {% for dimension in dimension_list %}
@@ -52,56 +57,46 @@
 
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
-        <div class="tweet-container">
-            {% if tweets %}
-                    {% for tweet in tweets %}
-                        <div class="tweet" id="tweet_{{ forloop.counter }}">
-                            <img class="avatar" id="avatar_{{ forloop.counter }}" src="" height="100" width="100">
-                            <h4 id="user_screen_name_{{ forloop.counter }}"></h4>
-                            <h5 id="created_at_{{ forloop.counter }}"></h5>
-                            <h5 id="dimension_{{ forloop.counter }}">{{tweet.tweet}}</h5>
-                            <h5 id="sentiment_score_{{ forloop.counter }}"></h5>
-                            <div id="text_{{ forloop.counter }}"></div>
-                        </div>
+        <div class="main-content">
+            <div class="map-container" id="map-container" style="width:500px; height:380px;"></div>
+            <div class="tweet-container">
+                {% if tweets %}
+                        {% for tweet in tweets %}
+                            <div class="tweet" id="tweet_{{ tweet.id_str }}">
+                                <img class="avatar"
+                                    id="avatar_{{ tweet.id_str }}"
+                                    src="{{ tweet.user.profile_image_url }}"
+                                    height="100" width="100">
+                                <h4 id="user_screen_name_{{ tweet.id_str }}">{{ tweet_user_screen_name }}</h4>
+                                <h5 id="created_at_{{ tweet.id_str }}"></h5>
+                                <h5 id="dimension_{{ tweet.id_str }}">{{tweet.reputation_dimension}}</h5>
+                                <h5 id="sentiment_score_{{ tweet.id_str }}">{{ tweet.sentiment_score }}</h5>
+                                <div id="text_{{ tweet.id_str }}">{{ tweet.text }}</div>
+                            </div>
 
-                        <script>
-                            var tweet = {{tweet|safe}};
-                            document.getElementById("avatar_{{ forloop.counter }}")
-                                    .setAttribute('src', tweet['user']['profile_image_url']);
-                            document.getElementById("text_{{ forloop.counter }}")
-                                    .innerHTML = tweet['text'];
+                            <script>
+                                var created_at = '{{ tweet.created_at }}';
+                                document.getElementById("created_at_{{ tweet.id_str }}")
+                                        .innerHTML = created_at.substring(0, created_at.indexOf('+')) +
+                                                     created_at.substring(created_at.indexOf('+') + 6, created_at.length);
 
-                            var created_at = tweet['created_at'];
-                            document.getElementById("created_at_{{ forloop.counter }}")
-                                    .innerHTML = created_at.substring(0, created_at.indexOf('+'))
-                                    + created_at.substring(created_at.indexOf('+') + 6, created_at.length);
+                                sentiment_score = '{{ tweet.sentiment_score }}'
+                                positive_weight = parseInt(sentiment_score.split("-")[0])
+                                negative_weight = parseInt(sentiment_score.split("-")[1])
 
-                            document.getElementById("user_screen_name_{{ forloop.counter }}")
-                                    .innerHTML = tweet['user']['screen_name'];
+                                if (positive_weight > 2){
+                                    document.getElementById("tweet_{{ tweet.id_str }}").style.color = "Green"
+                                }
 
-                            document.getElementById("dimension_{{ forloop.counter }}")
-                                    .innerHTML = tweet['reputation_dimension'];
-
-                            sentiment_score = tweet['sentiment_score']
-                            document.getElementById("sentiment_score_{{ forloop.counter }}")
-                                    .innerHTML = sentiment_score;
-
-                            positive_weight = parseInt(sentiment_score.split("-")[0])
-                            negative_weight = parseInt(sentiment_score.split("-")[1])
-
-                            if (positive_weight > 2){
-                                document.getElementById("tweet_{{ forloop.counter }}").style.color = "Green"
-                            }
-
-                            if (negative_weight > 2){
-                                document.getElementById("tweet_{{ forloop.counter }}").style.color = "Red"
-                            }
-
-                        </script>
-                    {% endfor %}
-            {% else %}
-                <p>No tweets are available</p>
-            {% endif %}
+                                if (negative_weight > 2){
+                                    document.getElementById("tweet_{{ tweet.id_str }}").style.color = "Red"
+                                }
+                            </script>
+                        {% endfor %}
+                {% else %}
+                    <p>No tweets are available</p>
+                {% endif %}
+            </div>
         </div>
     {% endblock %}
 </body>

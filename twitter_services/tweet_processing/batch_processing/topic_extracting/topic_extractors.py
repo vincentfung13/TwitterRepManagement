@@ -9,7 +9,7 @@ from pprint import pprint
 class LDATopicExtractor(object):
     # Take in the list of tweets and build a LDA model
     def __init__(self, tweets):
-        texts_tokens = [TweetNormalizer.get_tokens(json.loads(tweet.json_str), json=True) for tweet in tweets]
+        texts_tokens = [TweetNormalizer.get_tokens(tweet_orm.tweet, json=True) for tweet_orm in tweets]
 
         # Calculate each word's frequency and use a dictionary to store them
         frequency = defaultdict(int)
@@ -34,7 +34,7 @@ class LDATopicExtractor(object):
 if __name__ == '__main__':
     import DjangoSetup
     from twitter_services.models import Tweet
-    topic_extractor = LDATopicExtractor(Tweet.objects.filter(related_entity='Apple',
-                                                             reputation_dimension='Products & Services'))
+    topic_extractor = LDATopicExtractor(Tweet.objects.filter(tweet__related_entity='Apple',
+                                                             tweet__reputation_dimension='Products & Services'))
     pprint(topic_extractor.extract_topic())
 

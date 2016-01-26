@@ -29,13 +29,13 @@ class ReputationMonitor(object):
                         notify = False
 
                         # Count negative tweets in each cluster
-                        for tweet in cluster:
+                        for tweet_orm in cluster:
                             if negative_count > tweets_count * 0.5:
                                 print negative_count, tweets_count
                                 notify = True
                                 break
 
-                            if utility.is_negative(tweet.sentiment_score):
+                            if utility.is_negative(tweet_orm.tweet['sentiment_score']):
                                 negative_count += 1
 
                         if notify:
@@ -43,7 +43,7 @@ class ReputationMonitor(object):
                                 topic_extractor = LDATopicExtractor(cluster)
                                 topic_str = str(topic_extractor.extract_topic())
                                 print '\t\t cluster_topic: %s' % topic_str
-                                self.__notify__(entity, reputation_dimension, cluster, topic_str)
+                                # self.__notify__(entity, reputation_dimension, cluster, topic_str)
                             except ValueError:
                                 print '\t\t No tweet in the cluster'
                 except ValueError:

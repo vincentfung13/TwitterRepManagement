@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from twitter_services.models import Tweet
 
 
-# This model represnets the message that is sent to the user
+# This model represents the message that is sent to the user
 class Message(models.Model):
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=timezone.now)
     entity = models.CharField(max_length=30)
     reputation_dimension = models.CharField(max_length=30, blank=True)
     topic_str = models.TextField(blank=True)

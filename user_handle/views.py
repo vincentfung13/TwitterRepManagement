@@ -7,8 +7,6 @@ from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
 import forms
 from user_handle import utility as user_util
-from twitter_services.tweet_processing import utility as tweet_util
-import json
 
 
 # Create your views here.
@@ -106,7 +104,7 @@ class MessageView(View):
     @transaction.atomic
     def get(self, request, message_id):
         message = Message.objects.get(pk=message_id)
-        tweets = [json.dumps(tweet_util.build_dict(tweet)) for tweet in message.tweet.all().order_by('-created_at')]
+        tweets = [tweet_orm.tweet for tweet_orm in message.tweet.all().order_by('-created_at')]
         message.read = True
         message.save()
         return render(request, 'user_handle/message.html', {'tweets': tweets, 'message': message})

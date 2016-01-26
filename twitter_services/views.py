@@ -8,11 +8,12 @@ import json
 class TweetsFilter(View):
     def get(self, request, entity, dimension=None):
         if dimension is not None:
-            tweets = Tweet.objects.filter(related_entity=entity, reputation_dimension=dimension).order_by('-created_at')
+            tweets = Tweet.objects.filter(tweet__related_entity=entity,
+                                          tweet__reputation_dimension=dimension).order_by('-created_at')
         else:
-            tweets = Tweet.objects.filter(related_entity=entity).order_by('-created_at')
+            tweets = Tweet.objects.filter(tweet__related_entity=entity).order_by('-created_at')
 
-        tweets_filtered = [json.dumps(utility.build_dict(tweet)) for tweet in tweets]
+        tweets_filtered = [tweet_orm.tweet for tweet_orm in tweets]
 
         context = {
             'tweets': tweets_filtered,

@@ -31,10 +31,10 @@ class KMeansClusterer():
 
         # Fetch tweets from the corpus
         self.tweets_objects = [tweet for tweet
-                               in Tweet.objects.all().filter(related_entity=related_entity,
-                                                             reputation_dimension=dimension,
+                               in Tweet.objects.all().filter(tweet__related_entity=related_entity,
+                                                             tweet__reputation_dimension=dimension,
                                                              created_at__gt=time_threshold)]
-        self.tweets_texts = [json.loads(obj.json_str)['text'] for obj in self.tweets_objects]
+        self.tweets_texts = [obj.tweet['text'] for obj in self.tweets_objects]
 
         # Build vectorizer and matrix
         tfidf_vectorizer = TfidfVectorizer(max_features=200000, min_df=0.1, stop_words='english',

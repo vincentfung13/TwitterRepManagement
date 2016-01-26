@@ -12,7 +12,7 @@ from twitter_services.tweet_processing.normalizing import TweetNormalizer
 class DimensionClassifier:
     def __init__(self):
         # Build a dictionary
-        training_tweets = [json.loads(obj['json_str']) for obj in TweetTrainingSet.objects.values('json_str')]
+        training_tweets = [obj.tweet for obj in TweetTrainingSet.objects.all()]
         dictionary = []
         for training_tweet in training_tweets:
             dictionary.extend(TweetNormalizer.get_tokens(training_tweet, json=True))
@@ -72,7 +72,6 @@ class SpamDetector(object):
 
         # Initialize and train the classifier
         self.classifier = nltk.classify.SklearnClassifier(LinearSVC()).train(feature_sets)
-
 
     # Return true if the tweet is spam and false otherwise
     def is_spam(self, text):
