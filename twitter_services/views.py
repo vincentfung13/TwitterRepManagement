@@ -15,12 +15,24 @@ class TweetsFilter(View):
 
         tweets_filtered = [tweet_orm.tweet for tweet_orm in tweets]
 
+        latitudes = []
+        longitudes = []
+        for tweet in tweets_filtered:
+            coordinates = tweet['coordinates']
+            if coordinates is not None:
+                coordinates = coordinates['coordinates']
+                longitude, latitude = coordinates[0], coordinates[1]
+                longitudes.append(float(longitude))
+                latitudes.append(float(latitude))
+
         context = {
             'tweets': tweets_filtered,
             'entity': entity,
             'entities_list': utility.entities_list,
             'dimension_list': utility.dimension_list,
-            'Dimension': dimension
+            'latitudes': latitudes,
+            'longitudes': longitudes,
+            'Dimension': dimension,
         }
 
         return render(request, 'twitter_services/tweets_filter.html', context)

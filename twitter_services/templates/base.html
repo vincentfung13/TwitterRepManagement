@@ -4,7 +4,7 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'twitter_services/style_base.css' %}" />
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAeJXCDj23rq4d2JVi7xHkVt7Wtgr-dh0M"></script>
-<script src="{% static 'js/maps/markerclusterer.js' %}"></script>
+<script src="{% static 'js/maps/markerclusterer.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/maps/maps.js' %}"></script>
 <script src="{% static 'js/jquery-1.12.0.min.js' %}"></script>
 
@@ -16,7 +16,7 @@
 <body>
     <div id="user"></div>
 
-    <script>
+    <script type="text/javascript" id="user">
         {% if user.is_authenticated %}
             document.getElementById('user').innerHTML = '{{ request.user.username }}'
             {#   Create a logout button and append it  #}
@@ -37,13 +37,9 @@
         {% endif %}
     </script>
 
-    <script type="text/javascript">
-        init_map();
-    </script>
-
     <header>
         {% block Header %}{% endblock %}
-{#        <div id="logo"></div>#}
+        <div id="logo"></div>
         <ul>
             <li class='active'><a href='{% url 'user_handle:Index' %}'><span>Home</span></a></li>
             {% for dimension in dimension_list %}
@@ -58,7 +54,7 @@
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
         <div class="main-content">
-            <div class="map-container" id="map-container" style="width:500px; height:380px;"></div>
+            <div class="map-container" id="map-container"></div>
             <div class="tweet-container">
                 {% if tweets %}
                         {% for tweet in tweets %}
@@ -101,5 +97,11 @@
         </div>
     {% endblock %}
 </body>
+
+<script type="text/javascript" id="map">
+    var latitudes = {{ latitudes }};
+    var longitudes = {{ longitudes }};
+    init_map(latitudes, longitudes);
+</script>
 
 </html>
