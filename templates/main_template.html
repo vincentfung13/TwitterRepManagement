@@ -1,0 +1,42 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {# Bootstrap CSS thingy #}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "css/main_template.css" %}">
+    <title>Twitter Reputation Monitor</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Home</a></li>
+                    <li role="presentation"><a href="#">About</a></li>
+                    <li role="presentation"><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <img src="{% static 'img/twitter-icon.png' %}" class="twitter-icon">
+            <h3 class="text-muted">Twitter Reputation Monitor</h3>
+        </div>
+
+        {% block content %}{% endblock %}
+
+      <footer class="footer">
+        <p>&copy; 2015 School of Computing Science, the University of Glasgow, UK</p>
+      </footer>
+
+    </div> <!-- /container -->
+</body>
+
+</html>
+

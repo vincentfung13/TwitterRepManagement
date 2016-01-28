@@ -1,29 +1,49 @@
+{% extends 'main_template.html' %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html lang="en">
-<script src="{% static 'js/jquery-1.12.0.min.js' %}"></script>
-<head>
-    <meta charset="UTF-8">
-    <title>Twitter Reputation Monitor</title>
-</head>
-<body>
-    <div id="homepage_content">
-        <div id="homepage_heading">
-            <h1>Twitter Reputation Monitor</h1>
-            <h3>An online reputation monitoring tool for twitter</h3>
+
+
+{% block content %}
+    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    <div class="jumbotron">
+            <h2>An online reputation management system</h2>
+            <p class="lead">
+                We monitor the online reputation of your product on Twitter for you,
+                and provide you with the first hand information in intuitive and interactive ways.
+            </p>
+            <p><a class="btn btn-lg btn-success" href="{% url 'user_handle:Register' %}" role="button">Register</a></p>
+            <a href="{% url 'user_handle:Login' %}">or log in</a>
+
         </div>
 
-        <div id="homepage_login_box"></div>
-    </div>
-</body>
-</html>
+        <div class="row marketing">
+            <div class="col-lg-6">
+                <h4>Machine Learning</h4>
+                <p>
+                    We apply different machine learning technologies to filter out unrelated tweets,
+                    categorize the rest based on similarities, and extract topics,
+                    helping you make the best strategies accordingly.
+                </p>
 
-<script type="text/javascript">
-    $.ajax({
-        url: '{% url 'user_handle:Login' %}',
-        success: function(data){
-            $('#homepage_login_box').html(data);
-        },
-    })
-</script>
+                <h4>Geo-Visualization</h4>
+                <p>
+                    We pinpoint reputation-affecting tweets on a map, allowing you to easily detect reputation
+                    issues of your product in particular regions.
+                </p>
+            </div>
+
+            <div class="col-lg-6">
+                <h4>In-Time Alerts</h4>
+                <p>
+                    We keep an eye on your product for you,
+                    and send you alerts periodically when there might be reputation issues.
+                </p>
+
+                <h4>Statistics</h4>
+                <p>
+                    We carry out statistical analysis and
+                    provide intuitive visualization of your product's online reputation for you.
+                </p>
+            </div>
+      </div>
+{% endblock %}
