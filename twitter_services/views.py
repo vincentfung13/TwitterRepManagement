@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import View
 from .models import Tweet
+from user_handle.models import UserEntity
+from django.contrib.auth.models import User
 from tweet_processing import utility
-import json
 
 
 class TweetsFilter(View):
@@ -25,6 +26,10 @@ class TweetsFilter(View):
                 longitudes.append(float(longitude))
                 latitudes.append(float(latitude))
 
+        # Get users' list of interest
+        user = User.objects.get(username=request.user.username)
+        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=user)]
+
         context = {
             'tweets': tweets_filtered,
             'entity': entity,
@@ -33,6 +38,7 @@ class TweetsFilter(View):
             'latitudes': latitudes,
             'longitudes': longitudes,
             'Dimension': dimension,
+            'interest_list': interest_list
         }
 
         return render(request, 'twitter_services/tweets_filter.html', context)

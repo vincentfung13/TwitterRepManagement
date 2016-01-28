@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'tweet_base_display.html' %}
 {% load staticfiles %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/style_base.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/tweet_base_display.css' %}" />
 
 {% block Title %}
     <title>{{ message.created_at }}: Reputation Issue Alert</title>

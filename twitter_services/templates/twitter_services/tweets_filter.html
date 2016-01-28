@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'tweet_base_display.html' %}
 {% load staticfiles %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/style_base.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/tweet_base_display.css' %}" />
 
 {% block Title %}
-    <title>TwitterRep: {{ entity }} {% if Dimension %}Dimension: {{ Dimension }} {% endif %}</title>
+    <title>TwitterRep: {{ entity }} {% if Dimension %} Dimension: {{ Dimension }} {% endif %}</title>
 {% endblock %}
 
-{% block Header %}
-    <h1>TwitterRep: {{ entity }} {% if Dimension %}Dimension: {{ Dimension }} {% endif %}</h1>
+{% block page_header %}
+    Tweets related to {{ entity }}{% if Dimension %}'s {{ Dimension }} {% endif %}
 {% endblock %}
