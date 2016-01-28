@@ -31,7 +31,7 @@ class TweetsFilter(View):
         interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=user)]
 
         context = {
-            'tweets': tweets_filtered,
+            'tweets': tweets_filtered[:100],
             'entity': entity,
             'entities_list': utility.entities_list,
             'dimension_list': utility.dimension_list,

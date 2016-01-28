@@ -10,6 +10,7 @@
     <script src="{% static 'js/maps/markerclusterer.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/maps/maps.js' %}"></script>
 
+
 {% endblock %}
 
 {% block user %}
@@ -62,52 +63,52 @@
 
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
+        <div class="container">
+            <div class="main-content row">
+                <div class="col-sm-6">
+                    <h4 class="text-center">
+                        {% block tweet-display-title %}
+                            Tweets related to {{ entity }}{% if Dimension %}'s {{ Dimension }} {% endif %}
+                        {% endblock %}
+                    </h4>
+                    <div class="tweet-container">
+                        {% if tweets %}
+                                {% for tweet in tweets %}
+                                    <blockquote class="twitter-tweet" data-link-color="#55acee" lang="en">
+                                        <p lang="en" id="tweet_text_{{ tweet.id_str }}">{{ tweet.text }}</p>
+                                        <a href="https://twitter.com/{{ tweet.user.screen_name }}/status/{{ tweet.id_str }}"></a>
+                                    </blockquote>
 
-        <div class="main-content">
-            <div class="map-container" id="map-container"></div>
-            <div class="tweet-container">
-                {% if tweets %}
-                        {% for tweet in tweets %}
-                            <div class="tweet" id="tweet_{{ tweet.id_str }}">
-                                <img class="avatar"
-                                    id="avatar_{{ tweet.id_str }}"
-                                    src="{{ tweet.user.profile_image_url }}"
-                                    height="100" width="100">
-                                <h4 id="user_screen_name_{{ tweet.id_str }}">{{ tweet_user_screen_name }}</h4>
-                                <h5 id="created_at_{{ tweet.id_str }}"></h5>
-                                <h5 id="dimension_{{ tweet.id_str }}">{{tweet.reputation_dimension}}</h5>
-                                <h5 id="sentiment_score_{{ tweet.id_str }}">{{ tweet.sentiment_score }}</h5>
-                                <div id="text_{{ tweet.id_str }}">{{ tweet.text }}</div>
-                            </div>
+                                    <script>
+                                        positive_weight = parseInt(sentiment_score.split("-")[0])
+                                        negative_weight = parseInt(sentiment_score.split("-")[1])
 
-                            <script>
-                                var created_at = '{{ tweet.created_at }}';
-                                document.getElementById("created_at_{{ tweet.id_str }}")
-                                        .innerHTML = created_at.substring(0, created_at.indexOf('+')) +
-                                                     created_at.substring(created_at.indexOf('+') + 6, created_at.length);
+                                        if (positive_weight > 2){
+                                            document.getElementById("tweet_text{{ tweet.id_str }}").style.color = "Green"
+                                        }
 
-                                sentiment_score = '{{ tweet.sentiment_score }}'
-
-                                positive_weight = parseInt(sentiment_score.split("-")[0])
-                                negative_weight = parseInt(sentiment_score.split("-")[1])
-
-                                if (positive_weight > 2){
-                                    document.getElementById("tweet_{{ tweet.id_str }}").style.color = "Green"
-                                }
-
-                                if (negative_weight > 2){
-                                    document.getElementById("tweet_{{ tweet.id_str }}").style.color = "Red"
-                                }
-                            </script>
-                        {% endfor %}
-                {% else %}
-                    <p>No tweets are available</p>
-                {% endif %}
+                                        if (negative_weight > 2){
+                                            document.getElementById("tweet_text{{ tweet.id_str }}").style.color = "Red"
+                                        }
+                                    </script>
+                                {% endfor %}
+                        {% else %}
+                            <p>No tweets are available</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <h4 class="map-title text-center">
+                        Geo-locations
+                    </h4>
+                    <div class="map-container col-sm-6" id="map-container"></div>
+                </div>
             </div>
         </div>
 
     {% endblock %}
 
+<script src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script type="text/javascript" id="map">
     var latitudes = {{ latitudes }};
     var longitudes = {{ longitudes }};
