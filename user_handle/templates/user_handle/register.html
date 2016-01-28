@@ -1,19 +1,23 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'register_login_template.html' %}
+{% load staticfiles %}
 
-    <div id="user_register">
-        <form id="user_register" action="{% url 'user_handle:Register' %}" method="post">
+
+{% block title %} Register {% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'user_handle/css/register_login.css' %}">
+
+    {% block form %}
+        <form id="user_register" action="{% url 'user_handle:Register' %}" method="post" class="form-login-register">
             {% csrf_token %}
             {{ form }}
-            <input type="submit" value="Submit" />
+            <div class="pagination-centered text-center btn-group-lg" id="button-group">
+                <button class="btn btn-primary" type="submit">Resgiter</button>
+                <button class="btn btn-primary"
+                        onclick="window.location.href='{% url 'MainPage' %}'"
+                        type="button">Cancel</button>
+            </div>
         </form>
-        <a href="/main"><button>Cancel</button></a>
-    </div>
+    {% endblock %}
 
-</body>
-</html>
+{% endblock %}
