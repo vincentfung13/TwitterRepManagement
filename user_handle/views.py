@@ -107,7 +107,24 @@ class MessageView(View):
         tweets = [tweet_orm.tweet for tweet_orm in message.tweet.all().order_by('-created_at')]
         message.read = True
         message.save()
-        return render(request, 'user_handle/message.html', {'tweets': tweets, 'message': message})
+        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
+
+        latitudes = []
+        longitudes = []
+        for tweet in tweets:
+            coordinates = tweet['coordinates']
+            if coordinates is not None:
+                coordinates = coordinates['coordinates']
+                longitude, latitude = coordinates[0], coordinates[1]
+                longitudes.append(float(longitude))
+                latitudes.append(float(latitude))
+
+        return render(request, 'user_handle/message.html', {'tweets': tweets,
+                                                            'message': message,
+                                                            'interest_list': interest_list,
+                                                            'latitudes': latitudes,
+                                                            'longitudes': longitudes
+                                                            })
 
 
 # The view to manage server-to-user messages

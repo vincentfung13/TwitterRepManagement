@@ -4,6 +4,7 @@ from twitter_services.tweet_processing import utility
 from user_handle.models import Message, UserMessage, UserEntity
 from django.db import transaction
 from datetime import datetime, timedelta
+import pytz
 
 
 class ReputationMonitor(object):
@@ -18,7 +19,7 @@ class ReputationMonitor(object):
             for reputation_dimension in utility.dimension_list:
                 print '\t Dimension %s' % reputation_dimension
                 try:
-                    time_threshold = datetime.now() - timedelta(hours=self.period_hours)
+                    time_threshold = datetime.now(pytz.utc) - timedelta(hours=self.period_hours)
                     self.clusterer.cluster_tweets(related_entity=entity,
                                                   reputation_dimension=reputation_dimension,
                                                   time_threshold=time_threshold)
@@ -43,7 +44,7 @@ class ReputationMonitor(object):
                                 topic_extractor = LDATopicExtractor(cluster)
                                 topic_str = str(topic_extractor.extract_topic())
                                 print '\t\t cluster_topic: %s' % topic_str
-                                # self.__notify__(entity, reputation_dimension, cluster, topic_str)
+                                self.__notify__(entity, reputation_dimension, cluster, topic_str)
                             except ValueError:
                                 print '\t\t No tweet in the cluster'
                 except ValueError:

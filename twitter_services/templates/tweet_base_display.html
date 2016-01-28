@@ -25,7 +25,8 @@
 
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false"> {{ entity }}<span class="caret"></span></a>
+           aria-haspopup="true" aria-expanded="false">
+            {% if entity %} {{ entity }} {% else %} Entities {% endif %}<span class="caret"></span></a>
         <ul class="dropdown-menu">
             {% for interest in interest_list %}
                 <li>
@@ -38,9 +39,12 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="header-container">
         <header>
             <h1 class="text-center">{% block page_header %} {% endblock %}</h1>
+            {# This is for display topic string in message view #}
+            <h4 class="text-center">{% block topic_str %}{% endblock %}</h4>
 
         <div class="nav-bar-container">
             <ul class="nav nav-tabs">
@@ -58,6 +62,7 @@
 
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
+
         <div class="main-content">
             <div class="map-container" id="map-container"></div>
             <div class="tweet-container">
@@ -100,6 +105,7 @@
                 {% endif %}
             </div>
         </div>
+
     {% endblock %}
 
 <script type="text/javascript" id="map">
