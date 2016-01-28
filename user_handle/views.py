@@ -7,7 +7,7 @@ from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
 import forms
 from user_handle import utility as user_util
-
+from twitter_services.tweet_processing import utility as tweet_util
 
 # Create your views here.
 class Register(View):
@@ -95,8 +95,15 @@ class ManageInterested(View):
 # Index page for each user (showing the clickable entity list they are interested in)
 class Index(View):
     def get(self, request):
-        entity_list = [pair.entity for pair in UserEntity.objects.filter(user=request.user)]
-        context = {'username': request.user.username, 'entity_list': entity_list}
+        entity_list = [pair.entity for pair in UserEntity.objects.filter(user=get_user(request))]
+        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
+        remaining_entities = [entity for entity in interest_list if entity not in tweet_util.entities_list]
+
+        context = {'username': request.user.username,
+                   'entity_list': entity_list,
+                   'interest_list': interest_list,
+                   'remaining_entities': remaining_entities,
+                   }
         return render(request, 'user_handle/index.html', context)
 
 
@@ -132,7 +139,7 @@ class MessageInbox(View):
     def get(self, request):
         messages = []
         for um_pair in UserMessage.objects.filter(user=get_user(request)):
-            messages.extend(um_pair.message.filter(read=False))
+            messages.extend(um_pair.message.filter(read=True))
         return render(request, 'user_handle/inbox.html', {'messages': messages})
 
 
