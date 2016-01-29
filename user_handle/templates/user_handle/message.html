@@ -7,6 +7,8 @@
     Reputation Issue Alert: {{ message.created_at }}
 {% endblock %}
 
+{% block navi-bar %}{% endblock %}
+
 {% block page_header %}
     Potential reputation issue for {{ message.entity }}'s {{ message.reputation_dimension }}
     <h4>{{ message.created_at }}</h4>
@@ -15,7 +17,7 @@
 <h4>{{ message.created_at }}:</h4>
 
 {% block topic_str %}
-    {{ message.topic_str }}
+    Keywords: {{ message.topic_str }}
 {% endblock %}
 
 {% block tweet-display-title %}

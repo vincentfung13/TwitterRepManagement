@@ -1,6 +1,7 @@
 from clustering.clusterers import KMeansClusterer
 from topic_extracting.topic_extractors import LDATopicExtractor
 from twitter_services.tweet_processing import utility
+from user_handle import utility as user_util
 from user_handle.models import Message, UserMessage, UserEntity
 from django.db import transaction
 from datetime import datetime, timedelta
@@ -42,7 +43,7 @@ class ReputationMonitor(object):
                         if notify:
                             try:
                                 topic_extractor = LDATopicExtractor(cluster)
-                                topic_str = str(topic_extractor.extract_topic())
+                                topic_str = user_util.get_topics(topic_extractor.extract_topic())
                                 print '\t\t cluster_topic: %s' % topic_str
                                 self.__notify__(entity, reputation_dimension, cluster, topic_str)
                             except ValueError:

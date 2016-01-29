@@ -60,7 +60,3 @@ def is_negative(senti_score):
     else:
         return False
 
-
-# Strip out the topics given a topic str
-def get_topics(topic_str):
-    pass

@@ -1,6 +1,7 @@
 from user_handle.models import UserEntity
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from twitter_services.tweet_processing import utility as tweet_util
 import json
 
 
@@ -39,3 +40,18 @@ def remove_entity(user, entity):
 def json_response(ret, data="", msg=""):
     resp = {"msg": msg, "ret": ret, "data": data}
     return HttpResponse(json.dumps(resp, ensure_ascii=False), content_type="application/json")
+
+
+# Strip out the topics given a topic str
+def get_topics(topic_list):
+    words = set()
+    entities_lower = [entity.lower() for entity in tweet_util.entities_list]
+
+    for topic_tuple in topic_list:
+        keywords_weight = topic_tuple[1].split('+')
+        for keyword_weight in keywords_weight:
+            word = keyword_weight.strip()[6:]
+            if (len(word) > 1) and (not word.isdigit()) and (word.lower() not in entities_lower):
+                words.add(keyword_weight.strip()[6:])
+
+    return ', '.join(words)

@@ -139,7 +139,7 @@ class MessageInbox(View):
     def get(self, request):
         messages = []
         for um_pair in UserMessage.objects.filter(user=get_user(request)):
-            messages.extend(um_pair.message.filter(read=True))
+            messages.extend(um_pair.message.filter(read=False))
         return render(request, 'user_handle/inbox.html', {'messages': messages})
 
 
