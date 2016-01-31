@@ -4,6 +4,7 @@ from .models import Tweet
 from user_handle.models import UserEntity
 from django.contrib.auth.models import User
 from tweet_processing import utility
+from geocoding.geocoders import LocalGeocoder
 
 
 class TweetsFilter(View):
@@ -16,15 +17,10 @@ class TweetsFilter(View):
 
         tweets_filtered = [tweet_orm.tweet for tweet_orm in tweets]
 
-        latitudes = []
-        longitudes = []
-        for tweet in tweets_filtered:
-            coordinates = tweet['coordinates']
-            if coordinates is not None:
-                coordinates = coordinates['coordinates']
-                longitude, latitude = coordinates[0], coordinates[1]
-                longitudes.append(float(longitude))
-                latitudes.append(float(latitude))
+        geocoder = LocalGeocoder()
+        coordinates = geocoder.geocode_many(tweets_filtered)
+        latitudes = [coordinate[0] for coordinate in coordinates]
+        longitudes = [coordinate[1] for coordinate in coordinates]
 
         # Get users' list of interest
         user = User.objects.get(username=request.user.username)

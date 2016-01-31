@@ -1,7 +1,5 @@
 from TwitterRepManagement import settings
-import json
 import nltk.classify
-from nltk.classify import NaiveBayesClassifier
 import DjangoSetup
 from sklearn import cross_validation
 from sklearn.svm import LinearSVC
@@ -18,7 +16,7 @@ class DimensionClassifier:
             dictionary.extend(TweetNormalizer.get_tokens(training_tweet, json=True))
 
         # Build a feature set
-        self.word_feature = [entry[0] for entry in list(nltk.FreqDist(dictionary).most_common(2000))][10:2000]
+        self.word_feature = [entry[0] for entry in list(nltk.FreqDist(dictionary).most_common(2000))][100:2000]
         self.feature_sets = [(self.__extract_feature__(tweet), tweet.get('reputation_dimension'))
                              for tweet in training_tweets if tweet.get('reputation_dimension') is not None]
 
@@ -68,7 +66,7 @@ class SpamDetector(object):
             all_words.extend(text[0])
         self.word_feature = [entry[0] for entry in list(nltk.FreqDist(all_words).most_common(2000))]
         feature_sets = [(self.__extract_feature__(text[0], is_token=True), text[1])
-                             for text in text_collections]
+                        for text in text_collections]
 
         # Initialize and train the classifier
         self.classifier = nltk.classify.SklearnClassifier(LinearSVC()).train(feature_sets)
@@ -94,7 +92,7 @@ class SpamDetector(object):
 if __name__ == '__main__':
     # Trying to apply cross validation
     feature_sets = DimensionClassifier().feature_sets
-    cv = cross_validation.KFold(len(feature_sets), n_folds=5, shuffle=False, random_state=None)
+    cv = cross_validation.KFold(len(feature_sets), n_folds=100, shuffle=True, random_state=None)
 
     for traincv, testcv in cv:
         classifier_cv = DimensionClassifier()

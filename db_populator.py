@@ -18,7 +18,7 @@ def check_for_existence(tweet_id, tweet_dict):
 tweets_json = {}
 ids = set()
 
-with io.open(settings.BASE_DIR + '/static/Tweets/pre.3ent.json', 'r',
+with io.open(settings.BASE_DIR + '/resources/twitter_services/pre.3ent.json', 'r',
              encoding='utf-8') as all_tweets:
     for tweet_str in all_tweets:
         tweet_json = json.loads(tweet_str)
@@ -29,7 +29,7 @@ with io.open(settings.BASE_DIR + '/static/Tweets/pre.3ent.json', 'r',
             ids.add(tweet_id)
 
 # This function is hard-coded to retrieve information for pre.3en.gold file
-with io.open(settings.BASE_DIR + '/static/Tweets/pre.3ent.gold', 'r',
+with io.open(settings.BASE_DIR + '/resources/twitter_services/pre.3ent.gold', 'r',
              encoding='utf-8') as classification_results:
     for line in classification_results:
         tweet_id = line[17:35]

@@ -9,14 +9,18 @@
 
 <body>
     <div id="user_inbox"></div>
+        {% if messages %}
         <ul>
-        {% for message in messages %}
-            <li>
-                <a href="{% url 'user_handle:Message' message.id %}">
-                    {{ message.created_at }} {{ message.entity }}: {{ message.reputation_dimension }}</a>
-            </li>
-        {% endfor %}
-        </ul>
+            {% for message in messages %}
+                <li>
+                    <a href="{% url 'user_handle:Message' message.id %}">
+                        {{ message.created_at }} {{ message.entity }}: {{ message.reputation_dimension }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <h4>You don't have any unread alerts.</h4>
+        {% endif %}
     </div>
 </body>
 </html>

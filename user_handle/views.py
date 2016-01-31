@@ -1,3 +1,4 @@
+import forms
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
@@ -5,9 +6,10 @@ from django.contrib.auth import authenticate, login, logout, get_user
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from user_handle.models import UserEntity, UserMessage, Message
-import forms
 from user_handle import utility as user_util
+from twitter_services.geocoding.geocoders import LocalGeocoder
 from twitter_services.tweet_processing import utility as tweet_util
+
 
 # Create your views here.
 class Register(View):
@@ -116,15 +118,10 @@ class MessageView(View):
         message.save()
         interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
 
-        latitudes = []
-        longitudes = []
-        for tweet in tweets:
-            coordinates = tweet['coordinates']
-            if coordinates is not None:
-                coordinates = coordinates['coordinates']
-                longitude, latitude = coordinates[0], coordinates[1]
-                longitudes.append(float(longitude))
-                latitudes.append(float(latitude))
+        geocoder = LocalGeocoder()
+        coordinates = geocoder.geocode_many(tweets)
+        latitudes = [coordinate[0] for coordinate in coordinates]
+        longitudes = [coordinate[1] for coordinate in coordinates]
 
         return render(request, 'user_handle/message.html', {'tweets': tweets,
                                                             'message': message,
