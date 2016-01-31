@@ -1,5 +1,5 @@
 import forms
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout, get_user
@@ -123,7 +123,7 @@ class MessageView(View):
         latitudes = [coordinate[0] for coordinate in coordinates]
         longitudes = [coordinate[1] for coordinate in coordinates]
 
-        return render(request, 'user_handle/message.html', {'tweets': tweets,
+        return render(request, 'user_handle/message.html', {'tweets': tweets[:100],
                                                             'message': message,
                                                             'interest_list': interest_list,
                                                             'latitudes': latitudes,
@@ -134,9 +134,15 @@ class MessageView(View):
 # The view to manage server-to-user messages
 class MessageInbox(View):
     def get(self, request):
-        messages = []
+        messages_unread = []
+        messages_read = []
         for um_pair in UserMessage.objects.filter(user=get_user(request)):
-            messages.extend(um_pair.message.filter(read=False))
-        return render(request, 'user_handle/inbox.html', {'messages': messages})
+            messages_unread.extend(um_pair.message.filter(read=False))
+            messages_read.extend(um_pair.message.filter(read=True))
+        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
+
+        return render(request, 'user_handle/inbox.html', {'messages_read': messages_read,
+                                                          'messages_unread': messages_unread,
+                                                          'interest_list': interest_list})
 
 

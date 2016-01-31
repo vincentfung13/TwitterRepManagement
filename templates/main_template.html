@@ -28,9 +28,34 @@
         <div class="header clearfix">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                    {% block user %}
+
+                    {% if not user.is_authenticated %}
                         <li role="presentation" class="active"><a href="{% url 'MainPage' %}">Home</a></li>
-                    {% endblock %}
+                    {% else %}
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"> {{ request.user.username }}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'user_handle:MessageInbox' %}">Inbox</a></li>
+                                <li><a href="{% url 'user_handle:Index' %}">Account</a></li>
+                                <li><a href="{% url 'user_handle:Logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                {% if entity %} {{ entity }} {% else %} Entities {% endif %}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {% for interest in interest_list %}
+                                    <li>
+                                        <a href="{% url 'twitter_services:tweets_filtered_entity' interest %}">{{ interest }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+
                     <li role="presentation"><a href="#">About</a></li>
                     <li role="presentation"><a href="#">Contact</a></li>
                 </ul>

@@ -7,32 +7,6 @@
     <link rel="stylesheet" href="{% static 'user_handle/css/user_index.css' %}">
 {% endblock %}
 
-{% block user %}
-
-    <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false"> {{ request.user.username }}<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li><a href="{% url 'user_handle:Index' %}">Account</a></li>
-            <li><a href="{% url 'user_handle:Logout' %}">Logout</a></li>
-        </ul>
-    </li>
-
-    <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false">
-            {% if entity %} {{ entity }} {% else %} Entities {% endif %}<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            {% for interest in interest_list %}
-                <li>
-                    <a href="{% url 'twitter_services:tweets_filtered_entity' interest %}">{{ interest }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </li>
-
-{% endblock %}
-
 {% block content %}
 
     <div id="user_index">
@@ -40,21 +14,10 @@
             <h3 id="entity-manager-heading">Manage your interests list</h3>
             <div id="entity-manager"></div>
         </div>
-
-        <div id="inbox-container">
-            <h3>Your unread alerts: </h3>
-            <div id="inbox"></div>
-        </div>
     </div>
 
 
     <script>
-        $.ajax({
-            url: '{% url 'user_handle:MessageInbox' %}',
-            success: function(data){
-                $('#inbox').html(data);
-            },
-        });
 
         $.ajax({
             url: '{% url 'user_handle:Interests' %}',
@@ -63,6 +26,6 @@
             },
         });
 
-</script>
+    </script>
 
 {% endblock %}

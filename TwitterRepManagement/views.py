@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth import get_user
+from user_handle.models import UserEntity
 
 
 class MainPage(View):
