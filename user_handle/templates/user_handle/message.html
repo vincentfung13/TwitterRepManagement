@@ -20,8 +20,6 @@
     <h4>{{ message.created_at }}</h4>
 {% endblock %}
 
-<h4>{{ message.created_at }}:</h4>
-
 {% block topic_cloud %}
     <div class="topic-cloud-container">
         <ul id="topic-cloud"></ul>
@@ -30,7 +28,7 @@
     <script>
         function normalize_size(words_size){
             var max_font_size = 100;
-            var min_font_size = 10;
+            var min_font_size = 20;
 
             var max_array = Math.max.apply(Math, words_size);
             var min_array = Math.min.apply(Math, words_size);
