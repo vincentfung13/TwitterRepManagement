@@ -72,19 +72,18 @@ class Logout(View):
 
 class ManageInterested(View):
     def get(self, request):
-        form_add = forms.EntityForm()
-        form_delete = forms.EntityForm()
+        form = forms.EntityForm()
         # Display user's list of interest
-        return render(request, 'user_handle/entity.html', {'form_add': form_add, 'form_delete': form_delete})
+        return render(request, 'user_handle/entity.html', {'form': form})
 
     # Adds the entity in to the database and sends a message to the front end
-    def post(self, request, action):
+    def post(self, request):
         form = forms.EntityForm(request.POST)
         if form.is_valid():
             # Create a row in the database
-            if action == 'add':
+            if 'add' in request.POST:
                 user_util.add_interested(request.user, form.cleaned_data['entity'])
-            elif action == 'remove':
+            elif 'remove' in request.POST:
                 user_util.remove_entity(request.user, form.cleaned_data['entity'])
             else:
                 return user_util.json_response(-1, msg=u'invalid action')

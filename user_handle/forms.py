@@ -17,5 +17,5 @@ class LoginForm(forms.Form):
 
 
 class EntityForm(forms.Form):
-    username = forms.CharField(label='username', max_length=30)
+    username = forms.CharField(label='username', max_length=30, widget=forms.HiddenInput())
     entity = forms.CharField(label='entity', max_length=100)

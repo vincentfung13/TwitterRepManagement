@@ -8,19 +8,13 @@
 
     <body>
         {# Make it prettier #}
-        <form action="{% url 'user_handle:ManageInterests' 'add' %}" method="post">
+        <form action="{% url 'user_handle:Interests' %}" method="post">
             {% csrf_token %}
-            {{ form_add }}
-            <input type="submit" value="Add" />
+            {{ form }}
+            <input type="submit" name="add" value="add" />
+            <input type="submit" name="remove" value="remove" />
         </form>
-
-        <form action="{% url 'user_handle:ManageInterests' 'remove' %}" method="post">
-            {% csrf_token %}
-            {{ form_delete }}
-            <input type="submit" value="Remove" />
-        </form>
-
-</body>
+    </body>
 </html>
 
 <script>
