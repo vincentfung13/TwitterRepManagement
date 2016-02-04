@@ -45,7 +45,7 @@
         <header>
             <h1 class="text-center">{% block page_header %} {% endblock %}</h1>
             {# This is for display topic string in message view #}
-            <h5 class="text-center">{% block topic_str %}{% endblock %}</h5>
+            {% block topic_cloud %}{% endblock %}
 
             {% block navi-bar %}
             <div class="nav-bar-container">
@@ -81,18 +81,21 @@
                                         <a href="https://twitter.com/{{ tweet.user.screen_name }}/status/{{ tweet.id_str }}"></a>
                                     </blockquote>
 
-                                    <script>
-                                        positive_weight = parseInt(sentiment_score.split("-")[0])
-                                        negative_weight = parseInt(sentiment_score.split("-")[1])
 
-                                        if (positive_weight > 2){
-                                            document.getElementById("tweet_text{{ tweet.id_str }}").style.color = "Green"
-                                        }
-
-                                        if (negative_weight > 2){
-                                            document.getElementById("tweet_text{{ tweet.id_str }}").style.color = "Red"
-                                        }
-                                    </script>
+{#                                    <script>#}
+{#                                        var sentiment_score = {{ tweet.sentiment_score }};#}
+{##}
+{#                                        positive_weight = parseInt(sentiment_score.split("-")[0])#}
+{#                                        negative_weight = parseInt(sentiment_score.split("-")[1])#}
+{##}
+{#                                        if (positive_weight > 2){#}
+{#                                            document.getElementById("tweet_text{{ tweet.id_str }}").style.color = "Green"#}
+{#                                        }#}
+{##}
+{#                                        if (negative_weight > 2){#}
+{#                                            document.getElementById("tweet_text{{ tweet.id_str }}").style.color = "Red"#}
+{#                                        }#}
+{#                                    </script>#}
                                 {% endfor %}
                         {% else %}
                             <p>No tweets are available</p>

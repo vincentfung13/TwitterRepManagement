@@ -44,14 +44,25 @@ def json_response(ret, data="", msg=""):
 
 # Strip out the topics given a topic str
 def get_topics(topic_list):
-    words = set()
+    word_freq = {}
     entities_lower = [entity.lower() for entity in tweet_util.entities_list]
 
     for topic_tuple in topic_list:
         keywords_weight = topic_tuple[1].split('+')
         for keyword_weight in keywords_weight:
-            word = keyword_weight.strip()[6:]
-            if (len(word) > 1) and (not word.isdigit()) and (word.lower() not in entities_lower):
-                words.add(keyword_weight.strip()[6:])
+            weight = keyword_weight.split('*')[0].strip()
+            word = keyword_weight.split('*')[1].strip()
 
-    return ', '.join(words)
+            if (word in word_freq) and (word not in entities_lower):
+                word_freq[word] += float(weight)
+            else:
+                word_freq[word] = float(weight)
+
+    # Normalize the frequency for display
+    topic_str = ''
+    for keyword, frequency in word_freq.iteritems():
+        topic_str = topic_str + keyword + ',' + str(frequency) + '\n'
+
+    return topic_str[:-1]
+
+

@@ -1,7 +1,13 @@
 {% extends 'tweet_base_display.html' %}
 {% load staticfiles %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/tweet_base_display.css' %}" />
+{% block more-head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'twitter_services/tweet_base_display.css' %}" />
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAeJXCDj23rq4d2JVi7xHkVt7Wtgr-dh0M"></script>
+    <script src="{% static 'js/maps/markerclusterer.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/maps/maps.js' %}"></script>
+    <script src="{% static 'js/wordcloud/wordcloud2.js' %}"></script>
+{% endblock %}
 
 {% block title %}
     Reputation Issue Alert: {{ message.created_at }}
@@ -16,10 +22,44 @@
 
 <h4>{{ message.created_at }}:</h4>
 
-{% block topic_str %}
-    Keywords: {{ message.topic_str }}
+{% block topic_cloud %}
+    <div class="topic-cloud-container">
+        <ul id="topic-cloud"></ul>
+    </div>
+
+    <script>
+        function normalize_size(words_size){
+            var max_font_size = 100;
+            var min_font_size = 10;
+
+            var max_array = Math.max.apply(Math, words_size);
+            var min_array = Math.min.apply(Math, words_size);
+
+            for (var i = 0; i < weights.length; i++){
+                words_size[i] = parseInt((words_size[i] - min_array) / (max_array - min_array)
+                                * (max_font_size - min_font_size) + min_font_size);
+            }
+            return words_size;
+        }
+
+        var keywords = {{ topic_keywords | safe }};
+        var weights = {{ keywords_weight | safe }};
+        weights = normalize_size(weights);
+
+
+        var wordcloud_list = new Array();
+        for (var i = 0; i < keywords.length; i++){
+            var keyword_weight_pair = new Array();
+            keyword_weight_pair[0] = keywords[i];
+            keyword_weight_pair[1] = weights[i];
+            wordcloud_list.push(keyword_weight_pair);
+        }
+
+        WordCloud(document.getElementById('topic-cloud'), { list : wordcloud_list,});
+    </script>
 {% endblock %}
 
 {% block tweet-display-title %}
     Related tweets
 {% endblock %}
+

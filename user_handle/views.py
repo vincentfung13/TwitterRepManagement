@@ -118,6 +118,17 @@ class MessageView(View):
         message.save()
         interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
 
+        topic_list = message.topic_str.split('\n')
+        keywords = []
+        weights = []
+
+        for topic_tuple in topic_list:
+            keyword = topic_tuple.split(',')[0]
+            weight = float(topic_tuple.split(',')[1])
+
+            keywords.append(str(keyword))
+            weights.append(weight)
+
         geocoder = LocalGeocoder()
         coordinates = geocoder.geocode_many(tweets)
         latitudes = [coordinate[0] for coordinate in coordinates]
@@ -126,6 +137,8 @@ class MessageView(View):
         return render(request, 'user_handle/message.html', {'tweets': tweets[:100],
                                                             'message': message,
                                                             'interest_list': interest_list,
+                                                            'topic_keywords': keywords,
+                                                            'keywords_weight': weights,
                                                             'latitudes': latitudes,
                                                             'longitudes': longitudes
                                                             })
@@ -137,8 +150,8 @@ class MessageInbox(View):
         messages_unread = []
         messages_read = []
         for um_pair in UserMessage.objects.filter(user=get_user(request)):
-            messages_unread.extend(um_pair.message.filter(read=False))
-            messages_read.extend(um_pair.message.filter(read=True))
+            messages_unread.extend(um_pair.message.filter(read=False).order_by('created_at'))
+            messages_read.extend(um_pair.message.filter(read=True).order_by('created_at'))
         interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
 
         return render(request, 'user_handle/inbox.html', {'messages_read': messages_read,

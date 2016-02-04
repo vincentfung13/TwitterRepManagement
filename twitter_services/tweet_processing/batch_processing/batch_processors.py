@@ -11,7 +11,7 @@ import pytz
 class ReputationMonitor(object):
     def __init__(self):
         self.clusterer = KMeansClusterer(cluster_count=5)
-        self.period_hours = 3
+        self.period_hours = 30
 
     # Nasty three-nested loop
     def scan(self):
@@ -20,7 +20,7 @@ class ReputationMonitor(object):
             for reputation_dimension in utility.dimension_list:
                 print '\t Dimension %s' % reputation_dimension
                 try:
-                    time_threshold = datetime.now(pytz.utc) - timedelta(hours=self.period_hours)
+                    time_threshold = datetime.now(pytz.utc) - timedelta(days=self.period_hours)
                     self.clusterer.cluster_tweets(related_entity=entity,
                                                   reputation_dimension=reputation_dimension,
                                                   time_threshold=time_threshold)
