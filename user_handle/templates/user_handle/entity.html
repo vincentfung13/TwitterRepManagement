@@ -1,21 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<div id="subscribed" class="row">
+    <h4>Subscribed</h4>
+    <ul>
+        {% for entity in interest_list %}
+            <span id="delete" class="span4">{{ entity }}</span>
+        {% endfor %}
+    </ul>
+</div>
 
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
+<div id="remaining" class="row">
+    <h4>Remaining</h4>
+    <ul>
+        {% for entity in remaining_entities %}
+            <span id="add" class="span4">{{ entity }}</span>
+        {% endfor %}
+    </ul>
+</div>
 
-    <body>
-        {# Make it prettier #}
-        <form action="{% url 'user_handle:Interests' %}" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" name="add" value="add" />
-            <input type="submit" name="remove" value="remove" />
-        </form>
-    </body>
-</html>
+{# Make it prettier #}
+<form action="{% url 'user_handle:Interests' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" name="add" value="add" />
+    <input type="submit" name="remove" value="remove" />
+</form>
+
 
 <script>
     document.getElementById('id_username').value = '{{ request.user.username }}'

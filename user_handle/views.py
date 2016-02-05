@@ -1,4 +1,5 @@
 import forms
+import json
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
@@ -74,23 +75,22 @@ class ManageInterested(View):
     def get(self, request):
         form = forms.EntityForm()
         # Display user's list of interest
-        return render(request, 'user_handle/entity.html', {'form': form})
+        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
+        remaining_entities = [entity for entity in tweet_util.entities_list if entity not in interest_list]
+        return render(request, 'user_handle/entity.html', {'form': form,
+                                                           'interest_list': interest_list,
+                                                           'remaining_entities': remaining_entities, })
 
     # Adds the entity in to the database and sends a message to the front end
     def post(self, request):
-        form = forms.EntityForm(request.POST)
-        if form.is_valid():
-            # Create a row in the database
-            if 'add' in request.POST:
-                user_util.add_interested(request.user, form.cleaned_data['entity'])
-            elif 'remove' in request.POST:
-                user_util.remove_entity(request.user, form.cleaned_data['entity'])
-            else:
-                return user_util.json_response(-1, msg=u'invalid action')
-            # Redirect to user index page on success
-            return HttpResponseRedirect(reverse('user_handle:Index'))
+        if request.POST['action'] == 'add':
+            user_util.add_interested(request.user, request.POST['entity'])
+        elif request.POST['action'] == 'remove':
+            user_util.remove_entity(request.user, request.POST['entity'])
         else:
-            return user_util.json_response(-1, msg=form.errors)
+            return user_util.json_response(-1, msg=u'invalid action')
+        # Redirect to user index page on success
+        return HttpResponseRedirect(reverse('user_handle:Index'))
 
 
 # Index page for each user (showing the clickable entity list they are interested in)
@@ -98,12 +98,11 @@ class Index(View):
     def get(self, request):
         entity_list = [pair.entity for pair in UserEntity.objects.filter(user=get_user(request))]
         interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
-        remaining_entities = [entity for entity in interest_list if entity not in tweet_util.entities_list]
 
         context = {'username': request.user.username,
                    'entity_list': entity_list,
                    'interest_list': interest_list,
-                   'remaining_entities': remaining_entities,
+                   'interest_list_jsonify': json.dumps(interest_list),
                    }
         return render(request, 'user_handle/index.html', context)
 

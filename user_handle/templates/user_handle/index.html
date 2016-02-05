@@ -5,26 +5,47 @@
 
 {% block more-head %}
     <link rel="stylesheet" href="{% static 'user_handle/css/user_index.css' %}">
+    <link rel="stylesheet" href="{% static 'user_handle/css/manage_interest.css' %}">
+    <script type='text/javascript' src="//code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+    <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+    <script src="{% static 'user_handle/js/manage_interest.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 
+    <input id="csrf_token" type="hidden" value="{{ csrf_token }}"/>
     <div id="user_index">
         <div id="entity-manager-container">
-            <h3 id="entity-manager-heading">Manage your interests list</h3>
-            <div id="entity-manager"></div>
+            <div class="container" ng-app="myApp" ng-controller="tagsCtrl">
+                <div class="row">
+                    <div class="col-md-7">
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4><i class="fa fa-tag fa-lg"></i>Manage your entities:</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <tag-manager tags="tags" autocomplete="allTags"></tag-manager>
+                                    </div>
+                                </div>
+                            </div><!--/panel-body-->
+                        </div>
+                    </div>
+                </div><!--/row-->
+            </div><!--/container-->
         </div>
     </div>
 
     <script>
-
-        $.ajax({
-            url: '{% url 'user_handle:Interests' %}',
-            success: function(data){
-                $('#entity-manager').html(data)
-            },
-        });
-
+        tag_manager_setup({{ interest_list_jsonify | safe }});
+{#        $.ajax({#}
+{#            url: '{% url 'user_handle:Interests' %}',#}
+{#            success: function(data){#}
+{#                $('#entity-manager').html(data)#}
+{#            },#}
+{#        });#}
     </script>
 
 {% endblock %}
