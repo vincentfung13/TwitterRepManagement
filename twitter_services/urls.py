@@ -7,4 +7,7 @@ urlpatterns = [
     url(r'^entity_dimension/(?P<entity>.*)/(?P<dimension>.*)/$',
         login_required(views.TweetsFilter.as_view()),
         name='tweets_filtered_entity_dimension'),
+    url(r'^stats/(?P<entity>.*)/$', login_required(views.Graphs.as_view()), name='graphs_entity'),
+    url(r'^stats/(?P<entity>.*)/(?P<dimension>.*)/$',
+        login_required(views.Graphs.as_view()), name='graphs_entity_dimension')
 ]

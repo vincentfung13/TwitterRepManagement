@@ -1,0 +1,17 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="{% static 'js/graphs/graphs.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/graphs.css' %}">
+    </head>
+</html>
+
+<script>
+    var time_list = {{ date_time_list | safe }};
+    var score_list = {{ reputation_scores }};
+    draw_line_charts(time_list, score_list);
+</script>

@@ -42,12 +42,6 @@
 
     <script>
         tag_manager_setup({{ interest_list_jsonify | safe }});
-{#        $.ajax({#}
-{#            url: '{% url 'user_handle:Interests' %}',#}
-{#            success: function(data){#}
-{#                $('#entity-manager').html(data)#}
-{#            },#}
-{#        });#}
     </script>
 
 {% endblock %}

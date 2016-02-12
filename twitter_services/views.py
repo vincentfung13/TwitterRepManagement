@@ -38,3 +38,23 @@ class TweetsFilter(View):
         }
 
         return render(request, 'twitter_services/tweets_filter.html', context)
+
+
+# TODO: Collect more data and generate stats dynamically
+class Graphs(View):
+    def get(self, request, entity, dimension=None):
+        tweets_count_list = [294, 533, 400, 600, 700]
+        reputation_scores =[-5.4, 3.44, 0.99, -1.3, 2.2]
+        negative_percentages = [0.5, 0.08, 0.2, 0.21, 0.12]
+        date_time_list = ['2015-10-01', '2015-10-02', '2015-10-03', '2015-10-04', '2015-10-05']
+
+        context = {
+            'entity': entity,
+            'dimension': dimension,
+            'tweets_count_list': tweets_count_list,
+            'reputation_scores': reputation_scores,
+            'negative_percentage': negative_percentages,
+            'date_time_list': date_time_list
+        }
+
+        return render(request, 'twitter_services/graphs.html', context)

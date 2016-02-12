@@ -38,9 +38,6 @@ def __get_reputation_score__(tweet_count, positive_scores, negative_scores):
     positive_scores = [positive_score for positive_score in positive_scores if positive_score != 1]
     negative_scores = [negative_score for negative_score in negative_scores if negative_score != 1]
 
-    print positive_scores
-    print negative_scores
-
     score = 0
     for positive_score in positive_scores:
         score += positive_score
