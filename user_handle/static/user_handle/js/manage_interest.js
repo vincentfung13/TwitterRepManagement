@@ -12,57 +12,61 @@ function tag_manager_setup(list, username) {
                     autocomplete: '=autocomplete'
                 },
 
-                template: '<div class="tags">' +
-                '<div ng-repeat="(idx, tag) in tags" class="tag label label-success">{{tag}} <a class="close" href ng-click="remove(idx)">×</a></div>' +
+                template:
+                '<div class="tags">' +
+                    '<div ng-repeat="(idx, tag) in tags" class="tag label label-success">{{tag}} ' +
+                        '<a class="close" href ng-click="remove(idx)">×</a></div>' +
                 '</div>' +
-                '<div class="input-group"><input type="text" class="form-control" placeholder="add an entity..." ng-model="newValue" /> ' +
-                '<span class="input-group-btn"><a class="btn btn-default" ng-click="add()">Add</a></span></div>',
+                '<div class="input-group">' +
+                '   <input type="text" class="form-control" placeholder="add an entity..." ng-model="newValue" /> ' +
+                    '<span class="input-group-btn"><a class="btn btn-default" ng-click="add()">Add</a></span>' +
+                '</div>',
 
                 link: function ($scope, $element) {
 
                     var input = angular.element($element).find('input');
 
                     //// setup autocomplete
-                    //if ($scope.autocomplete) {
-                    //  $scope.autocompleteFocus = function(event, ui) {
-                    //    input.val(ui.item.value);
-                    //    return false;
-                    //  };
-                    //  $scope.autocompleteSelect = function(event, ui) {
-                    //    $scope.newValue = ui.item.value;
-                    //    $scope.$apply( $scope.add );
-                    //
-                    //    return false;
-                    //  };
-                    //  $($element).find('input').autocomplete({
-                    //        minLength: 0,
-                    //        source: function(request, response) {
-                    //          var item;
-                    //          return response((function() {
-                    //            var _i, _len, _ref, _results;
-                    //            _ref = $scope.autocomplete;
-                    //            _results = [];
-                    //            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    //              item = _ref[_i];
-                    //              if (item.toLowerCase().indexOf(request.term.toLowerCase()) !== -1) {
-                    //                _results.push(item);
-                    //              }
-                    //            }
-                    //            return _results;
-                    //          })());
-                    //        },
-                    //        focus: (function(_this) {
-                    //          return function(event, ui) {
-                    //            return $scope.autocompleteFocus(event, ui);
-                    //          };
-                    //        })(this),
-                    //        select: (function(_this) {
-                    //          return function(event, ui) {
-                    //            return $scope.autocompleteSelect(event, ui);
-                    //          };
-                    //        })(this)
-                    //      });
-                    //}
+                    if ($scope.autocomplete) {
+                      $scope.autocompleteFocus = function(event, ui) {
+                        input.val(ui.item.value);
+                        return false;
+                      };
+                      $scope.autocompleteSelect = function(event, ui) {
+                        $scope.newValue = ui.item.value;
+                        $scope.$apply( $scope.add );
+
+                        return false;
+                      };
+                      $($element).find('input').autocomplete({
+                            minLength: 0,
+                            source: function(request, response) {
+                              var item;
+                              return response((function() {
+                                var _i, _len, _ref, _results;
+                                _ref = $scope.autocomplete;
+                                _results = [];
+                                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                                  item = _ref[_i];
+                                  if (item.toLowerCase().indexOf(request.term.toLowerCase()) !== -1) {
+                                    _results.push(item);
+                                  }
+                                }
+                                return _results;
+                              })());
+                            },
+                            focus: (function(_this) {
+                              return function(event, ui) {
+                                return $scope.autocompleteFocus(event, ui);
+                              };
+                            })(this),
+                            select: (function(_this) {
+                              return function(event, ui) {
+                                return $scope.autocompleteSelect(event, ui);
+                              };
+                            })(this)
+                          });
+                    }
 
 
                     // adds the new tag to the array

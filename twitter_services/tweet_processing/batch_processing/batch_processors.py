@@ -5,22 +5,41 @@ from user_handle import utility as user_util
 from user_handle.models import Message, UserMessage, UserEntity
 from django.db import transaction
 from datetime import datetime, timedelta
+from twitter_services.tweet_processing.batch_processing.statistics import Statistics
+from twitter_services.models import Statistics as Tweet_Stat_Table
 import pytz
 
 
 class ReputationMonitor(object):
     def __init__(self):
         self.clusterer = KMeansClusterer(cluster_count=5)
-        self.period_hours = 30
+        self.period_hours = 3
 
     # Nasty three-nested loop
     def scan(self):
+        time_threshold = datetime.now(pytz.utc) - timedelta(hours=self.period_hours)
         for entity in utility.entities_list:
             print 'Entity: %s' % entity
+            # Get statistics for whole entity and write results to the database
+            statistics_dict_whole = Statistics.get_stats(time_threshold, entity)
+            Tweet_Stat_Table.objects.create(related_entity=entity,
+                                            total_tweets_count=statistics_dict_whole['total_tweets_count'],
+                                            negative_percentage=statistics_dict_whole['negative_percentage'],
+                                            reputation_score=statistics_dict_whole['reputation_score'])
+
             for reputation_dimension in utility.dimension_list:
+                # Get statistics for each dimension of entities and write results to the database
+                statistics_dict_dimension = Statistics.get_stats(time_threshold, entity, dimension=reputation_dimension)
+                Tweet_Stat_Table.objects.create(related_entity=entity,
+                                                reputation_dimension=reputation_dimension,
+                                                total_tweets_count=statistics_dict_dimension['total_tweets_count'],
+                                                negative_percentage=statistics_dict_dimension['negative_percentage'],
+                                                reputation_score=statistics_dict_dimension['reputation_score'])
+
+                # Clustering, extract topics and send out alerts
                 print '\t Dimension %s' % reputation_dimension
                 try:
-                    time_threshold = datetime.now(pytz.utc) - timedelta(days=self.period_hours)
+                    time_threshold = datetime.now(pytz.utc) - timedelta(hours=self.period_hours)
                     self.clusterer.cluster_tweets(related_entity=entity,
                                                   reputation_dimension=reputation_dimension,
                                                   time_threshold=time_threshold)

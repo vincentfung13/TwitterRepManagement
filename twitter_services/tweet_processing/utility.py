@@ -55,8 +55,18 @@ def is_reputation_affecting(tweet):
 # Function to determine if a score represents negative sentiment
 def is_negative(senti_score):
     negative = int(senti_score[len(senti_score) - 1])
-    if negative >= 2:
+    if negative > 2:
         return True
     else:
         return False
+
+
+# Get the negative value given a senti_score
+def get_negative_score(senti_score_list):
+    return [int(senti_score[len(senti_score) - 1]) for senti_score in senti_score_list]
+
+
+# Get the positive value given a senti_score
+def get_positive_score(senti_score_list):
+    return [int(senti_score[0]) for senti_score in senti_score_list]
 

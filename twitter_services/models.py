@@ -21,3 +21,14 @@ class TweetTrainingSet(models.Model):
 
     def __unicode__(self):
         return 'tweet_id: ' + self.tweet['id_str']
+
+
+# Table for statistics, the front end will use the data in this table to draw graphs
+class Statistics(models.Model):
+    related_entity = models.CharField(max_length=20, default='Undefined')
+    reputation_dimension = models.CharField(max_length=20, default='Whole')
+    timestamp = models.DateTimeField(default=timezone.now)
+    total_tweets_count = models.IntegerField(default=0)
+    negative_percentage = models.FloatField(default=0)
+    # This attribute takes into account of how negative each tweets are
+    reputation_score = models.FloatField(default=0)
