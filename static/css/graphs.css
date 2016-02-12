@@ -18,3 +18,13 @@ body {
   stroke: steelblue;
   stroke-width: 1.5px;
 }
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
