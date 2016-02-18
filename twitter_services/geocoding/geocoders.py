@@ -34,7 +34,6 @@ class LocalGeocoder(object):
             for row in countries:
                 self.location_dict[row[2].lower()] = [float(row[3]), float(row[4])]
 
-
     # Take a list of tweets and returns a list of coordinates accordingly
     # Location that doesn't have a match will be discarded
     def geocode_many(self, tweets):

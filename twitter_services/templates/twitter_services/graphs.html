@@ -4,25 +4,23 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="{% static 'js/graphs/graphs.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/graphs.css' %}">
     </head>
 
     <body>
-        <div id="line-chart">
-            <h1>Reputation Score - Time Line chart for {{ entity }} </h1>
-        </div>
-        <div id="bar-chart">
-            <h1>Tweet Count - Time bar chart for {{ entity }} </h1>
-        </div>
+        <div id="line-chart"></div>
+        <div id="bar-chart"></div>
     </body>
 </html>
 
 <script>
-    var time_list = {{ date_time_list | safe }};
-    var score_list = {{ reputation_scores }};
-    var tweet_count_list = {{ tweets_count_list }};
-    draw_line_charts(time_list, score_list);
-    draw_bar_charts(time_list, tweet_count_list);
+{#    var tweet_count_list = {{ tweets_count_list }};#}
+{#    draw_line_charts(time_list, score_list);#}
+    draw_bar_charts({{  date_time_list | safe }}, {{ tweets_count_list }}, [0],
+            "Bar chart of tweet count for {{ entity }} {% if Dimension %}'s {{ Dimension }} {% endif %}");
+    draw_line_charts({{ date_time_list | safe }}, {{ reputation_scores }},
+            "Line chart of reputation score for {{ entity }} {% if Dimension %}'s {{ Dimension }} {% endif %}");
+
 </script>

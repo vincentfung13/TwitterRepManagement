@@ -46,7 +46,7 @@ class Graphs(View):
         tweets_count_list = [294, 533, 400, 600, 700]
         reputation_scores =[-5.4, 3.44, 0.99, -1.3, 2.2]
         negative_percentages = [0.5, 0.08, 0.2, 0.21, 0.12]
-        date_time_list = ['2015-10-04', '2015-10-11', '2015-10-18', '2015-10-25', '2015-10-31']
+        date_time_list = ['2016-02-01', '2016-02-02', '2016-02-03', '2016-02-04', '2016-02-05']
 
         context = {
             'entity': entity,
