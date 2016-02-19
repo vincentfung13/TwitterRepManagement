@@ -26,6 +26,14 @@ body {
     font-size: 10px;
 }
 
-.bar {
+rect {
+    shape-rendering: crispEdges;
+}
+
+rect.positive {
     fill: steelblue;
+}
+
+rect.negative {
+    fill: darkred;
 }

@@ -16,11 +16,8 @@
 </html>
 
 <script>
-{#    var tweet_count_list = {{ tweets_count_list }};#}
-{#    draw_line_charts(time_list, score_list);#}
-    draw_bar_charts({{  date_time_list | safe }}, {{ tweets_count_list }}, [0],
+    draw_bar_charts({{  date_time_list | safe }}, {{ tweets_count_list }}, {{ negative_count_list }},
             "Bar chart of tweet count for {{ entity }} {% if Dimension %}'s {{ Dimension }} {% endif %}");
     draw_line_charts({{ date_time_list | safe }}, {{ reputation_scores }},
             "Line chart of reputation score for {{ entity }} {% if Dimension %}'s {{ Dimension }} {% endif %}");
-
 </script>

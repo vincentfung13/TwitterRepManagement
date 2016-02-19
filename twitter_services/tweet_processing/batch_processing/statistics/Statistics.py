@@ -23,11 +23,10 @@ def get_stats(time_threshold, entity, dimension=None):
 
     # Compute simple statistics
     reputation_score = __get_reputation_score__(tweet_count, positive_scores, negative_scores)
-    negative_percentage = negative_count/tweet_count
 
     stat = dict()
     stat['total_tweets_count'] = tweet_count
-    stat['negative_percentage'] = negative_percentage
+    stat['negative_count'] = negative_count
     stat['reputation_score'] = reputation_score
 
     return stat
