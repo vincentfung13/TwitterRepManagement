@@ -42,13 +42,14 @@ class TweetsFilter(View):
 
 # TODO: Collect more data and generate stats dynamically
 class Graphs(View):
-    def get(self, request, entity, dimension=None):
+    def get(self, request, chart, entity, dimension=None):
         tweets_count_list = [294, 533, 400, 600, 700]
         reputation_scores =[-5.4, 3.44, 0.99, -1.3, 2.2]
         negative_count_list = [200, 300, 133, 289, 468]
         date_time_list = ['2016-02-01', '2016-02-02', '2016-02-03', '2016-02-04', '2016-02-05']
 
         context = {
+            'chart': chart,
             'entity': entity,
             'dimension': dimension,
             'tweets_count_list': tweets_count_list,
