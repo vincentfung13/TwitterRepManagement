@@ -19,5 +19,8 @@ class MainPage(View):
 
 class About(View):
     def get(self, request):
-        context = {}
+        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
+        context = {
+            'interest_list': interest_list,
+        }
         return render(request, 'about.html', context)

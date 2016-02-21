@@ -121,6 +121,21 @@ function draw_line_charts(time_list, reputation_scores) {
                     .style("text-anchor", "end")
                     .text("Reputation Score");
 
+    // Append dot to points
+    lineChartSVG.selectAll(".dot")
+        .data(arrData)
+        .enter()
+            .append("circle")
+                .attr("class", "dot")
+                .attr("cx", function(d) {
+                    return xScale(new Date(d[0]));
+                })
+                .attr("cy", function(d) {
+                    return yScale(d[1]);
+                })
+                .attr("r", 5)
+                .attr("fill", "steelblue")
+    
     lineChartSVG.append("path")
                 .datum(arrData)
                 .attr("class", "score_line")
