@@ -1,0 +1,37 @@
+/*
+ * Override Bootstrap's default container.
+ */
+
+@media (min-width: 1200px) {
+  .container {
+    width: 970px;
+  }
+}
+
+.blog-title {
+  margin-bottom: 0;
+  font-size: 40px;
+  font-weight: normal;
+}
+
+.blog-main {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/*
+ * Blog posts
+ */
+.blog-post {
+    margin-bottom: 60px;
+}
+
+.blog-post-title {
+    margin-bottom: 5px;
+    font-size: 40px;
+}
+
+.blog-post-meta {
+    margin-bottom: 20px;
+    color: #999;
+}

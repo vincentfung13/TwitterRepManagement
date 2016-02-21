@@ -1,0 +1,51 @@
+{% extends 'main_template.html' %}
+{% load staticfiles %}
+
+{% block title %} About: Twitter Reputation Monitor {% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static "css/about.css" %}">
+    <div id="about-container">
+         <div class="blog-header">
+            <h2 class="blog-title">About the Project</h2>
+        </div>
+
+         <div class="blog-post">
+             <hr>
+             <h3>About me</h3>
+             <p>
+                 My name is Vincent, I am a final year Software Engineering student in the Unversity of Glasgow, UK.
+                 Before coming to the UK I spent two years majoring Electronics Engineering in Sun Yat-Sen University,
+                 mainland of China.
+             </p>
+             <p>
+                 This system is my final year project in Glasgow University supervised by Dr. Iadh Ounis. Tt aims to
+                 help companies to keep track of the online reputation of their products, as well as individual users
+                 to monitor products they are interested.
+             </p>
+             <hr>
+
+             <h3>Contributing</h3>
+             <p>
+                 The back-end of the system is written in Python and it is built using the Django Framework.
+                 Note that it has a dependency of PostgresSQL (version 9.3 or later) and Django version 1.9,
+                 for using of the
+                 <a href="https://docs.djangoproject.com/es/1.9/ref/contrib/postgres/fields/">JSONField</a>
+                 with Django ORM.
+             </p>
+             <p>
+                 I have been developing this system for around four months, so it is far from perfect and can be scaled.
+                 The project is open-sourced on
+                 <a href="https://github.com/vincentfung13/TwitterRepManagement">Github</a>.
+                 You can open a pull request for contributing to the project.
+             </p>
+             <hr>
+
+             <h3>Contact</h3>
+             <p>
+                 You can either <a href="mailto:vincent.fung13@gmail.com">email me</a> or follow me on
+                 <a href="https://github.com/vincentfung13">Github</a>.
+             </p>
+          </div>
+    </div>
+{% endblock %}

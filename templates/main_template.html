@@ -31,7 +31,7 @@
                 <ul class="nav nav-pills pull-right">
 
                     {% if not user.is_authenticated %}
-                        <li role="presentation" class="active"><a href="{% url 'MainPage' %}">Home</a></li>
+                        <li role="presentation"><a href="{% url 'MainPage' %}">Home</a></li>
                     {% else %}
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown"
@@ -57,8 +57,7 @@
                         </li>
                     {% endif %}
 
-                    <li role="presentation"><a href="#">About</a></li>
-                    <li role="presentation"><a href="#">Contact</a></li>
+                    <li role="presentation"><a href="{% url 'About' %}">About</a></li>
                 </ul>
             </nav>
             <img src="{% static 'img/twitter-icon.png' %}" class="twitter-icon">

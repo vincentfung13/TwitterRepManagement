@@ -15,3 +15,9 @@ class MainPage(View):
             # display home page main content
             context = {}
             return render(request, 'main.html', context)
+
+
+class About(View):
+    def get(self, request):
+        context = {}
+        return render(request, 'about.html', context)

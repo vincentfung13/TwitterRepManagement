@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from views import MainPage
+from views import MainPage, About
 
 urlpatterns = [
     url(r'^twitter_services/', include('twitter_services.urls', namespace='twitter_services')),
     url(r'^user_handle/', include('user_handle.urls', namespace='user_handle')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^main/$', MainPage.as_view(), name='MainPage'),
+    url(r'^about/$', About.as_view(), name='About'),
 ]

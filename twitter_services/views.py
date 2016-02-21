@@ -5,15 +5,21 @@ from user_handle.models import UserEntity
 from django.contrib.auth.models import User
 from tweet_processing import utility
 from geocoding.geocoders import LocalGeocoder
+from datetime import datetime, timedelta
+import pytz
 
 
 class TweetsFilter(View):
     def get(self, request, entity, dimension=None):
+        time_threshold = datetime.now(pytz.utc) - timedelta(days=5)
+        print time_threshold
         if dimension is not None:
             tweets = Tweet.objects.filter(tweet__related_entity=entity,
-                                          tweet__reputation_dimension=dimension).order_by('-created_at')
+                                          tweet__reputation_dimension=dimension,
+                                          created_at__gt=time_threshold).order_by('-created_at')
         else:
-            tweets = Tweet.objects.filter(tweet__related_entity=entity).order_by('-created_at')
+            tweets = Tweet.objects.filter(tweet__related_entity=entity,
+                                          created_at__gt=time_threshold).order_by('-created_at')
 
         tweets_filtered = [tweet_orm.tweet for tweet_orm in tweets]
 

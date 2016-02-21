@@ -13,18 +13,18 @@ import pytz
 class ReputationMonitor(object):
     def __init__(self):
         self.clusterer = KMeansClusterer(cluster_count=5)
-        self.period_hours = 3
+        self.period_days = 1
 
     # Nasty three-nested loop
     def scan(self):
-        time_threshold = datetime.now(pytz.utc) - timedelta(hours=self.period_hours)
+        time_threshold = datetime.now(pytz.utc) - timedelta(days=self.period_days)
         for entity in utility.entities_list:
             print 'Entity: %s' % entity
             # Get statistics for whole entity and write results to the database
             statistics_dict_whole = Statistics.get_stats(time_threshold, entity)
             Tweet_Stat_Table.objects.create(related_entity=entity,
                                             total_tweets_count=statistics_dict_whole['total_tweets_count'],
-                                            negative_percentage=statistics_dict_whole['negative_percentage'],
+                                            negative_count=statistics_dict_whole['negative_count'],
                                             reputation_score=statistics_dict_whole['reputation_score'])
 
             for reputation_dimension in utility.dimension_list:
@@ -33,7 +33,7 @@ class ReputationMonitor(object):
                 Tweet_Stat_Table.objects.create(related_entity=entity,
                                                 reputation_dimension=reputation_dimension,
                                                 total_tweets_count=statistics_dict_dimension['total_tweets_count'],
-                                                negative_percentage=statistics_dict_dimension['negative_percentage'],
+                                                negative_count=statistics_dict_dimension['negative_count'],
                                                 reputation_score=statistics_dict_dimension['reputation_score'])
 
                 # Clustering, extract topics and send out alerts
