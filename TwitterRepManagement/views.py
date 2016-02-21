@@ -19,8 +19,11 @@ class MainPage(View):
 
 class About(View):
     def get(self, request):
-        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
-        context = {
-            'interest_list': interest_list,
-        }
+        context = {}
+        user = get_user(request)
+        if user.is_authenticated():
+            interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=user)]
+            context = {
+                'interest_list': interest_list,
+            }
         return render(request, 'about.html', context)
