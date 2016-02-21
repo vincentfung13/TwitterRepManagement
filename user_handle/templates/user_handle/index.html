@@ -21,11 +21,10 @@
         <div id="entity-manager-container">
             <div class="container" ng-app="myApp" ng-controller="tagsCtrl">
                 <div class="row">
-                    <div class="col-md-7">
-
+                    <div class="col-md-10 col-md-offset-1">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h4><i class="fa fa-tag fa-lg"></i>Manage your entities:</h4>
+                                <h3><i class="fa fa-tag fa-lg"></i>Manage your entities:</h3>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -40,8 +39,11 @@
             </div><!--/container-->
         </div>
 
-        <div id="graphs-container">
-            <div id="selectors-container">
+        <div id="graphs-container" class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="text-center">Reputation Statistics</h3>
+            </div>
+            <div id="selectors-container" class="panel-body">
                 <select class="selectpicker" id="entity-picker" onchange="init_graph()">
                     {% for entity in entity_list %}
                         <option value="{{ entity }}">{{ entity }}</option>

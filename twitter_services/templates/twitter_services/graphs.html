@@ -10,17 +10,15 @@
     </head>
 
     <body>
-        <div id="line-chart"></div>
+        <div id="line-chart">
         <div id="bar-chart"></div>
     </body>
 </html>
 
 <script>
     {% if chart == 'bar' %}
-    draw_bar_charts({{  date_time_list | safe }}, {{ tweets_count_list }}, {{ negative_count_list }},
-            "Tweet count for {{ entity }}{% if dimension %}'s {{ dimension }} {% endif %}");
+        draw_bar_charts({{  date_time_list | safe }}, {{ tweets_count_list }}, {{ negative_count_list }});
     {% else %}
-    draw_line_charts({{ date_time_list | safe }}, {{ reputation_scores }},
-            "Reputation score for {{ entity }}{% if dimension %}'s {{ dimension }} {% endif %}");
+        draw_line_charts({{ date_time_list | safe }}, {{ reputation_scores }});
     {% endif %}
 </script>

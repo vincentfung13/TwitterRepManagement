@@ -1,5 +1,11 @@
 #entity-manager-container {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#tag {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #inbox {

@@ -1,8 +1,9 @@
 .tags {
-   margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .tags .tag {
+    text-align: center;
    display: inline-block;
    margin-right: 5px;
    font-size: 13px;
@@ -12,3 +13,4 @@
    font-size: 14px;
    margin-left: 5px;
 }
+

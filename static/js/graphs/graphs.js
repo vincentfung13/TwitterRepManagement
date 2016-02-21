@@ -34,9 +34,8 @@ function init_graph() {
  * Draw a line chart regarding the reputation score of an entity
  * @param time_list
  * @param reputation_scores
- * @param title
  */
-function draw_line_charts(time_list, reputation_scores, title) {
+function draw_line_charts(time_list, reputation_scores) {
     // Construct data for the axis and lines
     var arrData = [];
     for (var i = 0; i < time_list.length; i++) {
@@ -101,14 +100,6 @@ function draw_line_charts(time_list, reputation_scores, title) {
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    lineChartSVG.append("text")
-              .attr("class", "title")
-              .attr("x", width/2)
-              .attr("y", 1)
-              .attr("text-anchor", "middle")
-              .style("font-size","25px")
-              .text(title);
-
     lineChartSVG.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
@@ -162,9 +153,8 @@ function draw_line_charts(time_list, reputation_scores, title) {
  * @param time_list
  * @param tweet_count_list
  * @param negative_count_list
- * @param title
  */
-function draw_bar_charts(time_list, tweet_count_list, negative_count_list, title) {
+function draw_bar_charts(time_list, tweet_count_list, negative_count_list) {
     // Construct data for the axis and charts
     var arrData = [];
     for (var i = 0; i < time_list.length; i++) {
@@ -227,14 +217,6 @@ function draw_bar_charts(time_list, tweet_count_list, negative_count_list, title
         })
         .attr("width", 100);
 
-    barChartSVG.append("text")
-              .attr("class", "title")
-              .attr("x", width/2)
-              .attr("y", margin.top)
-              .attr("text-anchor", "middle")
-              .style("font-size","25px")
-              .text(title);
-
     var xAxis = d3.svg.axis()
         .scale(xScale)
         .orient('bottom')
@@ -267,7 +249,7 @@ function draw_bar_charts(time_list, tweet_count_list, negative_count_list, title
                 .call(yAxis)
                 .append("text")
                     .attr("transform", "rotate(-90)")
-                    .attr("y", 6)
+                    .attr("y", 5)
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("Count");
