@@ -103,6 +103,7 @@ class Index(View):
                    'entity_list': entity_list,
                    'interest_list': interest_list,
                    'interest_list_jsonify': json.dumps(interest_list),
+                   'dimension_list': tweet_util.dimension_list,
                    }
         return render(request, 'user_handle/index.html', context)
 

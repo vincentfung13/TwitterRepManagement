@@ -6,11 +6,12 @@
 {% block more-head %}
     <link rel="stylesheet" href="{% static 'user_handle/css/user_index.css' %}">
     <link rel="stylesheet" href="{% static 'user_handle/css/manage_interest.css' %}">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
     <script type='text/javascript' src="//code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
     <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
     <script src="{% static 'user_handle/js/manage_interest.js' %}"></script>
+    <script src="{% static 'js/graphs/graphs.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -38,10 +39,35 @@
                 </div><!--/row-->
             </div><!--/container-->
         </div>
+
+        <div id="graphs-container">
+            <div id="selectors-container">
+                <select class="selectpicker" id="entity-picker" onchange="init_graph()">
+                    {% for entity in entity_list %}
+                        <option value="{{ entity }}">{{ entity }}</option>
+                    {% endfor %}
+                </select>
+
+                <select class="selectpicker" id="dimension-picker" onchange="init_graph()">
+                    <option value="All">All</option>
+                    {% for dimension in dimension_list %}
+                        <option value="{{ dimension }}">{{ dimension }}</option>
+                    {% endfor %}
+                </select>
+
+                <select class="selectpicker" id="graph-picker" onchange="init_graph()">
+                    <option value="line">Reputation Score</option>
+                    <option value="bar">Tweet Count</option>
+                </select>
+            </div>
+
+            <div id="graph-container"></div>
+        </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
         tag_manager_setup({{ interest_list_jsonify | safe }});
+        init_graph();
     </script>
 
 {% endblock %}

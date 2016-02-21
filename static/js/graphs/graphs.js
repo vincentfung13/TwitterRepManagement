@@ -5,6 +5,31 @@ var margin = {top: 20, right: 30, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+
+function init_graph() {
+    // Get values for the three selectors
+    var entity = document.getElementById('entity-picker').value;
+    var dimension = document.getElementById('dimension-picker').value;
+    var graph_type = document.getElementById('graph-picker').value;
+
+    if (dimension == 'All') {
+        $.ajax({
+				url : '/twitter_services/stats/' + graph_type + '/' + entity,
+				success : function(data) {
+					$("#graph-container").html(data);
+				}
+        });
+    }
+    else {
+        $.ajax({
+				url : '/twitter_services/stats_both/' + graph_type + '/' + entity + '/' + dimension,
+				success : function(data) {
+					$("#graph-container").html(data);
+				}
+        });
+    }
+}
+
 /**
  * Draw a line chart regarding the reputation score of an entity
  * @param time_list

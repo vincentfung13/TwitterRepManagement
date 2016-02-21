@@ -9,3 +9,16 @@
 #entity-manager-heading {
     margin-bottom: 20px;
 }
+
+#graphs-container {
+    margin-bottom: 20px;
+}
+
+#selectors-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#graph-container {
+    text-align: center;
+}
