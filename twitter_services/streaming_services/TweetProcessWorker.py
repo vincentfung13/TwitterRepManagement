@@ -1,6 +1,6 @@
 import multiprocessing
 
-from django.db import transaction, DatabaseError
+from django.utils import timezone
 
 from twitter_services.models import Tweet
 from twitter_services.tweet_processing import utility
@@ -13,27 +13,25 @@ class TweetProcessor(multiprocessing.Process):
         self.tweet_queue = tweet_queue
         self.dimension_classifier = dimension_classifier
         self.spam_detector = spam_detector
+        # Buffer for bulk create
+        self.tweets_buffer = []
+        self.buffer_size = 100
 
     def run(self):
         while True:
             status = self.tweet_queue.get()
-            process_tweet(status, self.dimension_classifier, self.spam_detector)
+            if not self.spam_detector.is_spam(status) and utility.is_reputation_affecting(status):
+                id_str = status['id_str']
+                status['reputation_dimension'] = self.dimension_classifier.classify(status)
+                status['related_entity'] = utility.fetch_entity(status)
+                status['sentiment_score'] = TweetSentimentEvaluator.rate_sentiment(status)
+                self.tweets_buffer.append(Tweet(tweet_id=id_str, tweet=status, created_at=timezone.now()))
+                print 'Tweet %s added to buffer, buffer size %d' % id_str, len(self.tweets_buffer)
+
+                if len(self.tweets_buffer) >= self.buffer_size:
+                    Tweet.objects.bulk_create(self.tweets_buffer)
+                    del self.tweets_buffer[:]
+                    print 'INFO: Bulk created 100 tweets %s' % timezone.now()
 
 
-# Process a single tweet and insert it into the db if it fits the requirements
-def process_tweet(tweet_json, dimension_classifier, spam_detector):
-    if (not spam_detector.is_spam(tweet_json)) and utility.is_reputation_affecting(tweet_json):
-        id_str = tweet_json['id_str']
-        tweet_json['reputation_dimension'] = dimension_classifier.classify(tweet_json)
-        tweet_json['related_entity'] = utility.fetch_entity(tweet_json)
-        tweet_json['sentiment_score'] = TweetSentimentEvaluator.rate_sentiment(tweet_json)
-
-        # Insert the tweet into the database if it is reputation-affecting
-        try:
-            Tweet.objects.create(tweet_id=id_str, tweet=tweet_json).save()
-            print 'Inserted tweet id: %s' % id_str
-
-        except DatabaseError:
-            print 'Database Error: Bad query! Rolling back transaction.'
-            transaction.rollback()
 

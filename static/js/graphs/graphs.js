@@ -14,7 +14,6 @@ var colour = {
     "Heineken": "darkgreen"
 };
 
-
 function init_graph() {
     // Get values for the three selectors
     var entity = document.getElementById('entity-picker').value;
@@ -174,7 +173,7 @@ function draw_line_charts(entity, time_list, reputation_scores) {
                 .attr("text-anchor", "start")
                 .style("fill", colour[entity])
                 .style("font-size", "13px")
-                .text("Reputation Score");
+                .text(entity);
 
 	lineChartSVG.append("text")
                 .attr("transform", "translate(" + width * 0.75 + "," + yScale(0) + ")")
@@ -183,6 +182,13 @@ function draw_line_charts(entity, time_list, reputation_scores) {
                 .style("fill", "red")
                 .style("font-size", "13px")
                 .text("Neutral");
+}
+
+function add_line_charts(entity, time_list, reputation_score) {
+}
+
+function rescale_yAxis(svg, reputation_score) {
+
 }
 
 /**

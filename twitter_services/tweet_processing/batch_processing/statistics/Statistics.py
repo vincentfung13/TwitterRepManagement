@@ -16,20 +16,21 @@ def get_stats(time_threshold, entity, dimension=None):
                       for tweet in Tweet.objects.filter(tweet__related_entity=entity,
                                                         created_at__gt=time_threshold)]
 
-    negative_scores = get_negative_score(senti_list)
-    positive_scores = get_positive_score(senti_list)
-    negative_count = len([score for score in negative_scores if score > 2])
-    tweet_count = len(senti_list)
+    if len(senti_list) > 0:
+        negative_scores = get_negative_score(senti_list)
+        positive_scores = get_positive_score(senti_list)
+        negative_count = len([score for score in negative_scores if score > 2])
+        tweet_count = len(senti_list)
 
-    # Compute simple statistics
-    reputation_score = __get_reputation_score__(tweet_count, positive_scores, negative_scores)
+        # Compute simple statistics
+        reputation_score = __get_reputation_score__(tweet_count, positive_scores, negative_scores)
 
-    stat = dict()
-    stat['total_tweets_count'] = tweet_count
-    stat['negative_count'] = negative_count
-    stat['reputation_score'] = reputation_score
+        stat = dict()
+        stat['total_tweets_count'] = tweet_count
+        stat['negative_count'] = negative_count
+        stat['reputation_score'] = reputation_score
 
-    return stat
+        return stat
 
 
 def __get_reputation_score__(tweet_count, positive_scores, negative_scores):
