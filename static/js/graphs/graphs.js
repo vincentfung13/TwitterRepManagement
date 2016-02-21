@@ -122,25 +122,48 @@ function draw_line_charts(time_list, reputation_scores) {
                     .text("Reputation Score");
 
     // Append dot to points
-    lineChartSVG.selectAll(".dot")
-        .data(arrData)
-        .enter()
-            .append("circle")
-                .attr("class", "dot")
-                .attr("cx", function(d) {
-                    return xScale(new Date(d[0]));
-                })
-                .attr("cy", function(d) {
-                    return yScale(d[1]);
-                })
-                .attr("r", 5)
-                .attr("fill", "steelblue")
-    
+    //lineChartSVG.selectAll(".dot")
+    //    .data(arrData)
+    //    .enter()
+    //        .append("circle")
+    //            .attr("class", "dot")
+    //            .attr("cx", function(d) {
+    //                return xScale(new Date(d[0]));
+    //            })
+    //            .attr("cy", function(d) {
+    //                return yScale(d[1]);
+    //            })
+    //            .attr("r", 5)
+    //            .attr("fill", "steelblue")
+
+    var node = lineChartSVG.selectAll(".g")
+                .data(arrData)
+                .enter()
+                .append("g");
+
+    node.append("circle")
+        .attr("class", "dot")
+        .attr("cx", function(d) { return xScale(new Date(d[0])); })
+        .attr("cy", function(d) { return yScale(d[1]); })
+        .attr("r", 5)
+        .attr("fill", "steelblue");
+
+    node.append("text")
+        .attr("transform", function(d) {
+            var cx = xScale(new Date(d[0])) + 10;
+            var cy = yScale(d[1]);
+            return "translate(" + cx + "," + cy + ")"
+        })
+        .style("fill", "steelblue")
+        .style("font-size", "13px")
+        .text(function(d) {
+            return d[1];
+        });
+
     lineChartSVG.append("path")
                 .datum(arrData)
                 .attr("class", "score_line")
                 .attr("d", score_line)
-                .attr("stroke", "red");
 
     lineChartSVG.append("path")
                 .datum(arrData)
@@ -149,10 +172,11 @@ function draw_line_charts(time_list, reputation_scores) {
                 .attr("stroke", "red")
 
     lineChartSVG.append("text")
-                .attr("transform", "translate(" + width * 0.75 + "," + yScale(arrData[arrData.length - 1][1]) + ")")
+                .attr("transform", "translate(" + width * 0.77 + "," + yScale(arrData[arrData.length - 1][1]) + ")")
                 .attr("dy", ".35em")
                 .attr("text-anchor", "start")
                 .style("fill", "steelblue")
+                .style("font-size", "13px")
                 .text("Reputation Score");
 
 	lineChartSVG.append("text")
@@ -160,6 +184,7 @@ function draw_line_charts(time_list, reputation_scores) {
                 .attr("dy", ".35em")
                 .attr("text-anchor", "start")
                 .style("fill", "red")
+                .style("font-size", "13px")
                 .text("Neutral");
 }
 
