@@ -1,8 +1,6 @@
 {% extends 'tweet_base_display.html' %}
 {% load staticfiles %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'twitter_services/tweet_base_display.css' %}" />
-
 {% block page_header %}
     Online reputation for {{ entity }}
 {% endblock %}
@@ -15,6 +13,11 @@
     {% endif %}
         {% csrf_token %}
         {{ form }}
+{#        <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>#}
         <input type="submit" value="Submit" />
     </form>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/datepicker.js' %}"></script>
 {% endblock %}

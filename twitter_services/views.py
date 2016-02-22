@@ -37,10 +37,9 @@ class TweetsFilter(View):
         if form.is_valid():
             entity = form.cleaned_data['entity']
             reputation_dimension = form.cleaned_data['reputation_dimension']
-            print entity, reputation_dimension
             date = form.cleaned_data['date']
 
-            if reputation_dimension is not None:
+            if dimension is not None:
                 tweets = Tweet.objects.filter(tweet__related_entity=entity,
                                               tweet__reputation_dimension=reputation_dimension,
                                               created_at__year=str(date.year),
