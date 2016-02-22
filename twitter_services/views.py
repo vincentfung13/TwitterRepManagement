@@ -10,6 +10,7 @@ import forms
 
 class TweetsFilter(View):
     def get(self, request, entity, dimension=None):
+        form = forms.DateTweetForm(entity=entity, reputation_dimension=dimension)
         time_threshold = datetime.now(pytz.utc) - timedelta(days=5)
         if dimension is not None:
             tweets = Tweet.objects.filter(tweet__related_entity=entity,
@@ -20,6 +21,7 @@ class TweetsFilter(View):
                                           created_at__gt=time_threshold).order_by('-created_at')
 
         context = {
+            'form': form,
             'entity': entity,
             'entities_list': utility.entities_list,
             'dimension_list': utility.dimension_list,
@@ -29,23 +31,29 @@ class TweetsFilter(View):
 
         return render(request, 'twitter_services/tweets_filter.html', context)
 
-    def post(self, request):
-        form = forms.DateTweetForm(request.POST)
+    def post(self, request, entity, dimension=None):
+        form = forms.DateTweetForm(request.POST, entity=entity, reputation_dimension=dimension)
 
         if form.is_valid():
             entity = form.cleaned_data['entity']
             reputation_dimension = form.cleaned_data['reputation_dimension']
+            print entity, reputation_dimension
             date = form.cleaned_data['date']
 
             if reputation_dimension is not None:
                 tweets = Tweet.objects.filter(tweet__related_entity=entity,
-                                              tweet_reputation_dimension=reputation_dimension,
-                                              created_at=date).order_by('-created_at')
+                                              tweet__reputation_dimension=reputation_dimension,
+                                              created_at__year=str(date.year),
+                                              created_at__month=str(date.month),
+                                              created_at__day=str(date.day)).order_by('-created_at')
             else:
                 tweets = Tweet.objects.filter(tweet__related_entity=entity,
-                                              created_at=date).order_by('-created_at')
+                                              created_at__year=str(date.year),
+                                              created_at__month=str(date.month),
+                                              created_at__day=str(date.day)).order_by('-created_at')
 
             context = {
+                'form': form,
                 'entity': entity,
                 'entities_list': utility.entities_list,
                 'dimension_list': utility.dimension_list,

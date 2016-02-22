@@ -6,3 +6,15 @@
 {% block page_header %}
     Online reputation for {{ entity }}
 {% endblock %}
+
+{% block datepicker %}
+    {% if Dimension %}
+    <form action="{% url 'twitter_services:tweets_filtered_entity_dimension' entity Dimension %}" method="post">
+    {% else %}
+    <form action="{% url 'twitter_services:tweets_filtered_entity' entity %}" method="post">
+    {% endif %}
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit" />
+    </form>
+{% endblock %}
