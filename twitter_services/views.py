@@ -1,18 +1,16 @@
 from django.shortcuts import render
 from django.views.generic import View
 from .models import Tweet
-from user_handle.models import UserEntity
-from django.contrib.auth.models import User
 from tweet_processing import utility
-from geocoding.geocoders import LocalGeocoder
+from user_handle import utility as user_util
 from datetime import datetime, timedelta
 import pytz
+import forms
 
 
 class TweetsFilter(View):
     def get(self, request, entity, dimension=None):
         time_threshold = datetime.now(pytz.utc) - timedelta(days=5)
-        print time_threshold
         if dimension is not None:
             tweets = Tweet.objects.filter(tweet__related_entity=entity,
                                           tweet__reputation_dimension=dimension,
@@ -21,29 +19,43 @@ class TweetsFilter(View):
             tweets = Tweet.objects.filter(tweet__related_entity=entity,
                                           created_at__gt=time_threshold).order_by('-created_at')
 
-        tweets_filtered = [tweet_orm.tweet for tweet_orm in tweets]
-
-        geocoder = LocalGeocoder()
-        coordinates = geocoder.geocode_many(tweets_filtered)
-        latitudes = [coordinate[0] for coordinate in coordinates]
-        longitudes = [coordinate[1] for coordinate in coordinates]
-
-        # Get users' list of interest
-        user = User.objects.get(username=request.user.username)
-        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=user)]
-
         context = {
-            'tweets': tweets_filtered[:100],
             'entity': entity,
             'entities_list': utility.entities_list,
             'dimension_list': utility.dimension_list,
-            'latitudes': latitudes,
-            'longitudes': longitudes,
             'Dimension': dimension,
-            'interest_list': interest_list
         }
+        context.update(utility.get_view_content(request, tweets))
 
         return render(request, 'twitter_services/tweets_filter.html', context)
+
+    def post(self, request):
+        form = forms.DateTweetForm(request.POST)
+
+        if form.is_valid():
+            entity = form.cleaned_data['entity']
+            reputation_dimension = form.cleaned_data['reputation_dimension']
+            date = form.cleaned_data['date']
+
+            if reputation_dimension is not None:
+                tweets = Tweet.objects.filter(tweet__related_entity=entity,
+                                              tweet_reputation_dimension=reputation_dimension,
+                                              created_at=date).order_by('-created_at')
+            else:
+                tweets = Tweet.objects.filter(tweet__related_entity=entity,
+                                              created_at=date).order_by('-created_at')
+
+            context = {
+                'entity': entity,
+                'entities_list': utility.entities_list,
+                'dimension_list': utility.dimension_list,
+                'Dimension': reputation_dimension,
+            }
+            context.update(utility.get_view_content(request, tweets))
+
+            return render(request, 'twitter_services/tweets_filter.html', context)
+        else:
+            return user_util.json_response(-1, msg=form.errors)
 
 
 # TODO: Collect more data and generate stats dynamically

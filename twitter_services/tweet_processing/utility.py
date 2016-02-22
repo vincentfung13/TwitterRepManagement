@@ -1,6 +1,9 @@
 import datetime
 import json
 import pytz
+from user_handle.models import UserEntity
+from django.contrib.auth.models import User
+from twitter_services.geocoding.geocoders import LocalGeocoder
 from twitter_services.tweet_processing.sentiment_evaluating import TweetSentimentEvaluator
 
 entities_list = ['Apple', 'Amazon', 'Tesco', 'BMW', 'Heineken', 'HSBC']
@@ -38,6 +41,24 @@ def build_dict(tweet_orm):
     tweet_json['entity'] = tweet_orm.related_entity
     tweet_json['sentiment_score'] = tweet_orm.sentiment_score
     return tweet_json
+
+
+def get_view_content(request, tweets_orms):
+    tweets_filtered = [tweet_orm.tweet for tweet_orm in tweets_orms]
+    geocoder = LocalGeocoder()
+    coordinates = geocoder.geocode_many(tweets_filtered)
+    latitudes = [coordinate[0] for coordinate in coordinates]
+    longitudes = [coordinate[1] for coordinate in coordinates]
+
+    user = User.objects.get(username=request.user.username)
+    interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=user)]
+
+    return {
+        'tweets': tweets_filtered[:100],
+        'latitudes': latitudes,
+        'longitudes': longitudes,
+        'interest_list': interest_list
+    }
 
 
 # Function to determine if a tweet is reputation-affecting
