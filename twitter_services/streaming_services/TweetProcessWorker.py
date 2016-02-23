@@ -26,7 +26,7 @@ class TweetProcessor(multiprocessing.Process):
                 status['related_entity'] = utility.fetch_entity(status)
                 status['sentiment_score'] = TweetSentimentEvaluator.rate_sentiment(status)
                 self.tweets_buffer.append(Tweet(tweet_id=id_str, tweet=status, created_at=timezone.now()))
-                print 'Tweet %s added to buffer, buffer size %d' % id_str, len(self.tweets_buffer)
+                print 'Tweet %s added to buffer, buffer size %d' % (id_str, len(self.tweets_buffer))
 
                 if len(self.tweets_buffer) >= self.buffer_size:
                     Tweet.objects.bulk_create(self.tweets_buffer)

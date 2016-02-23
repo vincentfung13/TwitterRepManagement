@@ -27,7 +27,7 @@ class TweetTrainingSet(models.Model):
 class Statistics(models.Model):
     related_entity = models.CharField(max_length=20, default='Undefined')
     reputation_dimension = models.CharField(max_length=20, default='Whole')
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateField(default=timezone.now)
     total_tweets_count = models.IntegerField(default=0)
     negative_count = models.IntegerField(default=0)
     # This attribute takes into account of how negative each tweets are

@@ -2,7 +2,7 @@ from __future__ import division
 import DjangoSetup
 from twitter_services.models import Tweet
 from twitter_services.tweet_processing.utility import get_negative_score, get_positive_score
-
+import datetime
 
 # Given a time interval, entity and dimension, it returns a dictionary of statistics.
 def get_stats(time_threshold, entity, dimension=None):
@@ -31,6 +31,12 @@ def get_stats(time_threshold, entity, dimension=None):
         stat['reputation_score'] = reputation_score
 
         return stat
+    else:
+        return {
+            'total_tweets_count': 0,
+            'negative_count': 0,
+            'reputation_score': 0
+        }
 
 
 def __get_reputation_score__(tweet_count, positive_scores, negative_scores):
@@ -49,10 +55,17 @@ def __get_reputation_score__(tweet_count, positive_scores, negative_scores):
 
 
 if __name__ == '__main__':
-    from datetime import datetime, timedelta
     import pytz
-    time_threshold = datetime.now(pytz.utc) - timedelta(days=30)
-    stat_dict = get_stats(time_threshold, 'HSBC')
+    from twitter_services.tweet_processing import utility
 
-    for k, v in stat_dict.iteritems():
-        print k, v
+    time_threshold = datetime.datetime.now(pytz.utc) - datetime.timedelta(days=1)
+    for entity in utility.entities_list:
+        statistics_dict_whole = get_stats(time_threshold, entity)
+        print entity
+        for k, v in statistics_dict_whole.iteritems():
+            print k, v
+        for dimension in utility.dimension_list:
+            stat_dict = get_stats(time_threshold, entity, dimension)
+            print '\t' + dimension
+            for k, v in stat_dict.iteritems():
+                print '\t' + k, v

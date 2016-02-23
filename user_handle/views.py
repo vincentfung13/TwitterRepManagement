@@ -149,8 +149,8 @@ class MessageInbox(View):
         messages_unread = []
         messages_read = []
         for um_pair in UserMessage.objects.filter(user=get_user(request)):
-            messages_unread.extend(um_pair.message.filter(read=False).order_by('created_at'))
-            messages_read.extend(um_pair.message.filter(read=True).order_by('created_at'))
+            messages_unread.extend(um_pair.message.filter(read=False).order_by('-created_at'))
+            messages_read.extend(um_pair.message.filter(read=True).order_by('-created_at'))
         interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
 
         return render(request, 'user_handle/inbox.html', {'messages_read': messages_read,
