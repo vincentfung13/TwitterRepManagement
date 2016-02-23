@@ -4,6 +4,7 @@ from twitter_services.models import Tweet
 from twitter_services.tweet_processing.utility import get_negative_score, get_positive_score
 import datetime
 
+
 # Given a time interval, entity and dimension, it returns a dictionary of statistics.
 def get_stats(time_threshold, entity, dimension=None):
     if dimension:
@@ -57,15 +58,26 @@ def __get_reputation_score__(tweet_count, positive_scores, negative_scores):
 if __name__ == '__main__':
     import pytz
     from twitter_services.tweet_processing import utility
+    from twitter_services.models import Statistics
+    from django.utils import timezone
 
     time_threshold = datetime.datetime.now(pytz.utc) - datetime.timedelta(days=1)
     for entity in utility.entities_list:
         statistics_dict_whole = get_stats(time_threshold, entity)
+        # Statistics.objects.create(related_entity=entity,
+        #                           total_tweets_count=statistics_dict_whole['total_tweets_count'],
+        #                           negative_count=statistics_dict_whole['negative_count'],
+        #                           reputation_score=statistics_dict_whole['reputation_score'])
         print entity
         for k, v in statistics_dict_whole.iteritems():
             print k, v
         for dimension in utility.dimension_list:
-            stat_dict = get_stats(time_threshold, entity, dimension)
+            statistics_dict_dimension = get_stats(time_threshold, entity, dimension=dimension)
+            # Statistics.objects.create(related_entity=entity,
+            #                           reputation_dimension=dimension,
+            #                           total_tweets_count=statistics_dict_dimension['total_tweets_count'],
+            #                           negative_count=statistics_dict_dimension['negative_count'],
+            #                           reputation_score=statistics_dict_dimension['reputation_score'])
             print '\t' + dimension
-            for k, v in stat_dict.iteritems():
+            for k, v in statistics_dict_dimension.iteritems():
                 print '\t' + k, v

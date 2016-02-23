@@ -13,40 +13,38 @@ import pytz
 class ReputationMonitor(object):
     def __init__(self):
         self.clusterer = KMeansClusterer(cluster_count=8)
-        self.period_days = 1
+        self.time_threshold = datetime.now(pytz.utc) - timedelta(days=1)
 
     # Nasty four-nested loop
     def scan(self):
-        time_threshold = datetime.now(pytz.utc) - timedelta(days=self.period_days)
         for entity in utility.entities_list:
             print 'Entity: %s' % entity
             # Get statistics for whole entity and write results to the database
-            statistics_dict_whole = Statistics.get_stats(time_threshold, entity)
-            if statistics_dict_whole:
-                Tweet_Stat_Table.objects.create(related_entity=entity,
-                                                total_tweets_count=statistics_dict_whole['total_tweets_count'],
-                                                negative_count=statistics_dict_whole['negative_count'],
-                                                reputation_score=statistics_dict_whole['reputation_score'])
-                print '\t Added stats for %s' % entity
+            statistics_dict_whole = Statistics.get_stats(self.time_threshold, entity)
+            Tweet_Stat_Table.objects.create(related_entity=entity,
+                                            total_tweets_count=statistics_dict_whole['total_tweets_count'],
+                                            negative_count=statistics_dict_whole['negative_count'],
+                                            reputation_score=statistics_dict_whole['reputation_score'])
+            print '\t Added stats for %s' % entity
 
             for reputation_dimension in utility.dimension_list:
                 # Get statistics for each dimension of entities and write results to the database
-                statistics_dict_dimension = Statistics.get_stats(time_threshold, entity, dimension=reputation_dimension)
-                if statistics_dict_dimension:
-                    Tweet_Stat_Table.objects.create(related_entity=entity,
-                                                    reputation_dimension=reputation_dimension,
-                                                    total_tweets_count=statistics_dict_dimension['total_tweets_count'],
-                                                    negative_count=statistics_dict_dimension['negative_count'],
-                                                    reputation_score=statistics_dict_dimension['reputation_score'])
-                    print '\t Added stats for %s:%s' % (entity, reputation_dimension)
+                statistics_dict_dimension = Statistics.get_stats(self.time_threshold,
+                                                                 entity,
+                                                                 dimension=reputation_dimension)
+                Tweet_Stat_Table.objects.create(related_entity=entity,
+                                                reputation_dimension=reputation_dimension,
+                                                total_tweets_count=statistics_dict_dimension['total_tweets_count'],
+                                                negative_count=statistics_dict_dimension['negative_count'],
+                                                reputation_score=statistics_dict_dimension['reputation_score'])
+                print '\t Added stats for %s:%s' % (entity, reputation_dimension)
 
                 # Clustering, extract topics and send out alerts
-                print '\t Dimension %s' % reputation_dimension
+                # print '\t Dimension %s' % reputation_dimension
                 try:
-                    time_threshold = datetime.now(pytz.utc) - timedelta(hours=self.period_days)
                     self.clusterer.cluster_tweets(related_entity=entity,
                                                   reputation_dimension=reputation_dimension,
-                                                  time_threshold=time_threshold)
+                                                  time_threshold=self.time_threshold)
                     tweets_clusters = self.clusterer.get_tweets_clustered()
                     for cluster in tweets_clusters:
                         negative_count = 0
@@ -72,7 +70,7 @@ class ReputationMonitor(object):
                             except ValueError:
                                 print '\t\t No tweet in the cluster'
                 except ValueError:
-                    print '\t No tweet for the entity %s' % entity
+                    print '\t No tweet for the %s''s %s' % (entity, reputation_dimension)
 
     @staticmethod
     @transaction.atomic
