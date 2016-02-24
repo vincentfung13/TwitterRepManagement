@@ -155,13 +155,19 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
         .on("click", function(d) {
             if (dimension == 'None') {
                 post('/twitter_services/entity/' + entity + '/',
-                    {entity: entity, date: d[0]});
+                    {
+                        entity: decodeURIComponent(entity),
+                        date: d[0]
+                    });
             }
             else {
                 post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
-                    {entity: entity, dimension: dimension, date: d[0]});
+                    {
+                        entity: decodeURIComponent(entity),
+                        dimension: decodeURIComponent(dimension),
+                        date: d[0]
+                    });
             }
-            console.log(d);
         });
 
     node.append("text")
