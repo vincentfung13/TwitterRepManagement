@@ -5,11 +5,13 @@
 
 <div id="line-chart"></div>
 <div id="bar-chart"></div>
+<input id="csrf_token" type="hidden" value="{{ csrf_token }}"/>
 
 <script>
+    console.log('{{ dimension | safe }}');
     {% if chart == 'bar' %}
         draw_bar_charts({{  date_time_list | safe }}, {{ tweets_count_list }}, {{ negative_count_list }});
     {% else %}
-        draw_line_charts( "{{ entity }}", {{ date_time_list | safe }}, {{ reputation_scores }});
+        draw_line_charts( "{{ entity }}", "{{ dimension }}", {{ date_time_list | safe }}, {{ reputation_scores }});
     {% endif %}
 </script>

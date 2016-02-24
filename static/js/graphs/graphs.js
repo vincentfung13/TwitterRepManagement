@@ -43,7 +43,7 @@ function init_graph() {
  * @param time_list
  * @param reputation_scores
  */
-function draw_line_charts(entity, time_list, reputation_scores) {
+function draw_line_charts(entity, dimension, time_list, reputation_scores) {
     // Construct data for the axis and lines
     var arrData = [];
     for (var i = 0; i < time_list.length; i++) {
@@ -135,12 +135,34 @@ function draw_line_charts(entity, time_list, reputation_scores) {
                 .enter()
                 .append("g");
 
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function (d) {
+                return "<span style='color:black'>Click to see tweets in " + d[0] + "</span>";
+            }
+        );
+    lineChartSVG.call(tip);
+
     node.append("circle")
         .attr("class", "dot")
         .attr("cx", function(d) { return xScale(new Date(d[0])); })
         .attr("cy", function(d) { return yScale(d[1]); })
         .attr("r", 5)
-        .attr("fill", colour[entity]);
+        .attr("fill", colour[entity])
+        .on("mouseover", tip.show)
+        .on("mouseout", tip.hide)
+        .on("click", function(d) {
+            if (dimension == 'None') {
+                post('/twitter_services/entity/' + entity + '/',
+                    {entity: entity, date: d[0]});
+            }
+            else {
+                post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
+                    {entity: entity, dimension: dimension, date: d[0]});
+            }
+            console.log(d);
+        });
 
     node.append("text")
         .attr("transform", function(d) {
@@ -182,13 +204,6 @@ function draw_line_charts(entity, time_list, reputation_scores) {
                 .style("fill", "red")
                 .style("font-size", "13px")
                 .text("Neutral");
-}
-
-function add_line_charts(entity, time_list, reputation_score) {
-}
-
-function rescale_yAxis(svg, reputation_score) {
-
 }
 
 /**
