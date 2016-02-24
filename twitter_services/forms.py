@@ -12,5 +12,7 @@ class DateTweetForm(forms.Form):
 
     entity = forms.CharField(max_length=30, widget=forms.HiddenInput)
     reputation_dimension = forms.CharField(max_length=30, required=False, widget=forms.HiddenInput)
-    date = forms.DateField(initial=datetime.date.today)
+    date = forms.DateField(initial=datetime.date.today,
+                           widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Date picker'}),
+                           label='')
 

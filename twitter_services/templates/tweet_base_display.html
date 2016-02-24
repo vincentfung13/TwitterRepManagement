@@ -44,11 +44,16 @@
 
 {% block content %}
 
-
-
     <div class="header-container">
         <header>
-            <h1 class="text-center">{% block page_header %} {% endblock %}</h1>
+            <div class="container title-block-container text-center">
+                <div class="row text-center">
+                    <div class="text-center col-xs-6 col-xs-offset-3 title-display">
+                        <h1 class="text-center">{% block page_header %} {% endblock %}</h1>
+                    </div>
+                    {% block datepicker %} {% endblock %}
+                </div>
+            </div>
             {# This is for display topic string in message view #}
             {% block topic_cloud %}{% endblock %}
 
@@ -64,8 +69,6 @@
                 </ul>
             </div>
             {% endblock %}
-
-            {% block datepicker %} {% endblock %}
         </header>
     </div>
 
