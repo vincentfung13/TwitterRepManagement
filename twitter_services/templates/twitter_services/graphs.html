@@ -15,7 +15,7 @@
     var dimension_urlencoded = "{{ dimension | safe | urlencode }}"
 
     {% if chart == 'bar' %}
-        draw_bar_charts({{  date_time_list | safe }}, {{ tweets_count_list }}, {{ negative_count_list }});
+        draw_bar_charts(entity_urlencoded, dimension_urlencoded, {{  date_time_list | safe }}, {{ tweets_count_list }}, {{ negative_count_list }});
     {% else %}
         draw_line_charts(entity_urlencoded, dimension_urlencoded, {{ date_time_list | safe }}, {{ reputation_scores }});
     {% endif %}

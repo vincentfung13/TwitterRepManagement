@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.fields import JSONField
-from django.contrib.postgres.aggregates import ArrayAgg
-
 # Create your models here.
 # Extra fields to be added in the json file: related_entity, reputation_dimension, sentiment_score
 

@@ -139,7 +139,7 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-                return "<span style='color:black'>Click to see tweets in " + d[0] + "</span>";
+                return "<span style='color:" + colour[entity] + "'>Click to see tweets in " + d[0] + "</span>";
             }
         );
     lineChartSVG.call(tip);
@@ -218,7 +218,7 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
  * @param tweet_count_list
  * @param negative_count_list
  */
-function draw_bar_charts(time_list, tweet_count_list, negative_count_list) {
+function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negative_count_list) {
     // Construct data for the axis and charts
     var arrData = [];
     for (var i = 0; i < time_list.length; i++) {
@@ -261,6 +261,7 @@ function draw_bar_charts(time_list, tweet_count_list, negative_count_list) {
                     return Math.abs(yScale(+d[1]) - yScale(0));
                 });
 
+
     // Append top
     barChartSVG.selectAll("g")
         .data(arrData)
@@ -281,7 +282,69 @@ function draw_bar_charts(time_list, tweet_count_list, negative_count_list) {
         })
         .attr("width", 100);
 
+
     // Append text label
+    var node = barChartSVG.selectAll(".g")
+        .data(arrData)
+        .enter()
+        .append("g");
+
+    // Negative count
+    node.append("text")
+        .attr("transform", function(d) {
+            var cx = xScale(new Date(d[0])) + 80;
+            var cy = yScale(d[1]);
+            return "translate(" + cx + "," + cy + ")"
+        })
+        .style("font-size", "13px")
+        .text(function(d) {
+            if (d[1] != 0)
+                return d[1];
+        });
+
+    // Total count
+    node.append("text")
+        .attr("transform", function(d) {
+            var cx = xScale(new Date(d[0])) + 80;
+            var cy = yScale(d[2] + d[1]);
+            return "translate(" + cx + "," + cy + ")"
+        })
+        .style("font-size", "13px")
+        .text(function(d) {
+            if (d[2] != 0)
+                return d[2] + d[1];
+        });
+
+    // Append tooltip and on-click
+    //var tip = d3.tip()
+    //    .attr('class', 'd3-tip')
+    //    .offset([-10, 0])
+    //    .html(function (d) {
+    //            return "<span>Click to see tweets in " + d[0] + "</span>";
+    //        }
+    //    );
+    //barChartSVG.call(tip);
+    //node.append('g')
+    //    .on("mouseover", tip.show)
+    //    .on("mouseout", tip.hide)
+    //    .on("click", function(d) {
+    //        if (dimension == 'None') {
+    //            post('/twitter_services/entity/' + entity + '/',
+    //                {
+    //                    entity: decodeURIComponent(entity),
+    //                    date: d[0]
+    //                });
+    //        }
+    //        else {
+    //            post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
+    //                {
+    //                    entity: decodeURIComponent(entity),
+    //                    reputation_dimension: decodeURIComponent(dimension),
+    //                    date: d[0]
+    //                });
+    //        }
+    //    });
+
     var xAxis = d3.svg.axis()
         .scale(xScale)
         .orient('bottom')
