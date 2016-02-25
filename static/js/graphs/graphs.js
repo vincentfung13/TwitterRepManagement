@@ -246,18 +246,7 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
             })
         ]);
 
-    // Append bottom
-    // Initialize the tip
-    var tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function (d) {
-                return "<span>Click to see tweets in " + d[0] + "</span>";
-            }
-        );
-    barChartSVG.call(tip);
-
-    // Append bottom rect and onclick
+    // Append bottom rect
     barChartSVG.selectAll("g")
         .data(arrData).enter()
             .append("g")
@@ -270,27 +259,9 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
                 })
                 .attr("height", function(d) {
                     return Math.abs(yScale(+d[1]) - yScale(0));
-                })
-                .on("mouseover", tip.show)
-                .on("mouseout", tip.hide)
-                .on("click", function(d) {
-                    if (dimension == 'None') {
-                        post('/twitter_services/entity/' + entity + '/',
-                            {
-                                entity: decodeURIComponent(entity),
-                                date: d[0]
-                            });
-                    }
-                    else {
-                        post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
-                            {
-                                entity: decodeURIComponent(entity),
-                                reputation_dimension: decodeURIComponent(dimension),
-                                date: d[0]
-                            });
-                    }
                 });
 
+    // Append top rect
     barChartSVG.selectAll("g")
         .data(arrData)
         .append("rect")
@@ -300,35 +271,43 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
         })
         .attr("height", function(d){
             return Math.abs(yScale(+d[2]) - yScale(0));
-        })
-        .on("mouseover", tip.show)
-                .on("mouseout", tip.hide)
-                .on("click", function(d) {
-                    if (dimension == 'None') {
-                        post('/twitter_services/entity/' + entity + '/',
-                            {
-                                entity: decodeURIComponent(entity),
-                                date: d[0]
-                            });
-                    }
-                    else {
-                        post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
-                            {
-                                entity: decodeURIComponent(entity),
-                                reputation_dimension: decodeURIComponent(dimension),
-                                date: d[0]
-                            });
-                    }
-                });
-
+        });
+    
+    // Positioning the bars, add on-clicks and tooltips
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function (d) {
+                return "<span>Click to see tweets in " + d[0] + "</span>";
+            }
+        );
+    barChartSVG.call(tip);
     barChartSVG.selectAll("g")
         .data(arrData)
         .selectAll("rect.data")
         .attr("x", function(d){
             return xScale(new Date(d[0]));
         })
-        .attr("width", 100);
-
+        .attr("width", 100)
+        .on("mouseover", tip.show)
+        .on("mouseout", tip.hide)
+        .on("click", function(d) {
+            if (dimension == 'None') {
+                post('/twitter_services/entity/' + entity + '/',
+                    {
+                        entity: decodeURIComponent(entity),
+                        date: d[0]
+                    });
+            }
+            else {
+                post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
+                    {
+                        entity: decodeURIComponent(entity),
+                        reputation_dimension: decodeURIComponent(dimension),
+                        date: d[0]
+                    });
+            }
+        });
 
     // Append text label
     var node = barChartSVG.selectAll(".g")
