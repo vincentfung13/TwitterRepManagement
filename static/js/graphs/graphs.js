@@ -58,12 +58,12 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
 
     var yScale = d3.scale.linear()
         .domain([
-            d3.min(arrData, function (d) {
-                return d[1] - 1;
+            -d3.max(arrData, function (d) {
+                return Math.abs(d[1]) + 1;
             }),
 
             d3.max(arrData, function (d) {
-                return d[1] + 1;
+                return Math.abs(d[1]) + 1;
             })
         ])
         .range([height, 0]);
@@ -74,14 +74,14 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
         .ticks(d3.time.days, 1)
         .tickFormat(d3.time.format('%y-%m-%d'))
         .tickSize(0)
-        .tickPadding(8);
+        .tickPadding(3);
 
     var yAxis = d3.svg.axis()
         .scale(yScale)
         .orient('left')
         .ticks(5)
         .tickSize(5)
-        .tickPadding(8);
+        .tickPadding(3);
 
     // Create the lines
     var score_line = d3.svg.line()
@@ -125,7 +125,7 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
                 .append("text")
                     .attr("transform", "rotate(-90)")
                     .attr("y", 6)
-                    .attr("dy", ".71em")
+                    .attr("dy", "-3em")
                     .style("text-anchor", "end")
                     .text("Reputation Score");
 
@@ -164,7 +164,7 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
                 post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
                     {
                         entity: decodeURIComponent(entity),
-                        dimension: decodeURIComponent(dimension),
+                        reputation_dimension: decodeURIComponent(dimension),
                         date: d[0]
                     });
             }
@@ -196,7 +196,7 @@ function draw_line_charts(entity, dimension, time_list, reputation_scores) {
                 .attr("stroke", "red")
 
     lineChartSVG.append("text")
-                .attr("transform", "translate(" + width * 0.77 + "," + yScale(arrData[arrData.length - 1][1]) + ")")
+                .attr("transform", "translate(" + width * 0.8 + "," + yScale(arrData[arrData.length - 1][1]) + ")")
                 .attr("dy", ".35em")
                 .attr("text-anchor", "start")
                 .style("fill", colour[entity])
@@ -281,6 +281,7 @@ function draw_bar_charts(time_list, tweet_count_list, negative_count_list) {
         })
         .attr("width", 100);
 
+    // Append text label
     var xAxis = d3.svg.axis()
         .scale(xScale)
         .orient('bottom')

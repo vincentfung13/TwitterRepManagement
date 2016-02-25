@@ -1,6 +1,7 @@
 from django.shortcuts import render
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.views.generic import View
-from .models import Tweet
+from .models import Tweet, Statistics
 from tweet_processing import utility
 from user_handle import utility as user_util
 from datetime import datetime, timedelta
@@ -66,13 +67,22 @@ class TweetsFilter(View):
             return user_util.json_response(-1, msg=form.errors)
 
 
-# TODO: Collect more data and generate stats dynamically
 class Graphs(View):
     def get(self, request, chart, entity, dimension=None):
-        tweets_count_list = [294, 533, 400, 600, 700]
-        reputation_scores =[-5.4, 3.44, 0.99, -1.3, 2.2]
-        negative_count_list = [200, 300, 133, 289, 468]
-        date_time_list = ['2016-02-01', '2016-02-02', '2016-02-03', '2016-02-04', '2016-02-05']
+        tweets_count_list = list()
+        reputation_scores = list()
+        negative_count_list = list()
+        date_time_list = list()
+
+        # Orderable ArrayAgg is not out yet
+        f = lambda dimension_para: 'Whole' if dimension_para is None else dimension_para
+        stat_querysets = list(Statistics.objects.filter(related_entity=entity,
+                                                        reputation_dimension=f(dimension)).order_by('timestamp')[:5])
+        for stat_queryset in stat_querysets:
+            tweets_count_list.append(stat_queryset.total_tweets_count)
+            reputation_scores.append(float("{0:.2f}".format(stat_queryset.reputation_score)))
+            negative_count_list.append(stat_queryset.negative_count)
+            date_time_list.append(str(stat_queryset.timestamp))
 
         context = {
             'chart': chart,

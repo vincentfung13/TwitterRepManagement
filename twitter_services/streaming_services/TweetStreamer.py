@@ -30,7 +30,7 @@ if __name__ == '__main__':
     track_list = apple_dic + amazon_dic + tesco_dic + bmw_dic + heineken_dic + hsbc_dic
 
     tweet_queue = multiprocessing.JoinableQueue()
-    num_consumers = multiprocessing.cpu_count() * 2
+    num_consumers = multiprocessing.cpu_count()
 
     dimension_classifier = DimensionClassifier()
     spam_detector = SpamDetector()
