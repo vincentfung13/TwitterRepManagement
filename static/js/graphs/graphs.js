@@ -272,7 +272,7 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
         .attr("height", function(d){
             return Math.abs(yScale(+d[2]) - yScale(0));
         });
-    
+
     // Positioning the bars, add on-clicks and tooltips
     var tip = d3.tip()
         .attr('class', 'd3-tip')
@@ -378,4 +378,32 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("Count");
+
+    // Append colour identifier
+    barChartSVG.append("rect")
+        .attr("class", "data positive")
+        .attr("width", 40)
+        .attr("height", 15)
+        .attr("x", width * 0.95)
+        .attr("y", height * 0.05);
+
+    barChartSVG.append("rect")
+        .attr("class", "data negative")
+        .attr("width", 40)
+        .attr("height", 15)
+        .attr("x", width * 0.95)
+        .attr("y", height * 0.1);
+
+    barChartSVG.append("text")
+        .attr("transform", "translate(" + width + "," + height * 0.065 + ")")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+        .text("Positive tweets");
+
+    barChartSVG.append("text")
+        .attr("transform", "translate(" + width + "," + height * 0.115 + ")")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+        .text("Negative tweets");
+
 }
