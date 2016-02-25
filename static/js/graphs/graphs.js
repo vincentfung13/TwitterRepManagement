@@ -247,6 +247,17 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
         ]);
 
     // Append bottom
+    // Initialize the tip
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function (d) {
+                return "<span>Click to see tweets in " + d[0] + "</span>";
+            }
+        );
+    barChartSVG.call(tip);
+
+    // Append bottom rect and onclick
     barChartSVG.selectAll("g")
         .data(arrData).enter()
             .append("g")
@@ -259,10 +270,27 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
                 })
                 .attr("height", function(d) {
                     return Math.abs(yScale(+d[1]) - yScale(0));
+                })
+                .on("mouseover", tip.show)
+                .on("mouseout", tip.hide)
+                .on("click", function(d) {
+                    if (dimension == 'None') {
+                        post('/twitter_services/entity/' + entity + '/',
+                            {
+                                entity: decodeURIComponent(entity),
+                                date: d[0]
+                            });
+                    }
+                    else {
+                        post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
+                            {
+                                entity: decodeURIComponent(entity),
+                                reputation_dimension: decodeURIComponent(dimension),
+                                date: d[0]
+                            });
+                    }
                 });
 
-
-    // Append top
     barChartSVG.selectAll("g")
         .data(arrData)
         .append("rect")
@@ -272,7 +300,26 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
         })
         .attr("height", function(d){
             return Math.abs(yScale(+d[2]) - yScale(0));
-        });
+        })
+        .on("mouseover", tip.show)
+                .on("mouseout", tip.hide)
+                .on("click", function(d) {
+                    if (dimension == 'None') {
+                        post('/twitter_services/entity/' + entity + '/',
+                            {
+                                entity: decodeURIComponent(entity),
+                                date: d[0]
+                            });
+                    }
+                    else {
+                        post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
+                            {
+                                entity: decodeURIComponent(entity),
+                                reputation_dimension: decodeURIComponent(dimension),
+                                date: d[0]
+                            });
+                    }
+                });
 
     barChartSVG.selectAll("g")
         .data(arrData)
@@ -315,36 +362,7 @@ function draw_bar_charts(entity, dimension, time_list, tweet_count_list, negativ
                 return d[2] + d[1];
         });
 
-    // Append tooltip and on-click
-    //var tip = d3.tip()
-    //    .attr('class', 'd3-tip')
-    //    .offset([-10, 0])
-    //    .html(function (d) {
-    //            return "<span>Click to see tweets in " + d[0] + "</span>";
-    //        }
-    //    );
-    //barChartSVG.call(tip);
-    //node.append('g')
-    //    .on("mouseover", tip.show)
-    //    .on("mouseout", tip.hide)
-    //    .on("click", function(d) {
-    //        if (dimension == 'None') {
-    //            post('/twitter_services/entity/' + entity + '/',
-    //                {
-    //                    entity: decodeURIComponent(entity),
-    //                    date: d[0]
-    //                });
-    //        }
-    //        else {
-    //            post('/twitter_services/entity_dimension/' + entity + '/' + dimension + '/',
-    //                {
-    //                    entity: decodeURIComponent(entity),
-    //                    reputation_dimension: decodeURIComponent(dimension),
-    //                    date: d[0]
-    //                });
-    //        }
-    //    });
-
+    // Append the two axises
     var xAxis = d3.svg.axis()
         .scale(xScale)
         .orient('bottom')
