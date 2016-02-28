@@ -148,11 +148,11 @@ class MessageInbox(View):
     def get(self, request):
         messages_unread = []
         messages_read = []
-        for um_pair in UserMessage.objects.filter(user=get_user(request)):
-            messages_unread.extend(um_pair.message.filter(read=False).order_by('-created_at'))
-            messages_read.extend(um_pair.message.filter(read=True).order_by('-created_at'))
-        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
+        for um_pair in UserMessage.objects.filter(user=get_user(request)).order_by('-message'):
+            messages_unread.extend(um_pair.message.filter(read=False))
+            messages_read.extend(um_pair.message.filter(read=True))
 
+        interest_list = [ue_orm.entity for ue_orm in UserEntity.objects.filter(user=get_user(request))]
         return render(request, 'user_handle/inbox.html', {'messages_read': messages_read,
                                                           'messages_unread': messages_unread,
                                                           'interest_list': interest_list})

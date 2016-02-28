@@ -39,15 +39,7 @@
                     {% if not user.is_authenticated %}
                         <li role="presentation"><a href="{% url 'MainPage' %}">Home</a></li>
                     {% else %}
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false"> {{ request.user.username }}<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="{% url 'user_handle:MessageInbox' %}">Inbox</a></li>
-                                <li><a href="{% url 'user_handle:Index' %}">Account</a></li>
-                                <li><a href="{% url 'user_handle:Logout' %}">Logout</a></li>
-                            </ul>
-                        </li>
+                        <li role="presentation"><a href="{% url 'user_handle:MessageInbox' %}">Alerts Inbox</a></li>
 
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown"
@@ -59,6 +51,15 @@
                                         <a href="{% url 'twitter_services:tweets_filtered_entity' interest %}">{{ interest }}</a>
                                     </li>
                                 {% endfor %}
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"> {{ request.user.username }}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'user_handle:Index' %}">Account</a></li>
+                                <li><a href="{% url 'user_handle:Logout' %}">Logout</a></li>
                             </ul>
                         </li>
                     {% endif %}
