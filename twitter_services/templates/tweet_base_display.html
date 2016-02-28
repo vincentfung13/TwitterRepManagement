@@ -74,6 +74,9 @@
 
     <!-- The default main content block is set to display list of tweets -->
     {% block Main-content %}
+        <script type="text/javascript">
+            var negative_id = [];
+        </script>
         <div class="container">
             <div class="main-content row">
                 <div class="col-sm-6">
@@ -85,10 +88,18 @@
                     <div class="tweet-container">
                         {% if tweets %}
                                 {% for tweet in tweets %}
-                                    <blockquote class="twitter-tweet" data-link-color="#55acee" lang="en">
+                                    <blockquote class="twitter-tweet" data-link-color="#55acee"
+                                                data-chrome="transparent" lang="en" id="tweet_text{{ tweet.id_str }}">
                                         <p lang="en" id="tweet_text_{{ tweet.id_str }}">{{ tweet.text }}</p>
                                         <a href="https://twitter.com/{{ tweet.user.screen_name }}/status/{{ tweet.id_str }}"></a>
                                     </blockquote>
+
+                                    <script>
+                                         var negative_weight = parseInt("{{ tweet.sentiment_score }}".split("-")[1]);
+                                         if (negative_weight > 2){
+                                             negative_id.push({{ forloop.counter0 }});
+                                         }
+                                    </script>
                                 {% endfor %}
                         {% else %}
                             <p>No tweets are available</p>
@@ -113,6 +124,14 @@
         var latitudes = {{ latitudes }};
         var longitudes = {{ longitudes }};
         init_map(latitudes, longitudes);
+
+        {# Styling for embedded tweets #}
+        $(window).load(function() {
+            for (var i = 0; i < negative_id.length; i++) {
+                $("iframe#twitter-widget-" + negative_id[i]).contents().find('head').append(
+                    '<style>.Tweet-text { color: red }</style>');
+            }
+        });
     </script>
 
      {% block script %}{% endblock %}
