@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'twitter_services',
     'user_handle',
-    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,8 +88,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'TwitterRepMonitor',
-        'USER': 'vincentfung13',
-        'PASSWORD': 'feng_a252746676',
+        'USER': 'yourusername',
+        'PASSWORD': 'yourpassword',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
