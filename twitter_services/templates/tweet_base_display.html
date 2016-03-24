@@ -96,7 +96,7 @@
 
                                     <script>
                                          var negative_weight = parseInt("{{ tweet.sentiment_score }}".split("-")[1]);
-                                         if (negative_weight > 2){
+                                         if (negative_weight > 1){
                                              negative_id.push({{ forloop.counter0 }});
                                          }
                                     </script>
