@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from clustering.clusterers import KMeansClusterer
 from topic_extracting.topic_extractors import LDATopicExtractor
 from twitter_services.tweet_processing import utility
@@ -90,5 +91,6 @@ class ReputationMonitor(object):
             um_pair.message.add(message)
 
 if __name__ == '__main__':
+    import DjangoSetup
     monitor = ReputationMonitor()
     monitor.scan()
