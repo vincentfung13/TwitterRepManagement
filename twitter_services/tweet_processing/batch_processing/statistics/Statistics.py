@@ -1,5 +1,11 @@
 from __future__ import division
-import DjangoSetup
+
+if __name__ == '__main__':
+    import os
+    import django
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
+    django.setup()
+
 from twitter_services.models import Tweet
 from twitter_services.tweet_processing.utility import get_negative_score, get_positive_score
 import datetime

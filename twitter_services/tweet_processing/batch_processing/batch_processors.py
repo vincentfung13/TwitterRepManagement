@@ -91,6 +91,10 @@ class ReputationMonitor(object):
             um_pair.message.add(message)
 
 if __name__ == '__main__':
-    import DjangoSetup
+    import os
+    import django
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
+    django.setup()
+
     monitor = ReputationMonitor()
     monitor.scan()

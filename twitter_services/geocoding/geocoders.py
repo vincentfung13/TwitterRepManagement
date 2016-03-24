@@ -50,7 +50,11 @@ class LocalGeocoder(object):
         return coordinates
 
 if __name__ == '__main__':
-    import DjangoSetup
+    import os
+    import django
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
+    django.setup()
+
     from twitter_services.models import Tweet
 
     geocoder = LocalGeocoder()

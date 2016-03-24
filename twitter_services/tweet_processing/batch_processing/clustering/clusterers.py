@@ -1,9 +1,14 @@
 import pandas
 import numpy as np
-
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
-import DjangoSetup
+
+if __name__ == '__main__':
+    import os
+    import django
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
+    django.setup()
+
 from twitter_services.models import Tweet
 from twitter_services.tweet_processing.normalizing import TweetNormalizer
 
@@ -73,7 +78,12 @@ class KMeansClusterer():
             print
 
 if __name__ == '__main__':
+    from datetime import datetime, timedelta
+    import pytz
+
     clusterer = KMeansClusterer(cluster_count=5)
-    clusterer.cluster_tweets(related_entity='Apple', reputation_dimension='Products & Services')
+    clusterer.cluster_tweets(related_entity='Apple',
+                             reputation_dimension='Products & Services',
+                             time_threshold=datetime.now(pytz.utc) - timedelta(days=1))
     clusterer.print_results()
 

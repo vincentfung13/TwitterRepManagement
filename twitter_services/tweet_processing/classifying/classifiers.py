@@ -1,8 +1,14 @@
 from TwitterRepManagement import settings
 import nltk.classify
-import DjangoSetup
 from sklearn import cross_validation
 from sklearn.svm import LinearSVC
+
+if __name__ == '__main__':
+    import os
+    import django
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'TwitterRepManagement.settings'
+    django.setup()
+
 from twitter_services.models import TweetTrainingSet
 from twitter_services.tweet_processing.normalizing import TweetNormalizer
 
