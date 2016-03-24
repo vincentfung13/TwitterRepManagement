@@ -1,9 +1,13 @@
 # TwitterRepManagement
 This is my final year project - the Twitter Reputation Monitor, it is a Django web application that allows you to monitor online reputation of companies over Twitter.
 
-Video Demo: https://www.youtube.com/watch?v=rOkPjH_x3u4
+Video Demo: 
 
-PowerPoint Presentation: https://docs.google.com/presentation/d/1MiGlGt3kaF868Dty4-q3hPsEGrxciItwIFvnjf8M8rc/edit#slide=id.p4
+https://www.youtube.com/watch?v=rOkPjH_x3u4
+
+PowerPoint Presentation: 
+
+https://docs.google.com/presentation/d/1MiGlGt3kaF868Dty4-q3hPsEGrxciItwIFvnjf8M8rc/edit#slide=id.p4
 
 To set up the system, first clone the whole repo into your local machine:
 ```
