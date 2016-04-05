@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.contrib.postgres.aggregates import ArrayAgg
 from django.views.generic import View
 from .models import Tweet, Statistics
 from tweet_processing import utility
@@ -7,7 +6,6 @@ from user_handle import utility as user_util
 from datetime import datetime, timedelta
 import pytz
 import forms
-import urllib
 
 
 class TweetsFilter(View):

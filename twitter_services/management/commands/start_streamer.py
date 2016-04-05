@@ -1,4 +1,4 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 import multiprocessing
 import tweepy
 from twitter_services.tweet_processing import utility
@@ -7,8 +7,8 @@ from twitter_services.streaming_services.TweetStreamer import MyListener
 from twitter_services.streaming_services import TweetProcessWorker
 
 
-class Command(NoArgsCommand):
-    def handle_noargs(self, **options):
+class Command(BaseCommand):
+    def handle(self, **options):
         apple_dic = utility.dict_keyword_entity['Apple']
         amazon_dic = utility.dict_keyword_entity['Amazon']
         tesco_dic = utility.dict_keyword_entity['Tesco']
